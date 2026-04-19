@@ -1,17 +1,34 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { CloudRain, Waves, Trees, Flame, Wind, Circle } from "lucide-react";
+
+type SoundName =
+  | "Rain"
+  | "Wave"
+  | "River"
+  | "Bonfire"
+  | "Forest"
+  | "Noise";
+
+const sounds: { name: SoundName; icon: React.ComponentType<{ className?: string }> }[] = [
+  { name: "Rain", icon: CloudRain },
+  { name: "Wave", icon: Wind },
+  { name: "River", icon: Waves },
+  { name: "Bonfire", icon: Flame },
+  { name: "Forest", icon: Trees },
+  { name: "Noise", icon: Circle },
+];
 
 export default function Home() {
   const [screen, setScreen] = useState<"select" | "player">("select");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedSound, setSelectedSound] = useState<
-    "Rain" | "Wave" | "River" | "Bonfire" | "Wind" | "Noise"
-  >("Rain");
+  const [selectedSound, setSelectedSound] = useState<SoundName>("Rain");
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const noiseRef = useRef<AudioBufferSourceNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   const createNoise = (ctx: AudioContext) => {
     const bufferSize = ctx.sampleRate * 2;
@@ -51,13 +68,13 @@ export default function Home() {
           gain: 0.26,
           controlLabel: "Fire",
         };
-      case "Wind":
+      case "Forest":
         return {
-          title: "Night Wind",
-          subtitle: "Airy and light sound for quiet focus.",
+          title: "Forest",
+          subtitle: "Gentle natural ambience for relaxation.",
           frequency: 1900,
           gain: 0.18,
-          controlLabel: "Wind",
+          controlLabel: "Forest",
         };
       case "Noise":
         return {
@@ -110,14 +127,18 @@ export default function Home() {
 
     noise.start();
     noiseRef.current = noise;
-  
-    setInterval(() => {
-      filter.frequency.value =
-        sound.frequency + Math.random() * 300 - 150;
+
+    intervalRef.current = window.setInterval(() => {
+      filter.frequency.value = sound.frequency + Math.random() * 300 - 150;
     }, 500);
-  };   
+  };
 
   const stopRain = () => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
     if (noiseRef.current) {
       noiseRef.current.stop();
       noiseRef.current.disconnect();
@@ -135,20 +156,13 @@ export default function Home() {
     }
   };
 
-  const handleSelectSound = (
-    sound: "Rain" | "Wave" | "River" | "Bonfire" | "Wind" | "Noise"
-  ) => {
+  const handleSelectSound = (sound: SoundName) => {
     if (isPlaying) {
       stopRain();
       setIsPlaying(false);
     }
     setSelectedSound(sound);
-    setScreen("player");
   };
-
-  // =====================
-  // UI SCREENS
-  // =====================
 
   if (screen === "select") {
     return (
@@ -169,7 +183,7 @@ export default function Home() {
               <div className="h-4 w-4 rounded-full bg-sky-300 z-10" />
             </div>
             <p className="text-xs uppercase tracking-[0.35em] text-white/45">
-              Sleep App
+              My Sleep App
             </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
               Choose Sound
@@ -182,52 +196,66 @@ export default function Home() {
           <div className="px-6 pb-6">
             <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
               <div className="grid grid-cols-3 gap-4">
-                {[
-                  { name: "Rain", icon: "🌧️" },
-                  { name: "Wave", icon: "🌊" },
-                  { name: "River", icon: "🏞️" },
-                  { name: "Bonfire", icon: "🔥" },
-                  { name: "Wind", icon: "🌬️" },
-                  { name: "Noise", icon: "⚪" },
-                ].map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={() => handleSelectSound(item.name as "Rain" | "Wave" | "River" | "Bonfire" | "Wind" | "Noise")}
-                    className="group flex flex-col items-center"
-                  >
-                    <div className="flex h-20 w-20 items-center justify-center rounded-[22px] border border-white/10 bg-white/5 backdrop-blur-md shadow-lg shadow-black/10 transition duration-200 group-hover:scale-[1.03] group-hover:bg-white/8 group-active:scale-[0.98]">
-                      <span className="text-2xl">{item.icon}</span>
-                    </div>
-                    <span className="mt-2 text-xs text-white/65">
-                      {item.name}
-                    </span>
-                  </button>
-                ))}
+                {sounds.map((item) => {
+                  const Icon = item.icon;
+                  const isSelected = selectedSound === item.name;
+
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => handleSelectSound(item.name)}
+                      className="group flex flex-col items-center"
+                    >
+                      <div
+                        className={`flex h-20 w-20 items-center justify-center rounded-[22px] border backdrop-blur-md shadow-lg transition-all duration-200 ${
+                          isSelected
+                            ? "border-sky-300/40 bg-sky-300/10 scale-[1.05]"
+                            : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"
+                        }`}
+                      >
+                        <Icon
+                          className={`w-8 h-8 transition-all ${
+                            isSelected
+                              ? "text-sky-300 scale-110"
+                              : "text-white/60 group-hover:text-white"
+                          }`}
+                        />
+                      </div>
+                      <span
+                        className={`mt-2 text-xs ${
+                          isSelected ? "text-sky-200" : "text-white/65"
+                        }`}
+                      >
+                        {item.name}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
+
+              <button
+                onClick={() => setScreen("player")}
+                className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Continue with {selectedSound}
+              </button>
             </div>
 
             <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
               <div>
                 <p className="text-sm font-medium text-white/85">
-                  Unlock Full Sleep
+                  Create Soundscape
                 </p>
                 <p className="text-xs text-white/45">
-                  Unlimited timer & sound mixing
+                  Build your own ambient world
                 </p>
               </div>
-              <button className="rounded-full border border-amber-300/30 bg-amber-300/20 px-3 py-1.5 text-xs font-medium text-amber-200">
-                Premium
-              </button>
             </div>
           </div>
         </div>
       </div>
     );
   }
-
-  // =====================
-  // PLAYER SCREEN
-  // =====================
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
@@ -253,7 +281,7 @@ export default function Home() {
             <div className="h-4 w-4 rounded-full bg-sky-300 z-10" />
           </div>
           <p className="text-xs uppercase tracking-[0.35em] text-white/45">
-            Sleep App
+            My Sleep App
           </p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">
             {getSoundConfig().title}
@@ -313,21 +341,12 @@ export default function Home() {
                 <div className="grid grid-cols-3 gap-2">
                   <button className="relative rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm text-white/40">
                     3h
-                    <span className="absolute right-2 top-1 text-[10px] text-amber-300">
-                      🔒
-                    </span>
                   </button>
                   <button className="relative rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm text-white/40">
                     6h
-                    <span className="absolute right-2 top-1 text-[10px] text-amber-300">
-                      🔒
-                    </span>
                   </button>
                   <button className="relative rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm text-white/40">
                     8h
-                    <span className="absolute right-2 top-1 text-[10px] text-amber-300">
-                      🔒
-                    </span>
                   </button>
                 </div>
               </div>
@@ -337,19 +356,15 @@ export default function Home() {
           <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
             <div>
               <p className="text-sm font-medium text-white/85">
-                Unlock Full Sleep
+                Create Soundscape
               </p>
               <p className="text-xs text-white/45">
-                Unlimited timer & sound mixing
+                Build your own ambient world
               </p>
             </div>
-            <button className="rounded-full border border-amber-300/30 bg-amber-300/20 px-3 py-1.5 text-xs font-medium text-amber-200">
-              Premium
-            </button>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
