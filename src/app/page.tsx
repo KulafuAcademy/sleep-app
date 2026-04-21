@@ -29,6 +29,7 @@ export default function Home() {
   const noiseRef = useRef<AudioBufferSourceNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
   const intervalRef = useRef<number | null>(null);
+  const lowRef = useRef<AudioBufferSourceNode | null>(null);
 
   const createNoise = (ctx: AudioContext) => {
     const bufferSize = ctx.sampleRate * 2;
@@ -114,6 +115,27 @@ export default function Home() {
     noise.buffer = createNoise(ctx);
     noise.loop = true;
 
+    // 👇低音レイヤー
+    if (selectedSound === "Wave") {
+    const low = ctx.createBufferSource();
+    low.buffer = createNoise(ctx);
+    low.loop = true;
+
+    const lowFilter = ctx.createBiquadFilter();
+    lowFilter.type = "lowpass";
+    lowFilter.frequency.value = 450;
+
+    const lowGain = ctx.createGain();
+    lowGain.gain.value = 0.05;
+
+    low.connect(lowFilter);
+    lowFilter.connect(lowGain);
+    lowGain.connect(ctx.destination);
+
+    low.start();
+    lowRef.current = low; // ←これを追加
+  }
+
     // 👇ここに追加（チャプチャプレイヤー）
     let splashGain = null;
 
@@ -178,17 +200,24 @@ export default function Home() {
   };
 
   const stopRain = () => {
-    if (intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+  if (intervalRef.current !== null) {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
 
-    if (noiseRef.current) {
-      noiseRef.current.stop();
-      noiseRef.current.disconnect();
-      noiseRef.current = null;
-    }
-  };
+  if (noiseRef.current) {
+    noiseRef.current.stop();
+    noiseRef.current.disconnect();
+    noiseRef.current = null;
+  }
+
+  // 👇ここに追加
+  if (lowRef.current) {
+    lowRef.current.stop();
+    lowRef.current.disconnect();
+    lowRef.current = null;
+  }
+};
 
   const toggle = async () => {
     if (isPlaying) {
