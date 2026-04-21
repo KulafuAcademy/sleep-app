@@ -96,6 +96,7 @@ export default function Home() {
   };
 
   const startRain = async () => {
+    stopRain();
     if (!audioCtxRef.current) {
       audioCtxRef.current = new AudioContext();
     }
@@ -113,6 +114,28 @@ export default function Home() {
     noise.buffer = createNoise(ctx);
     noise.loop = true;
 
+    // 👇ここに追加（チャプチャプレイヤー）
+    let splashGain = null;
+
+    // if (selectedSound === "Wave") {
+//   const splash = ctx.createBufferSource();
+//   splash.buffer = createNoise(ctx);
+//   splash.loop = true;
+
+//   const splashFilter = ctx.createBiquadFilter();
+//   splashFilter.type = "highpass";
+//   splashFilter.frequency.value = 2500;
+
+//   splashGain = ctx.createGain();
+//   splashGain.gain.value = 0;
+
+//   splash.connect(splashFilter);
+//   splashFilter.connect(splashGain);
+//   splashGain.connect(ctx.destination);
+
+//   splash.start();
+// }
+
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
     filter.frequency.value = sound.frequency;
@@ -128,9 +151,30 @@ export default function Home() {
     noise.start();
     noiseRef.current = noise;
 
-    intervalRef.current = window.setInterval(() => {
-      filter.frequency.value = sound.frequency + Math.random() * 300 - 150;
-    }, 500);
+    if (selectedSound === "Wave") {
+      intervalRef.current = window.setInterval(() => {
+      const base = 1000 + Math.sin(Date.now() / 2400) * 260;
+      filter.frequency.value = base + Math.random() * 12;
+
+      const wave = 0.5 + Math.sin(Date.now() / 2400) * 0.18;
+      gain.gain.value = wave * (sound.gain + 0.03);
+
+     // 👇これを追加
+    if (splashGain) {
+      splashGain.gain.value = Math.random() * 0.03;
+    }
+    }, 400);
+   }
+
+   if (selectedSound === "Rain") {
+  intervalRef.current = window.setInterval(() => {
+    const base = 1800 + Math.sin(Date.now() / 1800) * 120;
+    filter.frequency.value = base + Math.random() * 80;
+
+    const rain = 0.7 + Math.random() * 0.08;
+    gain.gain.value = rain * sound.gain;
+    }, 120);
+   }
   };
 
   const stopRain = () => {
