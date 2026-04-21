@@ -180,11 +180,29 @@ export default function Home() {
 
       const wave = 0.5 + Math.sin(Date.now() / 2400) * 0.18;
       gain.gain.value = wave * (sound.gain + 0.03);
+      
+      // 👇ここを新しく追加
+    if (Math.random() < 0.3) {
+      const splash = ctx.createBufferSource();
+      splash.buffer = createNoise(ctx);
 
-     // 👇これを追加
-    if (splashGain) {
-      splashGain.gain.value = Math.random() * 0.03;
-    }
+      const splashFilter = ctx.createBiquadFilter();
+      splashFilter.type = "highpass";
+      splashFilter.frequency.value = 2000 + Math.random() * 1000;
+
+      const splashGain = ctx.createGain();
+      splashGain.gain.value = 0.02 + Math.random() * 0.02;
+
+      splash.connect(splashFilter);
+      splashFilter.connect(splashGain);
+      splashGain.connect(ctx.destination);
+
+      splash.start();
+
+      setTimeout(() => {
+        splash.stop();
+      }, 50);
+     }
     }, 400);
    }
 
