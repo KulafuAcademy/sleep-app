@@ -26,10 +26,58 @@ export default function Home() {
   const [selectedSound, setSelectedSound] = useState<SoundName>("Rain");
 
   const audioCtxRef = useRef<AudioContext | null>(null);
+
+ const playChapu = async () => {
+  try {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new AudioContext();
+    }
+
+    const ctx = audioCtxRef.current;
+
+    const res = await fetch("/sound/chapu.wav");
+    console.log("fetch status:", res.status, res.headers.get("content-type"));
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    const arrayBuffer = await res.arrayBuffer();
+    console.log("arrayBuffer bytes:", arrayBuffer.byteLength);
+
+    const buffer = await ctx.decodeAudioData(arrayBuffer);
+    console.log("decoded:", buffer.duration);
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.playbackRate.value = 0.8 + Math.random() * 0.4;
+
+    const gain = ctx.createGain();
+    gain.gain.value = 0.08;
+
+    source.connect(gain);
+    gain.connect(ctx.destination);
+
+    source.start();
+  } catch (error) {
+    console.error("playChapu error:", error);
+  }
+};
+
   const noiseRef = useRef<AudioBufferSourceNode | null>(null);
   const gainRef = useRef<GainNode | null>(null);
   const intervalRef = useRef<number | null>(null);
   const lowRef = useRef<AudioBufferSourceNode | null>(null);
+  const [highLevel, setHighLevel] = useState(0.015);
+  const [highFreq, setHighFreq] = useState(1800);
+  const highLevelRef = useRef(0.015);
+  const highFreqRef = useRef(1800);
+  const [splashChance, setSplashChance] = useState(0.2);
+  const [splashLength, setSplashLength] = useState(25);
+  const splashChanceRef = useRef(0.2);
+  const splashLengthRef = useRef(25);
+
+
 
   const createNoise = (ctx: AudioContext) => {
     const bufferSize = ctx.sampleRate * 2;
@@ -37,7 +85,7 @@ export default function Home() {
     const data = buffer.getChannelData(0);
 
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
+    data[i] = (Math.random() * 2 - 1) * 0.3 + (data[i - 1] || 0) * 0.7;
     }
 
     return buffer;
@@ -95,12 +143,31 @@ export default function Home() {
         };
     }
   };
+    const stopRain = () => {
+  if (intervalRef.current !== null) {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
 
-  const startRain = async () => {
-    stopRain();
-    if (!audioCtxRef.current) {
-      audioCtxRef.current = new AudioContext();
-    }
+  if (noiseRef.current) {
+    noiseRef.current.stop();
+    noiseRef.current.disconnect();
+    noiseRef.current = null;
+  }
+
+  if (lowRef.current) {
+    lowRef.current.stop();
+    lowRef.current.disconnect();
+    lowRef.current = null;
+  }
+};
+
+const startRain = async () => {
+  stopRain();
+
+  if (!audioCtxRef.current) {
+    audioCtxRef.current = new AudioContext();
+  }
 
     const ctx = audioCtxRef.current;
     const sound = getSoundConfig();
@@ -136,28 +203,6 @@ export default function Home() {
     lowRef.current = low; // ←これを追加
   }
 
-    // 👇ここに追加（チャプチャプレイヤー）
-    let splashGain = null;
-
-    // if (selectedSound === "Wave") {
-//   const splash = ctx.createBufferSource();
-//   splash.buffer = createNoise(ctx);
-//   splash.loop = true;
-
-//   const splashFilter = ctx.createBiquadFilter();
-//   splashFilter.type = "highpass";
-//   splashFilter.frequency.value = 2500;
-
-//   splashGain = ctx.createGain();
-//   splashGain.gain.value = 0;
-
-//   splash.connect(splashFilter);
-//   splashFilter.connect(splashGain);
-//   splashGain.connect(ctx.destination);
-
-//   splash.start();
-// }
-
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
     filter.frequency.value = sound.frequency;
@@ -181,30 +226,12 @@ export default function Home() {
       const wave = 0.5 + Math.sin(Date.now() / 2400) * 0.18;
       gain.gain.value = wave * (sound.gain + 0.03);
       
-      // 👇ここを新しく追加
-    if (Math.random() < 0.3) {
-      const splash = ctx.createBufferSource();
-      splash.buffer = createNoise(ctx);
-
-      const splashFilter = ctx.createBiquadFilter();
-      splashFilter.type = "highpass";
-      splashFilter.frequency.value = 2000 + Math.random() * 1000;
-
-      const splashGain = ctx.createGain();
-      splashGain.gain.value = 0.02 + Math.random() * 0.02;
-
-      splash.connect(splashFilter);
-      splashFilter.connect(splashGain);
-      splashGain.connect(ctx.destination);
-
-      splash.start();
-
-      setTimeout(() => {
-        splash.stop();
-      }, 50);
-     }
-    }, 400);
-   }
+      // 👇高音ブロック（チャプチャプ）
+    if (Math.random() < splashChanceRef.current) {
+       playChapu();
+          }
+         }, 400);
+        }
 
    if (selectedSound === "Rain") {
   intervalRef.current = window.setInterval(() => {
@@ -213,29 +240,11 @@ export default function Home() {
 
     const rain = 0.7 + Math.random() * 0.08;
     gain.gain.value = rain * sound.gain;
-    }, 120);
-   }
+     }, 250);
+    }
+
+
   };
-
-  const stopRain = () => {
-  if (intervalRef.current !== null) {
-    clearInterval(intervalRef.current);
-    intervalRef.current = null;
-  }
-
-  if (noiseRef.current) {
-    noiseRef.current.stop();
-    noiseRef.current.disconnect();
-    noiseRef.current = null;
-  }
-
-  // 👇ここに追加
-  if (lowRef.current) {
-    lowRef.current.stop();
-    lowRef.current.disconnect();
-    lowRef.current = null;
-  }
-};
 
   const toggle = async () => {
     if (isPlaying) {
@@ -390,7 +399,98 @@ export default function Home() {
             >
               {isPlaying ? "Pause" : `Play ${selectedSound}`}
             </button>
+            <button
+            onClick={playChapu}
+             className="mt-4 w-full rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm text-white/75"
+            >
+            Test Chapu
+            </button>
 
+
+
+             {/* 👇スライダー */}
+                <div className="mt-6 space-y-4 border border-red-500 p-4">
+                <div>
+                <div className="mb-2 flex justify-between text-sm text-white/75">
+                <span>High Layer Level</span>
+                <span className="text-white/40">{highLevel.toFixed(3)}</span>
+               </div>
+                <input
+                   type="range"
+                    min="0"
+                    max="0.05"
+                    step="0.001"
+                    value={highLevel}
+                    onChange={(e) => {
+                     const value = Number(e.target.value);
+                     setHighLevel(value);
+                     highLevelRef.current = value;
+                   }}
+                     className="w-full"
+                   />
+                  </div>
+
+                  <div>
+                   <div className="mb-2 flex justify-between text-sm text-white/75">
+                  <span>High Layer Frequency</span>
+                  <span className="text-white/40">{highFreq}</span>
+                  </div>
+                   <input
+                     type="range"
+                     min="400"
+                     max="5000"
+                     step="50"
+                     value={highFreq}
+                     onChange={(e) => {
+                     const value = Number(e.target.value);
+                     setHighFreq(value);
+                     highFreqRef.current = value;
+                   }}
+                     className="w-full"
+                      />
+                    </div>
+                    <div>
+                    <div className="mb-2 flex justify-between text-sm text-white/75">
+                    <span>Splash Chance</span>
+                    <span className="text-white/40">{splashChance.toFixed(2)}</span>
+                    </div>
+                    <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={splashChance}
+                    onChange={(e) => {
+                    const value = Number(e.target.value);
+                    setSplashChance(value);
+                    splashChanceRef.current = value;
+                  }}
+                   className="w-full"
+                  />
+                  </div>
+
+                  <div>
+                  <div className="mb-2 flex justify-between text-sm text-white/75">
+                  <span>Splash Length</span>
+                  <span className="text-white/40">{splashLength}ms</span>
+                 </div>
+                <input
+                  type="range"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value={splashLength}
+                  onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setSplashLength(value);
+                  splashLengthRef.current = value;
+                  }}
+                    className="w-full"
+                   />
+                </div>
+
+                </div>
+              </div>
             <div className="mt-6 space-y-6">
               <div>
                 <div className="mb-2 flex items-center justify-between text-sm text-white/75">
@@ -440,7 +540,7 @@ export default function Home() {
                     8h
                   </button>
                 </div>
-              </div>
+                 
             </div>
           </div>
 
