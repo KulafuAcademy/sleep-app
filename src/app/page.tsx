@@ -35,7 +35,7 @@ export default function Home() {
 
     const ctx = audioCtxRef.current;
 
-    const res = await fetch("/sound/chapu.wav");
+    const res = await fetch("/sound/wave/chapu_small.wav");
     console.log("fetch status:", res.status, res.headers.get("content-type"));
 
     if (!res.ok) {
@@ -53,7 +53,7 @@ export default function Home() {
     source.playbackRate.value = 0.8 + Math.random() * 0.4;
 
     const gain = ctx.createGain();
-    gain.gain.value = 0.08;
+    gain.gain.value = 0.012;
 
     source.connect(gain);
     gain.connect(ctx.destination);
@@ -68,12 +68,18 @@ export default function Home() {
   const gainRef = useRef<GainNode | null>(null);
   const intervalRef = useRef<number | null>(null);
   const lowRef = useRef<AudioBufferSourceNode | null>(null);
+  const loopAudioRef = useRef<HTMLAudioElement | null>(null);
+
+
   const [highLevel, setHighLevel] = useState(0.015);
   const [highFreq, setHighFreq] = useState(1800);
+  
   const highLevelRef = useRef(0.015);
   const highFreqRef = useRef(1800);
+  
   const [splashChance, setSplashChance] = useState(0.2);
   const [splashLength, setSplashLength] = useState(25);
+  
   const splashChanceRef = useRef(0.2);
   const splashLengthRef = useRef(25);
 
@@ -143,6 +149,25 @@ export default function Home() {
         };
     }
   };
+
+         // 👇ここ！！！！（この直後）
+           const getSamplePath = () => {
+            switch (selectedSound) {
+            case "Rain":
+            return "/sound/rain/rain_loop.wav";
+            case "River":
+            return "/sound/river/river_loop.wav";
+            case "Forest":
+            return "/sound/forest/forest_loop.wav";
+            case "Bonfire":
+            return "/sound/bonfire/bonfire_loop.wav";
+            case "Noise":
+            return "/sound/noise/noise_loop.wav";
+            default:
+        return null;
+    }
+  };
+
     const stopRain = () => {
   if (intervalRef.current !== null) {
     clearInterval(intervalRef.current);
@@ -160,6 +185,13 @@ export default function Home() {
     lowRef.current.disconnect();
     lowRef.current = null;
   }
+
+  // 👇ここに追加
+   if (loopAudioRef.current) {
+    loopAudioRef.current.pause();
+    loopAudioRef.current.currentTime = 0;
+    loopAudioRef.current = null;
+  }
 };
 
 const startRain = async () => {
@@ -171,6 +203,17 @@ const startRain = async () => {
 
     const ctx = audioCtxRef.current;
     const sound = getSoundConfig();
+
+const samplePath = getSamplePath();
+
+if (samplePath) {
+  const audio = new Audio(samplePath);
+  audio.loop = true;
+  audio.volume = 0.6;
+  loopAudioRef.current = audio;
+  await audio.play();
+  return;
+}
 
     if (ctx.state === "suspended") {
       await ctx.resume();
@@ -220,11 +263,10 @@ const startRain = async () => {
 
     if (selectedSound === "Wave") {
       intervalRef.current = window.setInterval(() => {
-      const base = 1000 + Math.sin(Date.now() / 2400) * 260;
-      filter.frequency.value = base + Math.random() * 12;
+      const base = 500 + Math.sin(Date.now() / 2400) * 260;
+      filter.frequency.value = base 
 
-      const wave = 0.5 + Math.sin(Date.now() / 2400) * 0.18;
-      gain.gain.value = wave * (sound.gain + 0.03);
+      gain.gain.value = sound.gain * 0.25;
       
       // 👇高音ブロック（チャプチャプ）
     if (Math.random() < splashChanceRef.current) {
