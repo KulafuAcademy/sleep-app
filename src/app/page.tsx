@@ -83,19 +83,38 @@ export default function Home() {
   const splashChanceRef = useRef(0.2);
   const splashLengthRef = useRef(25);
 
-
-
   const createNoise = (ctx: AudioContext) => {
-    const bufferSize = ctx.sampleRate * 2;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
+  const bufferSize = ctx.sampleRate * 2;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
 
-    for (let i = 0; i < bufferSize; i++) {
+  for (let i = 0; i < bufferSize; i++) {
     data[i] = (Math.random() * 2 - 1) * 0.3 + (data[i - 1] || 0) * 0.7;
-    }
+  }
 
-    return buffer;
-  };
+  return buffer;
+};
+  
+  const createPinkNoise = (ctx: AudioContext) => {
+  const bufferSize = ctx.sampleRate * 2;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  let last = 0;
+
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+
+    // 👇 ピンク寄りフィルター
+    last = 0.98 * last + 0.02 * white;
+    data[i] = last;
+
+    // 👇 軽く丸める（重要）
+    data[i] = Math.tanh(data[i]);
+  }
+
+  return buffer;
+};
 
   const getSoundConfig = () => {
     switch (selectedSound) {
@@ -133,7 +152,7 @@ export default function Home() {
         };
       case "Noise":
         return {
-          title: "White Noise",
+          title: "Noise",
           subtitle: "Stable masking sound for sleep and focus.",
           frequency: 4200,
           gain: 0.14,
@@ -162,7 +181,7 @@ export default function Home() {
             case "Bonfire":
             return "/sound/bonfire/bonfire_loop.wav";
             case "Noise":
-            return "/sound/noise/noise_loop.wav";
+            return null;
             default:
         return null;
     }
@@ -174,11 +193,16 @@ export default function Home() {
     intervalRef.current = null;
   }
 
-  if (noiseRef.current) {
-    noiseRef.current.stop();
-    noiseRef.current.disconnect();
-    noiseRef.current = null;
-  }
+  if (noiseRef.current && gainRef.current && audioCtxRef.current) {
+  const ctx = audioCtxRef.current;
+  const now = ctx.currentTime;
+
+  // 👇 フェードアウト（2秒）
+  gainRef.current.gain.linearRampToValueAtTime(0, now + 4);
+
+  // 👇 Audioの時間で止める
+  noiseRef.current.stop(now + 4);
+}
 
   if (lowRef.current) {
     lowRef.current.stop();
@@ -186,8 +210,8 @@ export default function Home() {
     lowRef.current = null;
   }
 
-  // 👇ここに追加
-   if (loopAudioRef.current) {
+    // 👇 これ追加
+  if (loopAudioRef.current) {
     loopAudioRef.current.pause();
     loopAudioRef.current.currentTime = 0;
     loopAudioRef.current = null;
@@ -222,7 +246,9 @@ if (samplePath) {
     if (noiseRef.current) return;
 
     const noise = ctx.createBufferSource();
-    noise.buffer = createNoise(ctx);
+    noise.buffer =
+      selectedSound === "Noise" ? createPinkNoise(ctx) : createNoise(ctx);
+    
     noise.loop = true;
 
     // 👇低音レイヤー
@@ -246,13 +272,31 @@ if (samplePath) {
     lowRef.current = low; // ←これを追加
   }
 
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = sound.frequency;
+   const filter = ctx.createBiquadFilter();
+   filter.type = "lowpass";
 
-    const gain = ctx.createGain();
-    gain.gain.value = sound.gain;
+   if (selectedSound === "Noise") {
+   filter.frequency.value = 2000;
+  } else {
+   filter.frequency.value = sound.frequency;
+  }
+
+    const gain = ctx.createGain(); 
+
+    // 👇 最終目標値を先に決める
+    const targetGain =
+    selectedSound === "Noise" ? 0.05 : sound.gain;
+
     gainRef.current = gain;
+
+    const now = ctx.currentTime;
+
+    // 👇 無音スタート
+     gain.gain.setValueAtTime(0, now);
+
+    // 👇 フェードイン
+     gain.gain.linearRampToValueAtTime(targetGain, now + 3);
+
 
     noise.connect(filter);
     filter.connect(gain);
