@@ -25,9 +25,11 @@ export default function Home() {
   const [isTimerRunning, setIsTimerRunning] = useState(false)
 
   const [selectedTimer, setSelectedTimer] = useState<number | null>(null)
+  
+  const startSleepTimer = (minutes: number) => {
+  const isSameTimer = selectedTimer === minutes && isTimerRunning
 
-const startSleepTimer = (minutes: number) => {
-  if (selectedTimer === minutes && isTimerRunning) {
+  if (isSameTimer) {
     setIsTimerRunning(false)
     setTimeLeft(0)
     setSelectedTimer(null)
@@ -47,7 +49,7 @@ const startSleepTimer = (minutes: number) => {
     toggle()
   }
 }
-  
+
   useEffect(() => {
   if (!isTimerRunning || timeLeft <= 0) return
 
@@ -59,14 +61,27 @@ const startSleepTimer = (minutes: number) => {
 }, [isTimerRunning, timeLeft])
 
  useEffect(() => {
-  if (timeLeft === 0 && isTimerRunning) {
-    setIsTimerRunning(false)
-    setSelectedTimer(null)
+ if (timeLeft === 0 && isTimerRunning) {
+  setIsTimerRunning(false)
+  setSelectedTimer(null)
 
-    if (isPlaying) {
-      toggle()
-    }
+  if (gainRef.current) {
+    let volume = gainRef.current.gain.value
+
+    const fadeOut = setInterval(() => {
+      if (volume > 0) {
+        volume -= 0.02
+        gainRef.current!.gain.value = Math.max(volume, 0)
+      } else {
+        clearInterval(fadeOut)
+
+        if (isPlaying) {
+          toggle()
+        }
+      }
+    }, 100)
   }
+}
 
 }, [timeLeft, isTimerRunning])
   const formatTime = (seconds: number) => {
