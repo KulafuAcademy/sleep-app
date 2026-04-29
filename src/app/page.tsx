@@ -794,6 +794,9 @@ if (screen === "soundscapeEdit") {
 
         <div className="px-6 pb-6">
           <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-5">
+              <div className="text-sm text-white/75 text-center">
+              Mix your sound
+              </div>
             {selectedMixSounds.map((sound) => (
               <div key={sound}>
                 <div className="mb-2 flex justify-between text-sm text-white/75">
