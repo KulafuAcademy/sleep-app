@@ -696,7 +696,7 @@ if (samplePath) {
             Mix your own ambient world
           </p>
 
-         <p className="mt-2 text-sm text-sky-200">
+         <p className="mt-2 mb-6 text-base text-sky-200">
          {selectedMixSounds.join(" + ")}
          </p>
           </div>
@@ -787,7 +787,7 @@ if (screen === "soundscapeEdit") {
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">
             Create Soundscape
           </h1>
-          <p className="mt-2 text-sm text-sky-200">
+          <p className="mt-6 mb-6 text-base text-sky-200">
             {selectedMixSounds.join(" + ")}
           </p>
         </div>
