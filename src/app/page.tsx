@@ -25,6 +25,10 @@ export default function Home() {
   const [isTimerRunning, setIsTimerRunning] = useState(false)
 
   const [selectedTimer, setSelectedTimer] = useState<number | null>(null)
+
+  const [soundscapeTimeLeft, setSoundscapeTimeLeft] = useState<number>(0)
+  const [isSoundscapeTimerRunning, setIsSoundscapeTimerRunning] = useState(false)
+  const [selectedSoundscapeTimer, setSelectedSoundscapeTimer] = useState<number | null>(null)
   
   const startSleepTimer = (minutes: number) => {
   const isSameTimer = selectedTimer === minutes && isTimerRunning
@@ -48,6 +52,56 @@ export default function Home() {
   if (!isPlaying) {
     toggle()
   }
+}
+
+/* 👇ここに追加（この位置が正解） */
+const startSoundscapeTimer = (minutes: number) => {
+
+    const isSameTimer =
+    selectedSoundscapeTimer === minutes && isSoundscapeTimerRunning
+
+  if (isSameTimer) {
+    setIsSoundscapeTimerRunning(false)
+    setSoundscapeTimeLeft(0)
+    setSelectedSoundscapeTimer(null)
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+    }
+
+    if (isSoundscapePlaying) {
+      stopSoundscape()
+      setIsSoundscapePlaying(false)
+    }
+
+    return
+  }
+  setSelectedSoundscapeTimer(minutes)
+  setSoundscapeTimeLeft(minutes * 60)
+  setIsSoundscapeTimerRunning(true)
+
+  if (!isSoundscapePlaying) {
+  startSoundscape()
+  setIsSoundscapePlaying(true)
+}
+
+  if (timerRef.current) {
+    clearInterval(timerRef.current)
+  }
+
+  timerRef.current = setInterval(() => {
+    setSoundscapeTimeLeft((prev) => {
+      if (prev <= 1) {
+        clearInterval(timerRef.current!)
+
+        stopSoundscape()
+        setIsSoundscapePlaying(false)
+
+        return 0
+      }
+      return prev - 1
+    })
+  }, 1000)
 }
 
   useEffect(() => {
@@ -96,7 +150,7 @@ export default function Home() {
   return `${m}m ${s}s`
 }
 
-  const [screen, setScreen] = useState<"select" | "player" | "soundscape">("select");
+  const [screen, setScreen] = useState<"select" | "player" | "soundscape" | "soundscapeEdit">("select");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName>("Rain");
@@ -122,6 +176,7 @@ const toggleSound = (sound: SoundName) => {
   setSelectedMixSounds([...selectedMixSounds, sound]);
 };
   const audioCtxRef = useRef<AudioContext | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
  const playChapu = async () => {
   try {
@@ -640,6 +695,10 @@ if (samplePath) {
           <p className="mt-2 text-sm leading-6 text-white/60">
             Mix your own ambient world
           </p>
+
+         <p className="mt-2 text-sm text-sky-200">
+         {selectedMixSounds.join(" + ")}
+         </p>
           </div>
 
         {/* 👇サウンド選択 */}
@@ -688,46 +747,124 @@ if (samplePath) {
         );
       })}
     </div>
+
+    {selectedMixSounds.length === 2 && (
+  <button
+    onClick={() => setScreen("soundscapeEdit")}
+    className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30"
+  >
+    Continue
+  </button>
+)}
+
   </div> 
 </div>
 
-{selectedMixSounds.length > 0 && (
-  <div className="px-6 pb-6">
-    <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4">
 
 
+        </div>   
+      </div>
+  );
+}
 
-      {selectedMixSounds.map((sound) => (
-        <div key={sound}>
-          <div className="mb-2 flex justify-between text-sm text-white/75">
-            <span>{sound}</span>
-            <span className="text-white/40">
-              {Math.round(mixVolumes[sound] * 100)}%
-            </span>
-          </div>
-
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={mixVolumes[sound]}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              setMixVolumes({
-                ...mixVolumes,
-                [sound]: value,
-              });
-              if (mixAudioRefs.current[sound]) {
-                mixAudioRefs.current[sound]!.volume = value;
-              }
-
-            }}
-            className="w-full accent-sky-300"
-          />
+if (screen === "soundscapeEdit") {
+  return (
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
+      <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+        <div className="px-6 pt-6">
+          <button
+            onClick={() => setScreen("soundscape")}
+            className="text-sm text-white/60"
+          >
+            ← Back
+          </button>
         </div>
-      ))}
-      <button
+
+        <div className="px-6 pt-8 text-center">
+          <p className="text-xs uppercase tracking-[0.35em] text-white/45">
+            My Sleep App
+          </p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+            Create Soundscape
+          </h1>
+          <p className="mt-2 text-sm text-sky-200">
+            {selectedMixSounds.join(" + ")}
+          </p>
+        </div>
+
+        <div className="px-6 pb-6">
+          <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-5">
+            {selectedMixSounds.map((sound) => (
+              <div key={sound}>
+                <div className="mb-2 flex justify-between text-sm text-white/75">
+                  <span>{sound}</span>
+                  <span className="text-white/40">
+                    {Math.round(mixVolumes[sound] * 100)}%
+                  </span>
+                </div>
+
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={mixVolumes[sound]}
+                  onChange={(e) => {
+                    const value = Number(e.target.value);
+                    setMixVolumes({
+                      ...mixVolumes,
+                      [sound]: value,
+                    });
+
+                    if (mixAudioRefs.current[sound]) {
+                      mixAudioRefs.current[sound]!.volume = value;
+                    }
+                  }}
+                  className="w-full accent-sky-300"
+                />
+              </div>
+            ))}  
+          </div>
+ {/* 👇 Sleep Timer（ここに追加） */}
+<div className="mt-6">
+  <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4">
+    
+    <div className="text-sm text-white/75 text-center">
+      Sleep with this soundscape
+    </div>
+
+    <div className="grid grid-cols-3 gap-2">
+
+      <button onClick={() => startSoundscapeTimer(30)} className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}>
+        {selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? formatTime(soundscapeTimeLeft) : "30m"}
+      </button>
+
+      <button onClick={() => startSoundscapeTimer(60)} className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}>
+        {selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? formatTime(soundscapeTimeLeft) : "60m"}
+      </button>
+
+      <button onClick={() => startSoundscapeTimer(120)} className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}>
+        {selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? formatTime(soundscapeTimeLeft) : "2h"}
+      </button>
+
+      <button onClick={() => startSoundscapeTimer(180)} className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/45"}`}>
+        {selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? formatTime(soundscapeTimeLeft) : "3h"}
+      </button>
+
+      <button onClick={() => startSoundscapeTimer(360)} className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/45"}`}>
+        {selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? formatTime(soundscapeTimeLeft) : "6h"}
+      </button>
+
+      <button onClick={() => startSoundscapeTimer(480)} className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/45"}`}>
+        {selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? formatTime(soundscapeTimeLeft) : "8h"}
+      </button>
+
+    </div>
+
+  </div>
+</div>
+          {/* 👇ここに追加 */}
+{/*<button
   onClick={() => {
     if (isSoundscapePlaying) {
       stopSoundscape();
@@ -737,19 +874,15 @@ if (samplePath) {
       setIsSoundscapePlaying(true);
     }
   }}
-  disabled={selectedMixSounds.length === 0}
-  className="mt-4 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 disabled:opacity-40"
+  className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30"
 >
   {isSoundscapePlaying ? "Stop" : "Play Soundscape"}
 </button>
-      
+*/}
 
-    </div>
-  </div>
-)}
-
-        </div>   
+        </div>
       </div>
+    </div>
   );
 }
 
@@ -810,8 +943,8 @@ if (samplePath) {
             */}
            
             <div className="mt-5">
-  <div className="mb-2 text-sm text-white/75">
-    Sleep Timer
+  <div className="pb-8 text-sm text-white/75 text-center ">
+    Sleep with this sound
   </div>
 
   <div className="grid grid-cols-3 gap-2">
