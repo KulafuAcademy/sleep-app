@@ -24,12 +24,85 @@ export default function Home() {
   const [timeLeft, setTimeLeft] = useState<number>(0)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
 
+
   const [selectedTimer, setSelectedTimer] = useState<number | null>(null)
 
   const [soundscapeTimeLeft, setSoundscapeTimeLeft] = useState<number>(0)
   const [isSoundscapeTimerRunning, setIsSoundscapeTimerRunning] = useState(false)
   const [selectedSoundscapeTimer, setSelectedSoundscapeTimer] = useState<number | null>(null)
+  const waveAudioRef = useRef<HTMLAudioElement[]>([])
   
+const playWaveLayerTest = () => {
+  waveAudioRef.current.forEach((audio) => {
+    audio.pause()
+    audio.currentTime = 0
+  })
+
+  const chapu = new Audio('/sound/wave/chapu_m_fade.wav')
+  const zazan = new Audio('/sound/wave/zazan_m_fade.wav')
+
+  chapu.loop = true
+  zazan.loop = true
+
+  // 👇最初は無音
+  chapu.volume = 0
+  zazan.volume = 0
+
+  chapu.play()
+  zazan.play()
+
+  // 👇フェードイン（3秒）
+  const duration = 1000
+  const startTime = performance.now()
+
+  const fadeIn = () => {
+    const elapsed = performance.now() - startTime
+    const progress = Math.min(elapsed / duration, 1)
+
+    chapu.volume = 0.15 * progress
+    zazan.volume = 0.10 * progress
+
+    if (progress < 1) {
+      requestAnimationFrame(fadeIn)
+    }
+  }
+
+  fadeIn()
+
+  waveAudioRef.current = [chapu, zazan]
+}
+
+const stopWaveLayerTest = () => {
+  const audios = [...waveAudioRef.current]
+
+  audios.forEach((audio) => {
+    const startVolume = audio.volume
+    const duration = 3000
+    const startTime = performance.now()
+
+    const fadeOut = () => {
+      const elapsed = performance.now() - startTime
+      const progress = Math.min(elapsed / duration, 1)
+
+      audio.volume = startVolume * (1 - progress)
+
+      if (progress < 1) {
+        requestAnimationFrame(fadeOut)
+      } else {
+        audio.volume = 0
+        audio.pause()
+        audio.currentTime = 0
+
+        waveAudioRef.current = waveAudioRef.current.filter(
+          (item) => item !== audio
+        )
+      }
+    }
+
+    fadeOut()
+  })
+}
+
   const startSleepTimer = (minutes: number) => {
   const isSameTimer = selectedTimer === minutes && isTimerRunning
 
@@ -46,7 +119,7 @@ export default function Home() {
   }
 
   setSelectedTimer(minutes)
-  setTimeLeft(minutes * 60)
+  setTimeLeft(minutes * 60 - 1)
   setIsTimerRunning(true)
 
   if (!isPlaying) {
@@ -437,6 +510,7 @@ const getSamplePathForMix = (sound: SoundName) => {
     loopAudioRef.current.currentTime = 0;
     loopAudioRef.current = null;
   }
+  stopWaveLayerTest()
 };
 
 const startRain = async () => {
@@ -450,6 +524,10 @@ const startRain = async () => {
     const sound = getSoundConfig();
 
 const samplePath = getSamplePath();
+  if (selectedSound === "Wave") {
+  playWaveLayerTest()
+  return
+}
 
 if (samplePath) {
   const audio = new Audio(samplePath);
@@ -457,7 +535,6 @@ if (samplePath) {
   audio.volume = 0.6;
   loopAudioRef.current = audio;
   await audio.play();
-  return;
 }
 
     if (ctx.state === "suspended") {
@@ -472,11 +549,13 @@ if (samplePath) {
     
     noise.loop = true;
 
-    // 👇低音レイヤー
-    if (selectedSound === "Wave") {
-    const low = ctx.createBufferSource();
-    low.buffer = createNoise(ctx);
-    low.loop = true;
+
+
+   // 👇低音レイヤー
+  if (selectedSound === "Wave") {
+  const low = ctx.createBufferSource();
+  low.buffer = createNoise(ctx);
+  low.loop = true;
 
     const lowFilter = ctx.createBiquadFilter();
     lowFilter.type = "lowpass";
@@ -953,14 +1032,16 @@ if (screen === "soundscapeEdit") {
   <div className="grid grid-cols-3 gap-2">
 <button
   type="button"
-  onClick={() => startSleepTimer(30)}
+  onClick={() => {
+    startSleepTimer(30)
+  }}
   className={`rounded-xl border py-2.5 text-sm transition ${
     selectedTimer === 30 && timeLeft > 0
       ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
       : "border-white/10 bg-white/5 text-white/75"
   }`}
 >
-  {selectedTimer === 30 && timeLeft > 0 ? formatTime(timeLeft) : "30m"}
+{selectedTimer === 30 && timeLeft > 0 ? formatTime(timeLeft) : "30m"}
 </button>
 
 <button
