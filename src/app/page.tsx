@@ -17,7 +17,7 @@ const sounds: { name: SoundName; icon: React.ComponentType<{ className?: string 
   { name: "River", icon: Waves },
   { name: "Bonfire", icon: Flame },
   { name: "Forest", icon: Trees },
-  { name: "Noise", icon: Circle },
+  { name: "Night", icon: Circle },
 ];
 
 export default function Home() {
@@ -38,8 +38,10 @@ const playWaveLayerTest = () => {
     audio.currentTime = 0
   })
 
-  const chapu = new Audio('/sound/wave/chapu_m_fade.wav')
-  const zazan = new Audio('/sound/wave/zazan_m_fade.wav')
+ const folder = selectedSound.toLowerCase()
+
+ const chapu = new Audio(`/sound/${folder}/v1/a1.wav`)
+ const zazan = new Audio(`/sound/${folder}/v1/b1.wav`)
 
   chapu.loop = true
   zazan.loop = true
@@ -52,15 +54,15 @@ const playWaveLayerTest = () => {
   zazan.play()
 
   // 👇フェードイン（3秒）
-  const duration = 1000
+  const duration = 3000
   const startTime = performance.now()
 
   const fadeIn = () => {
     const elapsed = performance.now() - startTime
     const progress = Math.min(elapsed / duration, 1)
 
-    chapu.volume = 0.15 * progress
-    zazan.volume = 0.10 * progress
+    chapu.volume = 0.3 * progress
+    zazan.volume = 0.3 * progress
 
     if (progress < 1) {
       requestAnimationFrame(fadeIn)
@@ -77,7 +79,7 @@ const stopWaveLayerTest = () => {
 
   audios.forEach((audio) => {
     const startVolume = audio.volume
-    const duration = 3000
+    const duration = 4000
     const startTime = performance.now()
 
     const fadeOut = () => {
@@ -523,19 +525,11 @@ const startRain = async () => {
     const ctx = audioCtxRef.current;
     const sound = getSoundConfig();
 
-const samplePath = getSamplePath();
-  if (selectedSound === "Wave") {
+
   playWaveLayerTest()
   return
-}
 
-if (samplePath) {
-  const audio = new Audio(samplePath);
-  audio.loop = true;
-  audio.volume = 0.6;
-  loopAudioRef.current = audio;
-  await audio.play();
-}
+
 
     if (ctx.state === "suspended") {
       await ctx.resume();
@@ -976,11 +970,20 @@ if (screen === "soundscapeEdit") {
       <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
         <div className="px-6 pt-6">
           <button
-            onClick={() => setScreen("select")}
-            className="text-sm text-white/60"
-          >
-            ← Back
-          </button>
+            onClick={() => {
+             stopWaveLayerTest()
+
+             setIsPlaying(false)
+             setIsTimerRunning(false)
+             setTimeLeft(0)
+             setSelectedTimer(null)
+
+             setScreen("select")
+              }}
+             className="text-sm text-white/60"
+             >
+              ← Back
+        </button>
         </div>
 
         <div className="px-6 pt-2 pb-5 text-center">
