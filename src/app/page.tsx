@@ -155,10 +155,9 @@ const startSoundscapeTimer = (minutes: number) => {
   setSoundscapeTimeLeft(minutes * 60)
   setIsSoundscapeTimerRunning(true)
 
-  if (!isSoundscapePlaying) {
+  stopSoundscape()
   startSoundscape()
   setIsSoundscapePlaying(true)
-}
 
   if (timerRef.current) {
     clearInterval(timerRef.current)
@@ -297,60 +296,69 @@ const toggleSound = (sound: SoundName) => {
   const loopAudioRef = useRef<HTMLAudioElement | null>(null);
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement>>>({});
 
-  const startSoundscape = () => {
+const startSoundscape = () => {
   stopSoundscape();
 
   selectedMixSounds.forEach((sound) => {
-    const path = getSamplePathForMix(sound);
-    if (!path) return;
+    const folder = sound.toLowerCase()
 
-    const audio = new Audio(path);
+    const a1 = new Audio(`/sound/${folder}/v1/a1.wav`)
+    const b1 = new Audio(`/sound/${folder}/v1/b1.wav`)
 
-    audio.loop = true;
-    audio.volume = 0;
+    a1.loop = true
+    b1.loop = true
 
-    mixAudioRefs.current[sound] = audio;
-    audio.play();
+    a1.volume = 0
+    b1.volume = 0
 
-    // 👇フェードイン追加
-let vol = 0;
-const target = mixVolumes[sound];
+    mixAudioRefs.current[sound] = [a1, b1]
 
-const fadeIn = setInterval(() => {
-  vol += 0.01;
+    a1.play()
+    b1.play()
 
-  if (vol >= target) {
-    audio.volume = target;
-    clearInterval(fadeIn);
-  } else {
-    audio.volume = vol;
-  }
-}, 50);
+    // 👇フェードイン
+    let vol = 0
+    const target = mixVolumes[sound]
 
-  });
-};
-  const stopSoundscape = () => {
-  Object.values(mixAudioRefs.current).forEach((audio) => {
-    if (!audio) return;
+    const fadeIn = setInterval(() => {
+      vol += 0.01
 
-    let vol = audio.volume;
-
-    const fadeOut = setInterval(() => {
-      vol -= 0.02;
-
-      if (vol <= 0) {
-        audio.volume = 0;
-        clearInterval(fadeOut);
-        audio.pause();
-        audio.currentTime = 0;
+      if (vol >= target) {
+        a1.volume = target
+        b1.volume = target
+        clearInterval(fadeIn)
       } else {
-        audio.volume = vol;
+        a1.volume = vol
+        b1.volume = vol
       }
-    }, 50);
-  });
+    }, 50)
+  })
+}
 
-  mixAudioRefs.current = {};
-};
+const stopSoundscape = () => {
+  Object.values(mixAudioRefs.current).forEach((audios) => {
+    if (!audios) return
+
+    audios.forEach((audio) => {
+      let vol = audio.volume
+
+      const fadeOut = setInterval(() => {
+        vol -= 0.02
+
+        if (vol <= 0) {
+          audio.volume = 0
+          clearInterval(fadeOut)
+          audio.pause()
+          audio.currentTime = 0
+        } else {
+          audio.volume = vol
+        }
+      }, 50)
+    })
+  })
+
+  mixAudioRefs.current = {}
+}
 
 const getSamplePathForMix = (sound: SoundName) => {
   switch (sound) {
@@ -892,9 +900,12 @@ if (screen === "soundscapeEdit") {
                       [sound]: value,
                     });
 
-                    if (mixAudioRefs.current[sound]) {
-                      mixAudioRefs.current[sound]!.volume = value;
+                   if (mixAudioRefs.current[sound]) {
+                   mixAudioRefs.current[sound]!.forEach((audio) => {
+                   audio.volume = value
+                   })
                     }
+
                   }}
                   className="w-full accent-sky-300"
                 />
