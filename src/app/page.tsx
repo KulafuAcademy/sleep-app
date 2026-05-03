@@ -30,6 +30,18 @@ export default function Home() {
     number | null
   >(null);
   const waveAudioRef = useRef<HTMLAudioElement[]>([]);
+  const fluctuationRef = useRef<number | null>(null);
+
+  const LAYERS = ["a1", "b1", "c1"];
+  
+  const VOLUME_MAP = {
+  wave:   { a1: 0.3, b1: 0.25, c1: 0.15 },
+  forest: { a1: 0.25, b1: 0.3,  c1: 0.2  },
+  rain:   { a1: 0.35, b1: 0.2,  c1: 0.1  },
+  night:  { a1: 0.2,  b1: 0.25, c1: 0.2  },
+  bonfire:{ a1: 0.3,  b1: 0.2,  c1: 0.25 },
+  river:  { a1: 0.28, b1: 0.27, c1: 0.18 },
+};
 
   const playWaveLayerTest = () => {
     waveAudioRef.current.forEach((audio) => {
@@ -39,18 +51,32 @@ export default function Home() {
 
     const folder = selectedSound.toLowerCase();
 
-    const chapu = new Audio(`/sound/${folder}/v1/a1.wav`);
-    const zazan = new Audio(`/sound/${folder}/v1/b1.wav`);
+    const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
+    const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
+    const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
-    chapu.loop = true;
-    zazan.loop = true;
+    a1.loop = true;
+    b1.loop = true;
+    c1.loop = true;
 
-    // 👇最初は無音
-    chapu.volume = 0;
-    zazan.volume = 0;
+    // 無音スタート
+    a1.volume = 0;
+    b1.volume = 0;
+    c1.volume = 0;
 
-    chapu.play();
-    zazan.play();
+    a1.play();
+    b1.play();
+    c1.play();
+    
+    // 👇ここに追加
+    //setInterval(() => {
+    //const delta = (Math.random() - 0.5) * 0.02;
+
+    //let newVolume = c1.volume + delta;
+    //newVolume = Math.max(0.05, Math.min(0.3, newVolume));
+
+    //c1.volume = newVolume;
+    //}, 2000);
 
     // 👇フェードイン（3秒）
     const duration = 3000;
@@ -60,8 +86,9 @@ export default function Home() {
       const elapsed = performance.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      chapu.volume = 0.3 * progress;
-      zazan.volume = 0.3 * progress;
+      a1.volume = 0.3 * progress;
+      b1.volume = 0.3 * progress;
+      c1.volume = 0.2 * progress;
 
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
@@ -70,10 +97,14 @@ export default function Home() {
 
     fadeIn();
 
-    waveAudioRef.current = [chapu, zazan];
+    waveAudioRef.current = [a1, b1, c1];
   };
 
   const stopWaveLayerTest = () => {
+     if (fluctuationRef.current !== null) {
+    clearInterval(fluctuationRef.current);
+    fluctuationRef.current = null;
+  }
     const audios = [...waveAudioRef.current];
 
     audios.forEach((audio) => {
@@ -227,6 +258,7 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName>("Rain");
+  const [playerVolume, setPlayerVolume] = useState(0.3);
   const [selectedMixSounds, setSelectedMixSounds] = useState<SoundName[]>([]);
   const [mixVolumes, setMixVolumes] = useState<Record<SoundName, number>>({
     Rain: 0.5,
@@ -293,7 +325,7 @@ export default function Home() {
   const intervalRef = useRef<number | null>(null);
   const lowRef = useRef<AudioBufferSourceNode | null>(null);
   const loopAudioRef = useRef<HTMLAudioElement | null>(null);
-  const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement>>>({});
+  const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>({});
 
   const startSoundscape = () => {
     stopSoundscape();
@@ -303,36 +335,47 @@ export default function Home() {
 
       const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
       const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
+      const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
       a1.loop = true;
       b1.loop = true;
+      c1.loop = true;
+
 
       a1.volume = 0;
       b1.volume = 0;
+      c1.volume = 0;
 
-      mixAudioRefs.current[sound] = [a1, b1];
+      mixAudioRefs.current[sound] = [a1, b1, c1];
 
       a1.play();
       b1.play();
+      c1.play();
 
       // 👇フェードイン
       let vol = 0;
-      const target = mixVolumes[sound];
 
-      const fadeIn = setInterval(() => {
-        vol += 0.01;
+const fadeIn = setInterval(() => {
+  vol += 0.01;
 
-        if (vol >= target) {
-          a1.volume = target;
-          b1.volume = target;
-          clearInterval(fadeIn);
-        } else {
-          a1.volume = vol;
-          b1.volume = vol;
-        }
-      }, 50);
+const current = mixVolumes[sound];
+
+const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
+
+if (vol >= 1) {
+  a1.volume = volMap.a1 * current;
+  b1.volume = volMap.b1 * current;
+  c1.volume = volMap.c1 * current;
+  clearInterval(fadeIn);
+} else {
+  a1.volume = volMap.a1 * current * vol;
+  b1.volume = volMap.b1 * current * vol;
+  c1.volume = volMap.c1 * current * vol;
+}
+}, 50);
     });
   };
+
 
   const stopSoundscape = () => {
     Object.values(mixAudioRefs.current).forEach((audios) => {
@@ -876,16 +919,31 @@ export default function Home() {
                     value={mixVolumes[sound]}
                     onChange={(e) => {
                       const value = Number(e.target.value);
+                      console.log("🔥 RANGE HIT");
+
+                      console.log("🔥 THIS SLIDER ACTIVE");
+
                       setMixVolumes({
                         ...mixVolumes,
                         [sound]: value,
                       });
 
-                      if (mixAudioRefs.current[sound]) {
-                        mixAudioRefs.current[sound]!.forEach((audio) => {
-                          audio.volume = value;
-                        });
-                      }
+
+                      // 👇ここに貼る
+                    mixAudioRefs.current[sound]?.forEach((audio, index) => {
+                    const folder = sound.toLowerCase();
+                    const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
+
+                   if (index === 0) audio.volume = volMap.a1 * value;
+                   if (index === 1) audio.volume = volMap.b1 * value;
+                   if (index === 2) audio.volume = volMap.c1 * value;
+                  });
+
+                     // if (mixAudioRefs.current[sound]) {
+                     //   mixAudioRefs.current[sound]!.forEach((audio) => {
+                     //     audio.volume = value;
+                     //   });
+                     // }
                     }}
                     className="w-full accent-sky-300"
                   />
@@ -957,7 +1015,7 @@ export default function Home() {
               </div>
             </div>
             {/* 👇ここに追加 */}
-            {/*<button
+          {/*<button
   onClick={() => {
     if (isSoundscapePlaying) {
       stopSoundscape();
@@ -970,8 +1028,7 @@ export default function Home() {
   className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30"
 >
   {isSoundscapePlaying ? "Stop" : "Play Soundscape"}
-</button>
-*/}
+</button>*/}
           </div>
         </div>
       </div>
@@ -1236,13 +1293,20 @@ export default function Home() {
                   min="0"
                   max="1"
                   step="0.01"
-                  defaultValue={getSoundConfig().gain}
+                  value={playerVolume}
                   className="w-full accent-sky-300"
                   onChange={(e) => {
-                    if (gainRef.current) {
-                      gainRef.current.gain.value = Number(e.target.value);
-                    }
-                  }}
+                  const value = Number(e.target.value);
+                  setPlayerVolume(value);
+                  const folder = selectedSound.toLowerCase();
+                  const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
+
+                  waveAudioRef.current.forEach((audio, index) => {
+                  if (index === 0) audio.volume = volMap.a1 * value;
+                  if (index === 1) audio.volume = volMap.b1 * value;
+                  if (index === 2) audio.volume = volMap.c1 * value;
+                 });
+                }}
                 />
               </div>
             </div>
