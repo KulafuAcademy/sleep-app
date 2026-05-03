@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { CloudRain, Waves, Trees, Flame, Wind, Circle } from "lucide-react";
+import { CloudRain, Waves, Trees, Flame, Wind, Mountain } from "lucide-react";
 
-type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Noise";
+type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Cave";
 
 const sounds: {
   name: SoundName;
@@ -14,7 +14,7 @@ const sounds: {
   { name: "River", icon: Waves },
   { name: "Bonfire", icon: Flame },
   { name: "Forest", icon: Trees },
-  { name: "Night", icon: Circle },
+  { name: "Cave", icon: Mountain },
 ];
 
 export default function Home() {
@@ -38,7 +38,7 @@ export default function Home() {
   wave:   { a1: 0.3, b1: 0.25, c1: 0.15 },
   forest: { a1: 0.25, b1: 0.3,  c1: 0.2  },
   rain:   { a1: 0.35, b1: 0.2,  c1: 0.1  },
-  night:  { a1: 0.2,  b1: 0.25, c1: 0.2  },
+  cave:  { a1: 0.2,  b1: 0.25, c1: 0.2  },
   bonfire:{ a1: 0.3,  b1: 0.2,  c1: 0.25 },
   river:  { a1: 0.28, b1: 0.27, c1: 0.18 },
 };
@@ -266,7 +266,7 @@ export default function Home() {
     River: 0.5,
     Bonfire: 0.5,
     Forest: 0.5,
-    Noise: 0.5,
+    Cave: 0.5,
   });
   const toggleSound = (sound: SoundName) => {
     if (selectedMixSounds.includes(sound)) {
@@ -402,21 +402,6 @@ if (vol >= 1) {
     mixAudioRefs.current = {};
   };
 
-  const getSamplePathForMix = (sound: SoundName) => {
-    switch (sound) {
-      case "Rain":
-        return "/sound/rain/rain_loop.wav";
-      case "River":
-        return "/sound/river/river_loop.wav";
-      case "Forest":
-        return "/sound/forest/forest_loop.wav";
-      case "Bonfire":
-        return "/sound/bonfire/bonfire_loop.wav";
-      default:
-        return null;
-    }
-  };
-
   const [highLevel, setHighLevel] = useState(0.015);
   const [highFreq, setHighFreq] = useState(1800);
 
@@ -466,7 +451,7 @@ if (vol >= 1) {
     switch (selectedSound) {
       case "Wave":
         return {
-          title: "Ocean Wave",
+          title: "Wave",
           subtitle: "Low and steady texture for calm rest.",
           frequency: 1200,
           gain: 0.3,
@@ -474,7 +459,7 @@ if (vol >= 1) {
         };
       case "River":
         return {
-          title: "River Flow",
+          title: "River",
           subtitle: "A brighter stream-like texture.",
           frequency: 3200,
           gain: 0.2,
@@ -496,40 +481,22 @@ if (vol >= 1) {
           gain: 0.18,
           controlLabel: "Forest",
         };
-      case "Noise":
+       case "Cave":
         return {
-          title: "Noise",
-          subtitle: "Stable masking sound for sleep and focus.",
-          frequency: 4200,
-          gain: 0.14,
-          controlLabel: "Noise",
+           title: "Cave",
+          subtitle: "Low and immersive echoing ambience.",
+          frequency: 2000,
+          gain: 0.2,
+          controlLabel: "Cave",
         };
       default:
         return {
-          title: "Gentle Rain",
+          title: "Rain",
           subtitle: "Endless rain sound for deep sleep and calm focus.",
           frequency: 2500,
           gain: 0.25,
           controlLabel: "Rain",
         };
-    }
-  };
-
-  // 👇ここ！！！！（この直後）
-  const getSamplePath = () => {
-    switch (selectedSound) {
-      case "Rain":
-        return "/sound/rain/rain_loop.wav";
-      case "River":
-        return "/sound/river/river_loop.wav";
-      case "Forest":
-        return "/sound/forest/forest_loop.wav";
-      case "Bonfire":
-        return "/sound/bonfire/bonfire_loop.wav";
-      case "Noise":
-        return null;
-      default:
-        return null;
     }
   };
 
@@ -585,8 +552,7 @@ if (vol >= 1) {
     if (noiseRef.current) return;
 
     const noise = ctx.createBufferSource();
-    noise.buffer =
-      selectedSound === "Noise" ? createPinkNoise(ctx) : createNoise(ctx);
+    noise.buffer = createNoise(ctx);
 
     noise.loop = true;
 
@@ -614,7 +580,7 @@ if (vol >= 1) {
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
 
-    if (selectedSound === "Noise") {
+    if (selectedSound === "Cave") {
       filter.frequency.value = 2000;
     } else {
       filter.frequency.value = sound.frequency;
@@ -623,7 +589,7 @@ if (vol >= 1) {
     const gain = ctx.createGain();
 
     // 👇 最終目標値を先に決める
-    const targetGain = selectedSound === "Noise" ? 0.05 : sound.gain;
+    const targetGain = sound.gain;
 
     gainRef.current = gain;
 
