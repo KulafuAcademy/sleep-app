@@ -878,11 +878,23 @@ if (vol >= 1) {
         <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
           <div className="px-6 pt-6">
             <button
-              onClick={() => setScreen("soundscape")}
-              className="text-sm text-white/60"
-            >
-              ← Back
-            </button>
+  onClick={() => {
+    stopSoundscape();
+    setIsSoundscapePlaying(false);
+    setIsSoundscapeTimerRunning(false);
+    setSoundscapeTimeLeft(0);
+    setSelectedSoundscapeTimer(null);
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    setScreen("soundscape");
+  }}
+  className="text-sm text-white/60"
+>
+  ← Back
+</button>
           </div>
 
           <div className="px-6 pt-8 text-center">
