@@ -39,7 +39,7 @@ export default function Home() {
   forest: { a1: 0.25, b1: 0.3,  c1: 0.2  },
   rain:   { a1: 0.35, b1: 0.2,  c1: 0.1  },
   cave:  { a1: 0.2,  b1: 0.25, c1: 0.2  },
-  bonfire:{ a1: 0.3,  b1: 0.2,  c1: 0.25 },
+  bonfire:{ a1: 0.2,  b1: 0.3,  c1: 0.25 },
   river:  { a1: 0.28, b1: 0.27, c1: 0.18 },
 }
 
