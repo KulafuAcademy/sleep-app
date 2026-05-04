@@ -35,25 +35,31 @@ export default function Home() {
   const LAYERS = ["a1", "b1", "c1"];
   
   const VOLUME_MAP = {
-  wave:   { a1: 0.3, b1: 0.25, c1: 0.15 },
+  wave:   { a1: 0.3, b1: 0.2, c1: 0.08 },
   forest: { a1: 0.25, b1: 0.3,  c1: 0.2  },
   rain:   { a1: 0.35, b1: 0.2,  c1: 0.1  },
   cave:  { a1: 0.2,  b1: 0.25, c1: 0.2  },
   bonfire:{ a1: 0.3,  b1: 0.2,  c1: 0.25 },
   river:  { a1: 0.28, b1: 0.27, c1: 0.18 },
-};
+}
 
   const playWaveLayerTest = () => {
+    console.log("RUNNING playWaveLayerTest");
+
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
       audio.currentTime = 0;
     });
+
+    waveAudioRef.current = [];
 
     const folder = selectedSound.toLowerCase();
 
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
+
+    waveAudioRef.current = [a1, b1, c1];
 
     a1.loop = true;
     b1.loop = true;
@@ -86,9 +92,11 @@ export default function Home() {
       const elapsed = performance.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      a1.volume = 0.3 * progress;
-      b1.volume = 0.3 * progress;
-      c1.volume = 0.2 * progress;
+      const volMap = VOLUME_MAP[folder] ?? VOLUME_MAP.wave;
+
+      a1.volume = volMap.a1 * progress;
+      b1.volume = volMap.b1 * progress;
+      c1.volume = volMap.c1 * progress;
 
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
@@ -97,7 +105,6 @@ export default function Home() {
 
     fadeIn();
 
-    waveAudioRef.current = [a1, b1, c1];
   };
 
   const stopWaveLayerTest = () => {
