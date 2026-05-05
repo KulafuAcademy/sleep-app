@@ -31,6 +31,7 @@ export default function Home() {
   >(null);
   const waveAudioRef = useRef<HTMLAudioElement[]>([]);
   const fluctuationRef = useRef<number | null>(null);
+  const [debugTimeSec, setDebugTimeSec] = useState(0);
 
   const LAYERS = ["a1", "b1", "c1"];
   
@@ -106,6 +107,16 @@ export default function Home() {
 
     fadeIn();
 
+  };
+
+   // 👇開発用時間スライダー
+  const jumpWaveToTime = (sec: number) => {
+    waveAudioRef.current.forEach((audio) => {
+      if (!audio.duration || Number.isNaN(audio.duration)) return;
+
+      audio.currentTime = sec % audio.duration;
+      audio.play();
+    });
   };
 
   const stopWaveLayerTest = () => {
@@ -1295,6 +1306,61 @@ if (vol >= 1) {
                 }}
                 />
               </div>
+
+<div className="mt-6 space-y-6">
+  <div>
+    <div className="mb-2 flex items-center justify-between text-sm text-white/75">
+      <span>{getSoundConfig().controlLabel}</span>
+    </div>
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      value={playerVolume}
+      className="w-full accent-sky-300"
+      onChange={(e) => {
+        const value = Number(e.target.value);
+        setPlayerVolume(value);
+        const folder = selectedSound.toLowerCase();
+        const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
+
+        waveAudioRef.current.forEach((audio, index) => {
+          if (index === 0) audio.volume = volMap.a1 * value;
+          if (index === 1) audio.volume = volMap.b1 * value;
+          if (index === 2) audio.volume = volMap.c1 * value;
+        });
+      }}
+    />
+  </div>
+</div>
+
+{/* 👇ここ！！！（この直後） */}
+{process.env.NODE_ENV === "development" && (
+  <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
+    <div className="mb-2 text-xs text-yellow-200">
+      Debug Time: {debugTimeSec}s /{" "}
+      {Math.floor(debugTimeSec / 3600)}:
+      {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(2, "0")}:
+      {String(debugTimeSec % 60).padStart(2, "0")}
+    </div>
+
+    <input
+      type="range"
+      min={0}
+      max={28800}
+      step={1}
+      value={debugTimeSec}
+      onChange={(e) => {
+        const sec = Number(e.target.value);
+        setDebugTimeSec(sec);
+        jumpWaveToTime(sec);
+      }}
+      className="w-full"
+    />
+  </div>
+)}
+
             </div>
           </div>
         </div>
