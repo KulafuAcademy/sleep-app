@@ -92,7 +92,8 @@ export default function Home() {
       const elapsed = performance.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
 
-      const volMap = VOLUME_MAP[folder] ?? VOLUME_MAP.wave;
+      const volMap =
+  VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
