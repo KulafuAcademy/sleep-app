@@ -35,15 +35,15 @@ export default function Home() {
   const [debugInputSec, setDebugInputSec] = useState("");
 
   const LAYERS = ["a1", "b1", "c1"];
-  
+
   const VOLUME_MAP = {
-  wave:   { a1: 0.3, b1: 0.2, c1: 0.08 },
-  forest: { a1: 0.25, b1: 0.3,  c1: 0.2  },
-  rain:   { a1: 0.35, b1: 0.2,  c1: 0.1  },
-  cave:  { a1: 0.01,  b1: 0.25, c1: 0.2  },
-  bonfire:{ a1: 0.2,  b1: 0.3,  c1: 0.25 },
-  river:  { a1: 0.28, b1: 0.27, c1: 0.18 },
-}
+    wave: { a1: 0.3, b1: 0.2, c1: 0.08 },
+    forest: { a1: 0.25, b1: 0.3, c1: 0.2 },
+    rain: { a1: 0.35, b1: 0.2, c1: 0.1 },
+    cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
+    bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
+    river: { a1: 0.28, b1: 0.27, c1: 0.18 },
+  };
 
   const playWaveLayerTest = () => {
     console.log("RUNNING playWaveLayerTest");
@@ -78,12 +78,23 @@ export default function Home() {
     a2.volume = 0;
     a3.volume = 0;
 
+    //// riverだけ開始位置をズラす
+    //if (folder === "river") {
+    //  a1.currentTime = 3;
+    //  b1.currentTime = 41;
+    //  c1.currentTime = 17;
+
+    //  a2.currentTime = 58;
+    //  a3.currentTime = 9;
+    //}
+    
+
     a1.play();
     b1.play();
     c1.play();
     a2.play();
     a3.play();
-    
+
     // 👇ここに追加
     //setInterval(() => {
     //const delta = (Math.random() - 0.5) * 0.02;
@@ -103,13 +114,13 @@ export default function Home() {
       const progress = Math.min(elapsed / duration, 1);
 
       const volMap =
-  VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
+        VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
       c1.volume = volMap.c1 * progress;
-      a2.volume = 0.25;
-      a3.volume = 0.18;
+      a2.volume = 0.05;
+      a3.volume = 0.05;
 
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
@@ -117,10 +128,9 @@ export default function Home() {
     };
 
     fadeIn();
-
   };
 
-   // 👇開発用時間スライダー
+  // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
     waveAudioRef.current.forEach((audio) => {
       if (!audio.duration || Number.isNaN(audio.duration)) return;
@@ -131,10 +141,10 @@ export default function Home() {
   };
 
   const stopWaveLayerTest = () => {
-     if (fluctuationRef.current !== null) {
-    clearInterval(fluctuationRef.current);
-    fluctuationRef.current = null;
-  }
+    if (fluctuationRef.current !== null) {
+      clearInterval(fluctuationRef.current);
+      fluctuationRef.current = null;
+    }
     const audios = [...waveAudioRef.current];
 
     audios.forEach((audio) => {
@@ -355,7 +365,9 @@ export default function Home() {
   const intervalRef = useRef<number | null>(null);
   const lowRef = useRef<AudioBufferSourceNode | null>(null);
   const loopAudioRef = useRef<HTMLAudioElement | null>(null);
-  const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>({});
+  const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
+    {},
+  );
 
   const startSoundscape = () => {
     stopSoundscape();
@@ -371,7 +383,6 @@ export default function Home() {
       b1.loop = true;
       c1.loop = true;
 
-
       a1.volume = 0;
       b1.volume = 0;
       c1.volume = 0;
@@ -385,27 +396,26 @@ export default function Home() {
       // 👇フェードイン
       let vol = 0;
 
-const fadeIn = setInterval(() => {
-  vol += 0.01;
+      const fadeIn = setInterval(() => {
+        vol += 0.01;
 
-const current = mixVolumes[sound];
+        const current = mixVolumes[sound];
 
-const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
+        const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
 
-if (vol >= 1) {
-  a1.volume = volMap.a1 * current;
-  b1.volume = volMap.b1 * current;
-  c1.volume = volMap.c1 * current;
-  clearInterval(fadeIn);
-} else {
-  a1.volume = volMap.a1 * current * vol;
-  b1.volume = volMap.b1 * current * vol;
-  c1.volume = volMap.c1 * current * vol;
-}
-}, 50);
+        if (vol >= 1) {
+          a1.volume = volMap.a1 * current;
+          b1.volume = volMap.b1 * current;
+          c1.volume = volMap.c1 * current;
+          clearInterval(fadeIn);
+        } else {
+          a1.volume = volMap.a1 * current * vol;
+          b1.volume = volMap.b1 * current * vol;
+          c1.volume = volMap.c1 * current * vol;
+        }
+      }, 50);
     });
   };
-
 
   const stopSoundscape = () => {
     Object.values(mixAudioRefs.current).forEach((audios) => {
@@ -511,9 +521,9 @@ if (vol >= 1) {
           gain: 0.18,
           controlLabel: "Forest",
         };
-       case "Cave":
+      case "Cave":
         return {
-           title: "Cave",
+          title: "Cave",
           subtitle: "Low and immersive echoing ambience.",
           frequency: 2000,
           gain: 0.2,
@@ -874,23 +884,23 @@ if (vol >= 1) {
         <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
           <div className="px-6 pt-6">
             <button
-  onClick={() => {
-    stopSoundscape();
-    setIsSoundscapePlaying(false);
-    setIsSoundscapeTimerRunning(false);
-    setSoundscapeTimeLeft(0);
-    setSelectedSoundscapeTimer(null);
+              onClick={() => {
+                stopSoundscape();
+                setIsSoundscapePlaying(false);
+                setIsSoundscapeTimerRunning(false);
+                setSoundscapeTimeLeft(0);
+                setSelectedSoundscapeTimer(null);
 
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
+                if (timerRef.current) {
+                  clearInterval(timerRef.current);
+                }
 
-    setScreen("soundscape");
-  }}
-  className="text-sm text-white/60"
->
-  ← Back
-</button>
+                setScreen("soundscape");
+              }}
+              className="text-sm text-white/60"
+            >
+              ← Back
+            </button>
           </div>
 
           <div className="px-6 pt-8 text-center">
@@ -936,22 +946,25 @@ if (vol >= 1) {
                         [sound]: value,
                       });
 
-
                       // 👇ここに貼る
-                    mixAudioRefs.current[sound]?.forEach((audio, index) => {
-                    const folder = sound.toLowerCase();
-                    const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
+                      mixAudioRefs.current[sound]?.forEach((audio, index) => {
+                        const folder = sound.toLowerCase();
+                        const volMap = VOLUME_MAP[folder] || {
+                          a1: 0.3,
+                          b1: 0.3,
+                          c1: 0.2,
+                        };
 
-                   if (index === 0) audio.volume = volMap.a1 * value;
-                   if (index === 1) audio.volume = volMap.b1 * value;
-                   if (index === 2) audio.volume = volMap.c1 * value;
-                  });
+                        if (index === 0) audio.volume = volMap.a1 * value;
+                        if (index === 1) audio.volume = volMap.b1 * value;
+                        if (index === 2) audio.volume = volMap.c1 * value;
+                      });
 
-                     // if (mixAudioRefs.current[sound]) {
-                     //   mixAudioRefs.current[sound]!.forEach((audio) => {
-                     //     audio.volume = value;
-                     //   });
-                     // }
+                      // if (mixAudioRefs.current[sound]) {
+                      //   mixAudioRefs.current[sound]!.forEach((audio) => {
+                      //     audio.volume = value;
+                      //   });
+                      // }
                     }}
                     className="w-full accent-sky-300"
                   />
@@ -1023,7 +1036,7 @@ if (vol >= 1) {
               </div>
             </div>
             {/* 👇ここに追加 */}
-          {/*<button
+            {/*<button
   onClick={() => {
     if (isSoundscapePlaying) {
       stopSoundscape();
@@ -1304,99 +1317,79 @@ if (vol >= 1) {
                   value={playerVolume}
                   className="w-full accent-sky-300"
                   onChange={(e) => {
-                  const value = Number(e.target.value);
-                  setPlayerVolume(value);
-                  const folder = selectedSound.toLowerCase();
-                  const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
+                    const value = Number(e.target.value);
+                    setPlayerVolume(value);
+                    const folder = selectedSound.toLowerCase();
+                    const volMap = VOLUME_MAP[folder] || {
+                      a1: 0.3,
+                      b1: 0.3,
+                      c1: 0.2,
+                    };
 
-                  waveAudioRef.current.forEach((audio, index) => {
-                  if (index === 0) audio.volume = volMap.a1 * value;
-                  if (index === 1) audio.volume = volMap.b1 * value;
-                  if (index === 2) audio.volume = volMap.c1 * value;
-                 });
-                }}
+                    waveAudioRef.current.forEach((audio, index) => {
+                      if (index === 0) audio.volume = volMap.a1 * value;
+                      if (index === 1) audio.volume = volMap.b1 * value;
+                      if (index === 2) audio.volume = volMap.c1 * value;
+                    });
+                  }}
                 />
               </div>
 
-<div className="mt-6 space-y-6">
-  <div>
-    <div className="mb-2 flex items-center justify-between text-sm text-white/75">
-      <span>{getSoundConfig().controlLabel}</span>
-    </div>
-    <input
-      type="range"
-      min="0"
-      max="1"
-      step="0.01"
-      value={playerVolume}
-      className="w-full accent-sky-300"
-      onChange={(e) => {
-        const value = Number(e.target.value);
-        setPlayerVolume(value);
-        const folder = selectedSound.toLowerCase();
-        const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
 
-        waveAudioRef.current.forEach((audio, index) => {
-          if (index === 0) audio.volume = volMap.a1 * value;
-          if (index === 1) audio.volume = volMap.b1 * value;
-          if (index === 2) audio.volume = volMap.c1 * value;
-        });
-      }}
-    />
-  </div>
-</div>
 
-{process.env.NODE_ENV === "development" && (
-  <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
-    <div className="mb-2 text-xs text-yellow-200">
-      Debug Time: {debugTimeSec}s /{" "}
-      {Math.floor(debugTimeSec / 3600)}:
-      {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(2, "0")}:
-      {String(debugTimeSec % 60).padStart(2, "0")}
-    </div>
+              {process.env.NODE_ENV === "development" && (
+                <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
+                  <div className="mb-2 text-xs text-yellow-200">
+                    Debug Time: {debugTimeSec}s /{" "}
+                    {Math.floor(debugTimeSec / 3600)}:
+                    {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(
+                      2,
+                      "0",
+                    )}
+                    :{String(debugTimeSec % 60).padStart(2, "0")}
+                  </div>
 
-    <input
-      type="range"
-      min={0}
-      max={28800}
-      step={1}
-      value={debugTimeSec}
-      onChange={(e) => {
-        const sec = Number(e.target.value);
-        setDebugTimeSec(sec);
-        jumpWaveToTime(sec);
-      }}
-      className="w-full"
-    />
+                  <input
+                    type="range"
+                    min={0}
+                    max={28800}
+                    step={1}
+                    value={debugTimeSec}
+                    onChange={(e) => {
+                      const sec = Number(e.target.value);
+                      setDebugTimeSec(sec);
+                      jumpWaveToTime(sec);
+                    }}
+                    className="w-full"
+                  />
 
-    <div className="mt-3 flex gap-2">
-      <input
-        type="number"
-        min={0}
-        max={28800}
-        value={debugInputSec}
-        onChange={(e) => setDebugInputSec(e.target.value)}
-        placeholder="Enter seconds"
-        className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
-      />
+                  <div className="mt-3 flex gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      max={28800}
+                      value={debugInputSec}
+                      onChange={(e) => setDebugInputSec(e.target.value)}
+                      placeholder="Enter seconds"
+                      className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
+                    />
 
-      <button
-        type="button"
-        onClick={() => {
-          const sec = Number(debugInputSec);
-          if (Number.isNaN(sec)) return;
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const sec = Number(debugInputSec);
+                        if (Number.isNaN(sec)) return;
 
-          setDebugTimeSec(sec);
-          jumpWaveToTime(sec);
-        }}
-        className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
-      >
-        Jump
-      </button>
-    </div>
-  </div>
-)}
-
+                        setDebugTimeSec(sec);
+                        jumpWaveToTime(sec);
+                      }}
+                      className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
+                    >
+                      Jump
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
