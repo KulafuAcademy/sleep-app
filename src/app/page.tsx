@@ -108,8 +108,8 @@ export default function Home() {
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
       c1.volume = volMap.c1 * progress;
-      a2.volume = 0.08;
-      a3.volume = 0.05;
+      a2.volume = 0.25;
+      a3.volume = 0.18;
 
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
