@@ -32,6 +32,7 @@ export default function Home() {
   const waveAudioRef = useRef<HTMLAudioElement[]>([]);
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
+  const [debugInputSec, setDebugInputSec] = useState("");
 
   const LAYERS = ["a1", "b1", "c1"];
   
@@ -59,21 +60,29 @@ export default function Home() {
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
+    const a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+    const a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-    waveAudioRef.current = [a1, b1, c1];
+    waveAudioRef.current = [a1, b1, c1, a2, a3];
 
     a1.loop = true;
     b1.loop = true;
     c1.loop = true;
+    a2.loop = true;
+    a3.loop = true;
 
     // 無音スタート
     a1.volume = 0;
     b1.volume = 0;
     c1.volume = 0;
+    a2.volume = 0;
+    a3.volume = 0;
 
     a1.play();
     b1.play();
     c1.play();
+    a2.play();
+    a3.play();
     
     // 👇ここに追加
     //setInterval(() => {
@@ -99,6 +108,8 @@ export default function Home() {
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
       c1.volume = volMap.c1 * progress;
+      a2.volume = 0.08;
+      a3.volume = 0.05;
 
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
@@ -1335,7 +1346,6 @@ if (vol >= 1) {
   </div>
 </div>
 
-{/* 👇ここ！！！（この直後） */}
 {process.env.NODE_ENV === "development" && (
   <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
     <div className="mb-2 text-xs text-yellow-200">
@@ -1358,6 +1368,32 @@ if (vol >= 1) {
       }}
       className="w-full"
     />
+
+    <div className="mt-3 flex gap-2">
+      <input
+        type="number"
+        min={0}
+        max={28800}
+        value={debugInputSec}
+        onChange={(e) => setDebugInputSec(e.target.value)}
+        placeholder="Enter seconds"
+        className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
+      />
+
+      <button
+        type="button"
+        onClick={() => {
+          const sec = Number(debugInputSec);
+          if (Number.isNaN(sec)) return;
+
+          setDebugTimeSec(sec);
+          jumpWaveToTime(sec);
+        }}
+        className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
+      >
+        Jump
+      </button>
+    </div>
   </div>
 )}
 

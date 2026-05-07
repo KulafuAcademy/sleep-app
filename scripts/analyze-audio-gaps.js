@@ -6,7 +6,7 @@ const CATEGORY = process.argv[2] || "wave";
 const BASE_DIR = path.join(__dirname, "..", "public", "sound", CATEGORY, "v1");
 const OUTPUT_DIR = path.join(__dirname, "..", "output");
 
-const FILES = ["a1.wav", "b1.wav", "c1.wav"];
+const FILES = ["a1.wav","b1.wav", "c1.wav"];
 
 const ANALYZE_DURATION_SEC = 8 * 60 * 60; // 8 hours
 const WINDOW_SEC = 0.5;
