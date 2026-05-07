@@ -17,6 +17,18 @@ const sounds: {
   { name: "Cave", icon: Mountain },
 ];
 
+function HibikiLogo() {
+  return (
+    <div className="mx-auto mb-10 h-24 w-24 flex items-center justify-center">
+      <img
+        src="/logo/hibiki-enso.png"
+        alt="HIBIKI"
+        className="hibiki-breathe h-full w-full object-contain"
+      />
+    </div>
+  );
+}
+
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -704,21 +716,18 @@ export default function Home() {
             </button>
           </div>
 
+            <HibikiLogo />
+
           <div className="px-6 pt-2 pb-5 text-center">
-            <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-white/10 flex items-center justify-center shadow-inner relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-sky-300/40 to-indigo-400/20 animate-pulse" />
-              <div className="h-4 w-4 rounded-full bg-sky-300 z-10" />
-            </div>
-            <p className="text-xs uppercase tracking-[0.35em] text-white/45">
-              My Sleep App
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-              Choose Sound
-            </h1>
-            <p className="mt-2 text-sm leading-6 text-white/60">
-              Select your environment
-            </p>
-          </div>
+
+  <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+    Choose Sound
+  </h1>
+
+  <p className="mt-2 text-sm leading-6 text-white/60">
+    Select your environment
+  </p>
+</div>
 
           <div className="px-6 pb-6">
             <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
@@ -803,12 +812,13 @@ export default function Home() {
 
           {/* 👇タイトル */}
           <div className="px-6 pt-8 text-center">
-            <p className="text-xs uppercase tracking-[0.35em] text-white/45">
-              My Sleep App
-            </p>
+
+           <HibikiLogo />
+
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
               Create Soundscape
             </h1>
+
             <p className="mt-2 text-sm leading-6 text-white/60">
               Mix your own ambient world
             </p>
@@ -904,9 +914,9 @@ export default function Home() {
           </div>
 
           <div className="px-6 pt-8 text-center">
-            <p className="text-xs uppercase tracking-[0.35em] text-white/45">
-              My Sleep App
-            </p>
+
+            <HibikiLogo />
+
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
               Create Soundscape
             </h1>
@@ -1081,16 +1091,9 @@ export default function Home() {
         </div>
 
         <div className="px-6 pt-2 pb-5 text-center">
-          <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-white/10 flex items-center justify-center shadow-inner relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-sky-300/40 to-indigo-400/20 animate-pulse" />
-            {isPlaying && (
-              <div className="absolute inset-0 animate-ping bg-sky-300/20" />
-            )}
-            <div className="h-4 w-4 rounded-full bg-sky-300 z-10" />
-          </div>
-          <p className="text-xs uppercase tracking-[0.35em] text-white/45">
-            My Sleep App
-          </p>
+          
+          <HibikiLogo />
+
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">
             {getSoundConfig().title}
           </h1>
