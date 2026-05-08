@@ -50,7 +50,7 @@ export default function Home() {
 
   const VOLUME_MAP = {
     wave: { a1: 0.3, b1: 0.2, c1: 0.08 },
-    forest: { a1: 0.25, b1: 0.3, c1: 0.2 },
+    forest: { a1: 0.1, b1: 0.1, c1: 0.1 },
     rain: { a1: 0.35, b1: 0.2, c1: 0.1 },
     cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
     bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
@@ -73,18 +73,45 @@ export default function Home() {
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
+    if (folder === "forest") {
+  a1.addEventListener("loadedmetadata", () => {
+    a1.currentTime = 23;
+  });
+
+  b1.addEventListener("loadedmetadata", () => {
+    b1.currentTime = 71;
+  });
+
+  c1.addEventListener("loadedmetadata", () => {
+    c1.currentTime = 41;
+  });
+}
+
     let a2: HTMLAudioElement | null = null;
     let a3: HTMLAudioElement | null = null;
 
     const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-      if (folder !== "bonfire" && folder !== "cave"){
-        
-      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+if (folder === "forest") {
+  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-      audios.push(a2, a3);
-    }
+  a2.addEventListener("loadedmetadata", () => {
+    a2.currentTime = 107;
+  });
+
+  a3.addEventListener("loadedmetadata", () => {
+    a3.currentTime = 149;
+  });
+
+  audios.push(a2, a3);
+
+
+} else if (folder !== "bonfire" && folder !== "cave") {
+  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+  audios.push(a2, a3);
+}
 
     waveAudioRef.current = audios;
 
@@ -120,15 +147,17 @@ export default function Home() {
     if (a2) a2.play();
     if (a3) a3.play();
 
-    // 👇ここに追加
-    //setInterval(() => {
-    //const delta = (Math.random() - 0.5) * 0.02;
+if (folder === "forest") {
+  setInterval(() => {
+    const delta = (Math.random() - 0.5) * 0.02;
 
-    //let newVolume = c1.volume + delta;
-    //newVolume = Math.max(0.05, Math.min(0.3, newVolume));
+    let newVolume = c1.volume + delta;
 
-    //c1.volume = newVolume;
-    //}, 2000);
+    newVolume = Math.max(0.05, Math.min(0.3, newVolume));
+
+    c1.volume = newVolume;
+  }, 28000 + Math.random() * 20000);
+}
 
     // 👇フェードイン（3秒）
     const duration = 3000;
@@ -145,9 +174,9 @@ export default function Home() {
       b1.volume = volMap.b1 * progress;
       c1.volume = volMap.c1 * progress;
 
-      if (a2) a2.volume = 0.05;
-      if (a3) a3.volume = 0.05;
-
+     if (a2) a2.volume = folder === "forest" ? 0.08 * progress : 0.00;
+     if (a3) a3.volume = folder === "forest" ? 0.05 * progress : 0.00;
+      folder === "forest" ? 0.05 * progress : 0.00;
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
       }
@@ -158,13 +187,14 @@ export default function Home() {
 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
-    waveAudioRef.current.forEach((audio) => {
-      if (!audio.duration || Number.isNaN(audio.duration)) return;
+  waveAudioRef.current.forEach((audio) => {
+    if (!audio) return;
+    if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
 
-      audio.currentTime = sec % audio.duration;
-      audio.play();
-    });
-  };
+    audio.currentTime = sec % audio.duration;
+    audio.play();
+  });
+};
 
   const stopWaveLayerTest = () => {
     if (fluctuationRef.current !== null) {
