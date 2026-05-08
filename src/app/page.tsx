@@ -72,23 +72,35 @@ export default function Home() {
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
-    const a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-    const a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-    waveAudioRef.current = [a1, b1, c1, a2, a3];
+    let a2: HTMLAudioElement | null = null;
+    let a3: HTMLAudioElement | null = null;
+
+    const audios: HTMLAudioElement[] = [a1, b1, c1];
+
+    if (folder !== "bonfire") {
+      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+
+      audios.push(a2, a3);
+    }
+
+    waveAudioRef.current = audios;
 
     a1.loop = true;
     b1.loop = true;
     c1.loop = true;
-    a2.loop = true;
-    a3.loop = true;
+
+    if (a2) a2.loop = true;
+    if (a3) a3.loop = true;
 
     // 無音スタート
     a1.volume = 0;
     b1.volume = 0;
     c1.volume = 0;
-    a2.volume = 0;
-    a3.volume = 0;
+
+    if (a2) a2.volume = 0;
+    if (a3) a3.volume = 0;
 
     //// riverだけ開始位置をズラす
     //if (folder === "river") {
@@ -99,13 +111,13 @@ export default function Home() {
     //  a2.currentTime = 58;
     //  a3.currentTime = 9;
     //}
-    
 
     a1.play();
     b1.play();
     c1.play();
-    a2.play();
-    a3.play();
+
+    if (a2) a2.play();
+    if (a3) a3.play();
 
     // 👇ここに追加
     //setInterval(() => {
@@ -131,8 +143,9 @@ export default function Home() {
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
       c1.volume = volMap.c1 * progress;
-      a2.volume = 0.05;
-      a3.volume = 0.05;
+
+      if (a2) a2.volume = 0.05;
+      if (a3) a3.volume = 0.05;
 
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
@@ -716,18 +729,17 @@ export default function Home() {
             </button>
           </div>
 
-            <HibikiLogo />
+          <HibikiLogo />
 
           <div className="px-6 pt-2 pb-5 text-center">
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+              Choose Sound
+            </h1>
 
-  <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-    Choose Sound
-  </h1>
-
-  <p className="mt-2 text-sm leading-6 text-white/60">
-    Select your environment
-  </p>
-</div>
+            <p className="mt-2 text-sm leading-6 text-white/60">
+              Select your environment
+            </p>
+          </div>
 
           <div className="px-6 pb-6">
             <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
@@ -812,8 +824,7 @@ export default function Home() {
 
           {/* 👇タイトル */}
           <div className="px-6 pt-8 text-center">
-
-           <HibikiLogo />
+            <HibikiLogo />
 
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
               Create Soundscape
@@ -914,7 +925,6 @@ export default function Home() {
           </div>
 
           <div className="px-6 pt-8 text-center">
-
             <HibikiLogo />
 
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
@@ -1091,7 +1101,6 @@ export default function Home() {
         </div>
 
         <div className="px-6 pt-2 pb-5 text-center">
-          
           <HibikiLogo />
 
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">
@@ -1337,8 +1346,6 @@ export default function Home() {
                   }}
                 />
               </div>
-
-
 
               {process.env.NODE_ENV === "development" && (
                 <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
