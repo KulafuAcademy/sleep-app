@@ -78,7 +78,8 @@ export default function Home() {
 
     const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-    if (folder !== "bonfire") {
+      if (folder !== "bonfire" && folder !== "cave"){
+        
       a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
       a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
