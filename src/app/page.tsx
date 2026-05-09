@@ -49,13 +49,13 @@ export default function Home() {
   const LAYERS = ["a1", "b1", "c1"];
 
   const VOLUME_MAP = {
-    wave: { a1: 0.3, b1: 0.2, c1: 0.08 },
-    forest: { a1: 0.1, b1: 0.1, c1: 0.1 },
-    rain: { a1: 0.35, b1: 0.2, c1: 0.1 },
-    cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
-    bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
-    river: { a1: 0.28, b1: 0.27, c1: 0.18 },
-  };
+  wave: { a1: 0.3, b1: 0.2, c1: 0.08, a2: 0.08, a3: 0.05 },
+  forest: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.08, a3: 0.05 },
+  rain: { a1: 0.3, b1: 0.2, c1: 0.2, a2: 0.08, a3: 0.05 },
+  cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
+  bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
+  river: { a1: 0.28, b1: 0.27, c1: 0.18, a2: 0.08, a3: 0.05 },
+};
 
   const playWaveLayerTest = () => {
     console.log("RUNNING playWaveLayerTest");
@@ -174,9 +174,9 @@ if (folder === "forest") {
       b1.volume = volMap.b1 * progress;
       c1.volume = volMap.c1 * progress;
 
-     if (a2) a2.volume = folder === "forest" ? 0.08 * progress : 0.00;
-     if (a3) a3.volume = folder === "forest" ? 0.05 * progress : 0.00;
-      folder === "forest" ? 0.05 * progress : 0.00;
+      if (a2) a2.volume = (volMap.a2 ?? 0) * progress;
+      if (a3) a3.volume = (volMap.a3 ?? 0) * progress;
+    
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
       }
@@ -431,23 +431,17 @@ if (folder === "forest") {
     selectedMixSounds.forEach((sound) => {
       const folder = sound.toLowerCase();
 
-      const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
-      const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
-      const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
+      mixAudioRefs.current[sound]?.forEach((audio, index) => {
+  const folder = sound.toLowerCase();
+  const volMap =
+    VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
 
-      a1.loop = true;
-      b1.loop = true;
-      c1.loop = true;
-
-      a1.volume = 0;
-      b1.volume = 0;
-      c1.volume = 0;
-
-      mixAudioRefs.current[sound] = [a1, b1, c1];
-
-      a1.play();
-      b1.play();
-      c1.play();
+    if (index === 0) audio.volume = volMap.a1 * value;
+    if (index === 1) audio.volume = volMap.b1 * value;
+    if (index === 2) audio.volume = volMap.c1 * value;
+    if (index === 3) audio.volume = (volMap.a2 ?? 0) * value;
+    if (index === 4) audio.volume = (volMap.a3 ?? 0) * value;
+  });
 
       // 👇フェードイン
       let vol = 0;
@@ -1369,10 +1363,12 @@ if (folder === "forest") {
                       c1: 0.2,
                     };
 
-                    waveAudioRef.current.forEach((audio, index) => {
-                      if (index === 0) audio.volume = volMap.a1 * value;
-                      if (index === 1) audio.volume = volMap.b1 * value;
-                      if (index === 2) audio.volume = volMap.c1 * value;
+                   waveAudioRef.current.forEach((audio, index) => {
+                     if (index === 0) audio.volume = volMap.a1 * value;
+                     if (index === 1) audio.volume = volMap.b1 * value;
+                     if (index === 2) audio.volume = volMap.c1 * value;
+                     if (index === 3) audio.volume = (volMap.a2 ?? 0) * value;
+                     if (index === 4) audio.volume = (volMap.a3 ?? 0) * value;
                     });
                   }}
                 />
