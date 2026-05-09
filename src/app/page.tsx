@@ -426,55 +426,64 @@ if (folder === "forest") {
   );
 
   const startSoundscape = () => {
-    stopSoundscape();
+  stopSoundscape();
 
-    selectedMixSounds.forEach((sound) => {
-      const folder = sound.toLowerCase();
+  selectedMixSounds.forEach((sound) => {
+    const folder = sound.toLowerCase();
 
-      mixAudioRefs.current[sound]?.forEach((audio, index) => {
-  const folder = sound.toLowerCase();
-  const volMap =
-    VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
+    const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
+    const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
+    const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
-    if (index === 0) audio.volume = volMap.a1 * value;
-    if (index === 1) audio.volume = volMap.b1 * value;
-    if (index === 2) audio.volume = volMap.c1 * value;
-    if (index === 3) audio.volume = (volMap.a2 ?? 0) * value;
-    if (index === 4) audio.volume = (volMap.a3 ?? 0) * value;
-  });
+    let a2: HTMLAudioElement | null = null;
+    let a3: HTMLAudioElement | null = null;
 
-      // 👇フェードイン
-      let vol = 0;
+    const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-      const fadeIn = setInterval(() => {
-        vol += 0.01;
+    if (folder !== "bonfire" && folder !== "cave") {
+      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+      audios.push(a2, a3);
+    }
 
-        const current = mixVolumes[sound];
-
-        const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
-
-      
-        if (vol >= 1) {
-  a1.volume = volMap.a1 * current;
-  b1.volume = volMap.b1 * current;
-  c1.volume = volMap.c1 * current;
-
-  if (a2) a2.volume = (volMap.a2 ?? 0) * current;
-  if (a3) a3.volume = (volMap.a3 ?? 0) * current;
-
-  clearInterval(fadeIn);
-} else {
-  a1.volume = volMap.a1 * current * vol;
-  b1.volume = volMap.b1 * current * vol;
-  c1.volume = volMap.c1 * current * vol;
-
-  if (a2) a2.volume = (volMap.a2 ?? 0) * current * vol;
-  if (a3) a3.volume = (volMap.a3 ?? 0) * current * vol;
-}
-
-      }, 50);
+    audios.forEach((audio) => {
+      audio.loop = true;
+      audio.volume = 0;
+      audio.play();
     });
-  };
+
+    mixAudioRefs.current[sound] = audios;
+
+    let vol = 0;
+
+    const fadeIn = setInterval(() => {
+      vol += 0.01;
+
+      const current = mixVolumes[sound];
+
+      const volMap =
+        VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
+
+      if (vol >= 1) {
+        a1.volume = volMap.a1 * current;
+        b1.volume = volMap.b1 * current;
+        c1.volume = volMap.c1 * current;
+
+        if (a2) a2.volume = (volMap.a2 ?? 0) * current;
+        if (a3) a3.volume = (volMap.a3 ?? 0) * current;
+
+        clearInterval(fadeIn);
+      } else {
+        a1.volume = volMap.a1 * current * vol;
+        b1.volume = volMap.b1 * current * vol;
+        c1.volume = volMap.c1 * current * vol;
+
+        if (a2) a2.volume = (volMap.a2 ?? 0) * current * vol;
+        if (a3) a3.volume = (volMap.a3 ?? 0) * current * vol;
+      }
+    }, 50);
+  });
+};
 
   const stopSoundscape = () => {
     Object.values(mixAudioRefs.current).forEach((audios) => {
