@@ -10,11 +10,16 @@ const FILES = ["a1.wav","b1.wav", "c1.wav"];
 
 const ANALYZE_DURATION_SEC = 8 * 60 * 60; // 8 hours
 const WINDOW_SEC = 0.5;
-const MIN_GAP_SEC = 6.0;
+const MIN_GAP_SEC = 3.0;
 const LEAD_SEC = 4;
 
 // まずは仮。あとでカテゴリごとに調整
-const THRESHOLD_RATIO = 0.25;
+const THRESHOLD_RATIO = 0.35;
+const OFFSETS = {
+  a1: 37,
+  b1: 0,
+  c1: 0,
+};
 
 function median(values) {
   const sorted = [...values].sort((a, b) => a - b);
@@ -108,7 +113,11 @@ async function decodeWav(filePath) {
     const timeSec = step * WINDOW_SEC;
 
     const levels = tracks.map((track) => {
-      const start = Math.floor((timeSec * track.sampleRate) % track.samples.length);
+      
+    const offsetSec = OFFSETS[track.name] ?? 0;
+    const start = Math.floor(
+      ((timeSec + offsetSec) * track.sampleRate) % track.samples.length
+     );
       const end = start + windowSamples;
 
       const rawRms = rms(track.samples, start, end);
@@ -124,7 +133,7 @@ async function decodeWav(filePath) {
 
     const weakLayers = levels.filter((l) => l.isWeak).map((l) => l.name);
 
-    if (weakLayers.length >= 2) {
+    if (weakLayers.length >=2) {
       if (!currentGap) {
         currentGap = {
           startSec: timeSec,

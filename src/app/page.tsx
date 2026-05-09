@@ -51,7 +51,7 @@ export default function Home() {
   const VOLUME_MAP = {
   wave: { a1: 0.3, b1: 0.2, c1: 0.08, a2: 0.08, a3: 0.05 },
   forest: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.08, a3: 0.05 },
-  rain: { a1: 0.3, b1: 0.2, c1: 0.2, a2: 0.08, a3: 0.05 },
+  rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
   cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
   bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
   river: { a1: 0.28, b1: 0.27, c1: 0.18, a2: 0.08, a3: 0.05 },
@@ -130,15 +130,15 @@ if (folder === "forest") {
     if (a2) a2.volume = 0;
     if (a3) a3.volume = 0;
 
-    //// riverだけ開始位置をズラす
-    //if (folder === "river") {
-    //  a1.currentTime = 3;
-    //  b1.currentTime = 41;
-    //  c1.currentTime = 17;
+// rainだけ開始位置をズラす
+  if (folder === "rain") {
+  a1.currentTime = 37;
+  b1.currentTime = 0;
+  c1.currentTime = 11;
 
-    //  a2.currentTime = 58;
-    //  a3.currentTime = 9;
-    //}
+  if (a2) a2.currentTime = 59;
+  if (a3) a3.currentTime = 113;
+}
 
     a1.play();
     b1.play();
