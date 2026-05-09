@@ -453,16 +453,25 @@ if (folder === "forest") {
 
         const volMap = VOLUME_MAP[folder] || { a1: 0.3, b1: 0.3, c1: 0.2 };
 
+      
         if (vol >= 1) {
-          a1.volume = volMap.a1 * current;
-          b1.volume = volMap.b1 * current;
-          c1.volume = volMap.c1 * current;
-          clearInterval(fadeIn);
-        } else {
-          a1.volume = volMap.a1 * current * vol;
-          b1.volume = volMap.b1 * current * vol;
-          c1.volume = volMap.c1 * current * vol;
-        }
+  a1.volume = volMap.a1 * current;
+  b1.volume = volMap.b1 * current;
+  c1.volume = volMap.c1 * current;
+
+  if (a2) a2.volume = (volMap.a2 ?? 0) * current;
+  if (a3) a3.volume = (volMap.a3 ?? 0) * current;
+
+  clearInterval(fadeIn);
+} else {
+  a1.volume = volMap.a1 * current * vol;
+  b1.volume = volMap.b1 * current * vol;
+  c1.volume = volMap.c1 * current * vol;
+
+  if (a2) a2.volume = (volMap.a2 ?? 0) * current * vol;
+  if (a3) a3.volume = (volMap.a3 ?? 0) * current * vol;
+}
+
       }, 50);
     });
   };
