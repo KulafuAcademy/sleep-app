@@ -92,17 +92,17 @@ export default function Home() {
 
     const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-if (folder === "forest") {
-  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
-
+  if (a2) {
   a2.addEventListener("loadedmetadata", () => {
     a2.currentTime = 107;
   });
+}
 
+ if (a3) {
   a3.addEventListener("loadedmetadata", () => {
-    a3.currentTime = 149;
+    a3.currentTime = 53;
   });
+}
 
   audios.push(a2, a3);
 
