@@ -54,7 +54,7 @@ export default function Home() {
   rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
   cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
   bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
-  river: { a1: 0.28, b1: 0.27, c1: 0.18, a2: 0.08, a3: 0.05 },
+  river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
 };
 
   const playWaveLayerTest = () => {
