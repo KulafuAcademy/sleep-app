@@ -1012,11 +1012,13 @@ if (folder === "forest") {
                       // 👇ここに貼る
                       mixAudioRefs.current[sound]?.forEach((audio, index) => {
                         const folder = sound.toLowerCase();
-                        const volMap = VOLUME_MAP[folder] || {
-                          a1: 0.3,
-                          b1: 0.3,
-                          c1: 0.2,
-                        };
+                        
+                        const volMap =
+                         VOLUME_MAP[folder as keyof typeof VOLUME_MAP] || {
+                         a1: 0.3,
+                         b1: 0.3,
+                         c1: 0.2,
+                    };
 
                         if (index === 0) audio.volume = volMap.a1 * value;
                         if (index === 1) audio.volume = volMap.b1 * value;
