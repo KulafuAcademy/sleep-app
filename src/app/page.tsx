@@ -87,29 +87,31 @@ export default function Home() {
   });
 }
 
-    let a2: HTMLAudioElement | null = null;
-    let a3: HTMLAudioElement | null = null;
+let a2: HTMLAudioElement | null = null;
+let a3: HTMLAudioElement | null = null;
 
-    const audios: HTMLAudioElement[] = [a1, b1, c1];
+const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-  if (a2) {
-  a2.addEventListener("loadedmetadata", () => {
-    a2.currentTime = 107;
-  });
-}
+if (folder === "forest") {
+  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
- if (a3) {
-  a3.addEventListener("loadedmetadata", () => {
-    a3.currentTime = 53;
-  });
-}
+  a2.addEventListener("loadedmetadata", (event) => {
+  const audio = event.currentTarget as HTMLAudioElement;
+  audio.currentTime = 107;
+});
+
+a3.addEventListener("loadedmetadata", (event) => {
+  const audio = event.currentTarget as HTMLAudioElement;
+  audio.currentTime = 53;
+});
 
   audios.push(a2, a3);
-
 
 } else if (folder !== "bonfire" && folder !== "cave") {
   a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
   a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+
   audios.push(a2, a3);
 }
 
@@ -174,8 +176,8 @@ if (folder === "forest") {
       b1.volume = volMap.b1 * progress;
       c1.volume = volMap.c1 * progress;
 
-      if (a2) a2.volume = (volMap.a2 ?? 0) * progress;
-      if (a3) a3.volume = (volMap.a3 ?? 0) * progress;
+      if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
+      if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
     
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
@@ -469,8 +471,8 @@ if (folder === "forest") {
         b1.volume = volMap.b1 * current;
         c1.volume = volMap.c1 * current;
 
-        if (a2) a2.volume = (volMap.a2 ?? 0) * current;
-        if (a3) a3.volume = (volMap.a3 ?? 0) * current;
+        if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
+        if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
 
         clearInterval(fadeIn);
       } else {
@@ -478,8 +480,8 @@ if (folder === "forest") {
         b1.volume = volMap.b1 * current * vol;
         c1.volume = volMap.c1 * current * vol;
 
-        if (a2) a2.volume = (volMap.a2 ?? 0) * current * vol;
-        if (a3) a3.volume = (volMap.a3 ?? 0) * current * vol;
+                if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
+                if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
       }
     }, 50);
   });
@@ -1377,7 +1379,8 @@ if (folder === "forest") {
                     const value = Number(e.target.value);
                     setPlayerVolume(value);
                     const folder = selectedSound.toLowerCase();
-                    const volMap = VOLUME_MAP[folder] || {
+                  const volMap =
+                  VOLUME_MAP[folder as keyof typeof VOLUME_MAP] || {
                       a1: 0.3,
                       b1: 0.3,
                       c1: 0.2,
@@ -1387,8 +1390,8 @@ if (folder === "forest") {
                      if (index === 0) audio.volume = volMap.a1 * value;
                      if (index === 1) audio.volume = volMap.b1 * value;
                      if (index === 2) audio.volume = volMap.c1 * value;
-                     if (index === 3) audio.volume = (volMap.a2 ?? 0) * value;
-                     if (index === 4) audio.volume = (volMap.a3 ?? 0) * value;
+                     if (index === 3) audio.volume = ("a2" in volMap ? volMap.a2 : 0) * value;
+                     if (index === 4) audio.volume = ("a3" in volMap ? volMap.a3 : 0) * value;
                     });
                   }}
                 />
