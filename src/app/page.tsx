@@ -96,14 +96,14 @@ if (folder === "forest") {
   a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
   a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-  a2.addEventListener("loadedmetadata", (event) => {
-  const audio = event.currentTarget as HTMLAudioElement;
-  audio.currentTime = 107;
+a2?.addEventListener("loadedmetadata", () => {
+  if (!a2) return;
+  a2.currentTime = 107;
 });
 
-a3.addEventListener("loadedmetadata", (event) => {
-  const audio = event.currentTarget as HTMLAudioElement;
-  audio.currentTime = 53;
+a3?.addEventListener("loadedmetadata", () => {
+  if (!a3) return;
+  a3.currentTime = 149;
 });
 
   audios.push(a2, a3);
