@@ -1226,11 +1226,22 @@ useEffect(() => {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
+    <div className="relative min-h-screen text-white flex items-center justify-center p-6 overflow-hidden">
+     {selectedSound && (
+  <>
+    <img
+      src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
+      alt=""
+      className="absolute inset-0 hidden h-full w-full object-cover md:block"
+    />
+
+    <div className="absolute inset-0 hidden bg-black/25 md:block" />
+  </>
+)} 
       <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
       <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
-      <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+      <div className="relative z-10 w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
         <div className="px-6 pt-6">
           <button
             onClick={() => {
@@ -1240,7 +1251,7 @@ useEffect(() => {
               setIsTimerRunning(false);
               setTimeLeft(0);
               setSelectedTimer(null);
-               setSelectedSound(null);
+              setSelectedSound(null);
 
               setScreen("select");
             }}
