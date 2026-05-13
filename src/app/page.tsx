@@ -200,46 +200,50 @@ if (folder === "forest") {
   });
 };
 
-  const stopWaveLayerTest = () => {
-    if (fluctuationRef.current !== null) {
-      clearInterval(fluctuationRef.current);
-      fluctuationRef.current = null;
-    }
-    const audios = [...waveAudioRef.current];
+    const stopWaveLayerTest = () => {
+  if (fluctuationRef.current !== null) {
+    clearInterval(fluctuationRef.current);
+    fluctuationRef.current = null;
+  }
 
-    audios.forEach((audio) => {
-      const startVolume = audio.volume;
-      const duration = 4000;
-      const startTime = performance.now();
+  const audios = [...waveAudioRef.current];
 
-      const fadeOut = () => {
-        const elapsed = performance.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+  audios.forEach((audio) => {
+    const startVolume = audio.volume;
+    const duration = 4000;
+    const startTime = performance.now();
 
-        audio.volume = startVolume * (1 - progress);
+    const fadeOut = () => {
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
-        if (progress < 1) {
-          requestAnimationFrame(fadeOut);
-        } else {
-          audio.volume = 0;
-          audio.pause();
-          audio.currentTime = 0;
+      audio.volume = startVolume * (1 - progress);
 
-          waveAudioRef.current = waveAudioRef.current.filter(
-            (item) => item !== audio,
-          );
-        }
-      };
+      if (progress < 1) {
+        requestAnimationFrame(fadeOut);
+      } else {
+        audio.volume = 0;
+        audio.pause();
+        audio.currentTime = 0;
 
-      fadeOut();
-    });
-  };
-       const pauseWaveLayerTestImmediately = () => {
-        waveAudioRef.current.forEach((audio) => {
-         audio.pause();
-       });
-     };
+        waveAudioRef.current = waveAudioRef.current.filter(
+          (item) => item !== audio,
+        );
+      }
+    };
 
+    fadeOut();
+  });
+};
+
+const pauseWaveLayerTestImmediately = () => {
+  waveAudioRef.current.forEach((audio) => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+
+  waveAudioRef.current = [];
+};
 
   const startSleepTimer = (minutes: number) => {
     const isSameTimer = selectedTimer === minutes && isTimerRunning;
@@ -760,6 +764,7 @@ if (folder === "forest") {
       setIsPlaying(true);
     }
   };
+
 
   const handleSelectSound = (sound: SoundName) => {
     if (isPlaying) {
