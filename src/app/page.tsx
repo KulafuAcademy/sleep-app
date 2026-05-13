@@ -96,33 +96,31 @@ if (folder === "forest") {
   a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
   a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-<<<<<<< HEAD
-a2?.addEventListener("loadedmetadata", () => {
-  if (!a2) return;
-  a2.currentTime = 107;
-});
-=======
-
-  a2.addEventListener("loadedmetadata", () => {
-    a2.currentTime = 107;
-  });
->>>>>>> feature/timed-cover-layers
-
-a3?.addEventListener("loadedmetadata", () => {
-  if (!a3) return;
-  a3.currentTime = 149;
-});
-
 a2?.addEventListener("loadedmetadata", () => {
   if (!a2) return;
   a2.currentTime = 107;
 });
 
+
+a2?.addEventListener("loadedmetadata", (event) => {
+  const audio = event.currentTarget as HTMLAudioElement;
+  audio.currentTime = 107;
+});
+
+a3?.addEventListener("loadedmetadata", (event) => {
+  const audio = event.currentTarget as HTMLAudioElement;
+  audio.currentTime = 149;
+});
+
+a2?.addEventListener("loadedmetadata", () => {
+  if (!a2) return;
+  a2.currentTime = 107;
+});
+
 a3?.addEventListener("loadedmetadata", () => {
   if (!a3) return;
   a3.currentTime = 149;
 });
- a6ba33e (fix: guard forest offset audio metadata handlers)
 
   audios.push(a2, a3);
 
