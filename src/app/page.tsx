@@ -96,30 +96,14 @@ if (folder === "forest") {
   a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
   a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-a2?.addEventListener("loadedmetadata", () => {
-  if (!a2) return;
-  a2.currentTime = 107;
-});
-
-
-a2?.addEventListener("loadedmetadata", (event) => {
+a2.addEventListener("loadedmetadata", (event) => {
   const audio = event.currentTarget as HTMLAudioElement;
   audio.currentTime = 107;
 });
 
-a3?.addEventListener("loadedmetadata", (event) => {
+a3.addEventListener("loadedmetadata", (event) => {
   const audio = event.currentTarget as HTMLAudioElement;
   audio.currentTime = 149;
-});
-
-a2?.addEventListener("loadedmetadata", () => {
-  if (!a2) return;
-  a2.currentTime = 107;
-});
-
-a3?.addEventListener("loadedmetadata", () => {
-  if (!a3) return;
-  a3.currentTime = 149;
 });
 
   audios.push(a2, a3);
@@ -130,6 +114,8 @@ a3?.addEventListener("loadedmetadata", () => {
 
   audios.push(a2, a3);
 }
+
+
 
     waveAudioRef.current = audios;
 
@@ -248,6 +234,7 @@ if (folder === "forest") {
       fadeOut();
     });
   };
+
 
   const startSleepTimer = (minutes: number) => {
     const isSameTimer = selectedTimer === minutes && isTimerRunning;
@@ -776,6 +763,20 @@ if (folder === "forest") {
     }
     setSelectedSound(sound);
   };
+
+  useEffect(() => {
+  if (!("mediaSession" in navigator)) return;
+
+  navigator.mediaSession.setActionHandler("pause", () => {
+    stopWaveLayerTest();
+    setIsPlaying(false);
+  });
+
+  navigator.mediaSession.setActionHandler("play", () => {
+    playWaveLayerTest();
+    setIsPlaying(true);
+  });
+}, [selectedSound]);
 
   if (screen === "select") {
     return (
