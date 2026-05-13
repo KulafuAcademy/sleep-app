@@ -779,8 +779,6 @@ const pauseWaveLayerTestImmediately = () => {
 
     navigator.mediaSession.metadata = new MediaMetadata({
       title: "hibiki.rest",
-      artist: "ambient space for rest & focus",
-      album: selectedSound,
       artwork: [
         {
          src: "/apple-icon.png",
