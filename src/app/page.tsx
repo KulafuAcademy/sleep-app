@@ -1382,7 +1382,7 @@ if (folder === "forest") {
             <div className="mt-6 space-y-6">
               <div>
                 <div className="mb-2 flex items-center justify-between text-sm text-white/75">
-                  <span>{getSoundConfig().controlLabel}</span>
+                  <span>VOLUME</span>
                 </div>
                 <input
                   type="range"
