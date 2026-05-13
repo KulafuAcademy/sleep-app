@@ -67,6 +67,8 @@ export default function Home() {
 
     waveAudioRef.current = [];
 
+  if (!selectedSound) return;
+
     const folder = selectedSound.toLowerCase();
 
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
@@ -367,7 +369,7 @@ const pauseWaveLayerTestImmediately = () => {
   >("select");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
-  const [selectedSound, setSelectedSound] = useState<SoundName>("Rain");
+  const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
   const backgroundNames = [
   "rain",
   "wave",
@@ -922,12 +924,17 @@ useEffect(() => {
               </div>
             </div>
 
-            <button
-              onClick={() => setScreen("player")}
-              className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Continue with {selectedSound}
-            </button>
+          <button
+            onClick={() => {
+               if (!selectedSound) return;
+               setScreen("player");
+              }}
+               className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] active:scale-[0.98]"
+              >
+               {selectedSound
+                  ? `Continue with ${selectedSound}`
+                 : "Choose a sound"}
+                </button>
 
             <button
               onClick={() => setScreen("soundscape")}
