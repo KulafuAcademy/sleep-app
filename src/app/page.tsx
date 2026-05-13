@@ -50,7 +50,7 @@ export default function Home() {
 
   const VOLUME_MAP = {
   wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
-  forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.18, a3: 0.15 },
+  forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.02, a3: 0.02 },
   rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
   cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
   bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
@@ -96,6 +96,7 @@ if (folder === "forest") {
   a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
   a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
+
   a2.addEventListener("loadedmetadata", () => {
     a2.currentTime = 107;
   });
@@ -103,6 +104,17 @@ if (folder === "forest") {
   a3.addEventListener("loadedmetadata", () => {
     a3.currentTime = 149;
   });
+
+a2?.addEventListener("loadedmetadata", () => {
+  if (!a2) return;
+  a2.currentTime = 107;
+});
+
+a3?.addEventListener("loadedmetadata", () => {
+  if (!a3) return;
+  a3.currentTime = 149;
+});
+ a6ba33e (fix: guard forest offset audio metadata handlers)
 
   audios.push(a2, a3);
 
