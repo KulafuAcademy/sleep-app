@@ -391,7 +391,7 @@ useEffect(() => {
         Math.floor(Math.random() * backgroundNames.length)
       ],
     );
-  }, 3000);
+  }, 10000);
 
   return () => clearInterval(interval);
 }, []);
