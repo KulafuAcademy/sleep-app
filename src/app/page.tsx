@@ -792,12 +792,22 @@ const pauseWaveLayerTestImmediately = () => {
 
     //navigator.mediaSession.playbackState =isPlaying ? "playing" : "paused";
 
-    navigator.mediaSession.setActionHandler("pause", () => {
-      stopSoundscape();
-
-    navigator.mediaSession.playbackState = "paused";
-    setIsPlaying(false);
+   navigator.mediaSession.setActionHandler("pause", () => {
+  Object.values(mixAudioRefs.current).forEach((audios) => {
+    audios?.forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
     });
+  });
+
+  waveAudioRef.current.forEach((audio) => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+
+  navigator.mediaSession.playbackState = "paused";
+  setIsPlaying(false);
+});
 
   
     navigator.mediaSession.setActionHandler("play", () => {
