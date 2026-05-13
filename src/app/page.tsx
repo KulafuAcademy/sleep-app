@@ -368,6 +368,21 @@ const pauseWaveLayerTestImmediately = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName>("Rain");
+  const backgroundNames = [
+  "rain",
+  "wave",
+  "river",
+  "bonfire",
+  "forest",
+  "cave",
+];
+
+const [selectBackground] = useState(
+  () =>
+    backgroundNames[
+      Math.floor(Math.random() * backgroundNames.length)
+    ],
+);
   const [playerVolume, setPlayerVolume] = useState(0.3);
   const [selectedMixSounds, setSelectedMixSounds] = useState<SoundName[]>([]);
   const [mixVolumes, setMixVolumes] = useState<Record<SoundName, number>>({
@@ -824,7 +839,7 @@ const pauseWaveLayerTestImmediately = () => {
     return (
   <div className="relative min-h-screen text-white flex items-center justify-center p-6 overflow-hidden">
 <img
-  src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
+  src={`/backgrounds/${selectBackground}.jpg`}
   alt=""
   className="absolute inset-0 hidden h-full w-full object-cover md:block"
 />
