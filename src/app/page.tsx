@@ -829,7 +829,7 @@ const pauseWaveLayerTestImmediately = () => {
   className="absolute inset-0 hidden h-full w-full object-cover md:block"
 />
 
-<div className="absolute inset-0 hidden bg-black/45 backdrop-blur-[2px] md:block" />
+<div className="absolute inset-0 hidden bg-black/45 md:block" />
         <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
