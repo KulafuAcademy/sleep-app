@@ -774,8 +774,21 @@ const pauseWaveLayerTestImmediately = () => {
     setSelectedSound(sound);
   };
 
-  useEffect(() => {
+   useEffect(() => {
   if (!("mediaSession" in navigator)) return;
+
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: "hibiki.rest",
+    artist: "ambient space for rest & focus",
+    album: selectedSound,
+    artwork: [
+      {
+        src: "/apple-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  });
 
   navigator.mediaSession.setActionHandler("pause", () => {
     pauseWaveLayerTestImmediately();
