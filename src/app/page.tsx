@@ -1379,39 +1379,6 @@ if (folder === "forest") {
                 </div>
               </div>
             )}
-            <div className="mt-6 space-y-6">
-              <div>
-                <div className="mb-2 flex items-center justify-between text-sm text-white/75">
-                  <span>VOLUME</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={playerVolume}
-                  className="w-full accent-sky-300"
-                  onChange={(e) => {
-                    const value = Number(e.target.value);
-                    setPlayerVolume(value);
-                    const folder = selectedSound.toLowerCase();
-                  const volMap =
-                  VOLUME_MAP[folder as keyof typeof VOLUME_MAP] || {
-                      a1: 0.3,
-                      b1: 0.3,
-                      c1: 0.2,
-                    };
-
-                   waveAudioRef.current.forEach((audio, index) => {
-                     if (index === 0) audio.volume = volMap.a1 * value;
-                     if (index === 1) audio.volume = volMap.b1 * value;
-                     if (index === 2) audio.volume = volMap.c1 * value;
-                     if (index === 3) audio.volume = ("a2" in volMap ? volMap.a2 : 0) * value;
-                     if (index === 4) audio.volume = ("a3" in volMap ? volMap.a3 : 0) * value;
-                    });
-                  }}
-                />
-              </div>
 
               {process.env.NODE_ENV === "development" && (
                 <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
@@ -1470,6 +1437,5 @@ if (folder === "forest") {
           </div>
         </div>
       </div>
-    </div>
-  );
+   );
 }
