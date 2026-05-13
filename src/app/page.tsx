@@ -1240,6 +1240,7 @@ useEffect(() => {
               setIsTimerRunning(false);
               setTimeLeft(0);
               setSelectedTimer(null);
+               setSelectedSound(null);
 
               setScreen("select");
             }}
