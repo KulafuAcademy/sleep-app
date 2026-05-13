@@ -812,6 +812,12 @@ const pauseWaveLayerTestImmediately = () => {
     setIsPlaying(true);
     });
 
+    navigator.mediaSession.setActionHandler("nexttrack", null);
+    navigator.mediaSession.setActionHandler("previoustrack", null);
+    navigator.mediaSession.setActionHandler("seekbackward", null);
+    navigator.mediaSession.setActionHandler("seekforward", null);
+    navigator.mediaSession.setActionHandler("seekto", null);
+
 }, [selectedSound, isPlaying]);
 
   if (screen === "select") {
