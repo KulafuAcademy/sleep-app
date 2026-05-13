@@ -377,12 +377,26 @@ const pauseWaveLayerTestImmediately = () => {
   "cave",
 ];
 
-const [selectBackground] = useState(
+const [selectBackground, setSelectBackground] = useState(
   () =>
     backgroundNames[
       Math.floor(Math.random() * backgroundNames.length)
     ],
 );
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setSelectBackground(
+      backgroundNames[
+        Math.floor(Math.random() * backgroundNames.length)
+      ],
+    );
+  }, 3000);
+
+  return () => clearInterval(interval);
+}, []);
+
+
   const [playerVolume, setPlayerVolume] = useState(0.3);
   const [selectedMixSounds, setSelectedMixSounds] = useState<SoundName[]>([]);
   const [mixVolumes, setMixVolumes] = useState<Record<SoundName, number>>({
