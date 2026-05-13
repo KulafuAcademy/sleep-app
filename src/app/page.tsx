@@ -823,13 +823,13 @@ const pauseWaveLayerTestImmediately = () => {
   if (screen === "select") {
     return (
   <div className="relative min-h-screen text-white flex items-center justify-center p-6 overflow-hidden">
-    <img
+<img
   src="/backgrounds/wave.jpg"
   alt=""
-  className="absolute inset-0 h-full w-full object-cover"
+  className="absolute inset-0 hidden h-full w-full object-cover md:block"
 />
 
-<div className="absolute inset-0 bg-black/45 backdrop-blur-[2px]" />
+<div className="absolute inset-0 hidden bg-black/45 backdrop-blur-[2px] md:block" />
         <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
