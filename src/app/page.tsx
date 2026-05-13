@@ -1198,7 +1198,7 @@ if (folder === "forest") {
 
             <div className="mt-5">
               <div className="pb-8 text-sm text-white/75 text-center ">
-                Sleep with this sound
+                Rest with this sound
               </div>
 
               <div className="grid grid-cols-3 gap-2">
