@@ -824,7 +824,7 @@ const pauseWaveLayerTestImmediately = () => {
     return (
   <div className="relative min-h-screen text-white flex items-center justify-center p-6 overflow-hidden">
 <img
-  src="/backgrounds/wave.jpg"
+  src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
   alt=""
   className="absolute inset-0 hidden h-full w-full object-cover md:block"
 />
