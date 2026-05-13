@@ -234,6 +234,11 @@ if (folder === "forest") {
       fadeOut();
     });
   };
+       const pauseWaveLayerTestImmediately = () => {
+        waveAudioRef.current.forEach((audio) => {
+         audio.pause();
+       });
+     };
 
 
   const startSleepTimer = (minutes: number) => {
@@ -768,7 +773,7 @@ if (folder === "forest") {
   if (!("mediaSession" in navigator)) return;
 
   navigator.mediaSession.setActionHandler("pause", () => {
-    stopWaveLayerTest();
+    pauseWaveLayerTestImmediately();
     setIsPlaying(false);
   });
 
