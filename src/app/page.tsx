@@ -1058,7 +1058,7 @@ if (folder === "forest") {
             <div className="mt-6">
               <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4">
                 <div className="text-sm text-white/75 text-center">
-                  Sleep with this soundscape
+                  Rest with this soundscape
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
