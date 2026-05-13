@@ -799,13 +799,12 @@ const pauseWaveLayerTestImmediately = () => {
     setIsPlaying(false);
     });
 
-  navigator.mediaSession.setActionHandler("play", () => {
-    startSoundscape();
-
+  
+    navigator.mediaSession.setActionHandler("play", () => {
     navigator.mediaSession.playbackState = "playing";
-
     setIsPlaying(true);
-  });
+    });
+
 }, [selectedSound, isPlaying]);
 
   if (screen === "select") {
