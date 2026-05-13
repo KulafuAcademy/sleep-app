@@ -775,31 +775,38 @@ const pauseWaveLayerTestImmediately = () => {
   };
 
    useEffect(() => {
-  if (!("mediaSession" in navigator)) return;
+    if (!("mediaSession" in navigator)) return;
 
-  navigator.mediaSession.metadata = new MediaMetadata({
-    title: "hibiki.rest",
-    artist: "ambient space for rest & focus",
-    album: selectedSound,
-    artwork: [
-      {
-        src: "/apple-icon.png",
-        sizes: "180x180",
-        type: "image/png",
-      },
-    ],
-  });
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: "hibiki.rest",
+      artist: "ambient space for rest & focus",
+      album: selectedSound,
+      artwork: [
+        {
+         src: "/apple-icon.png",
+         sizes: "180x180",
+         type: "image/png",
+        },
+      ],
+    });
 
-  navigator.mediaSession.setActionHandler("pause", () => {
-    pauseWaveLayerTestImmediately();
+    navigator.mediaSession.playbackState =isPlaying ? "playing" : "paused";
+
+    navigator.mediaSession.setActionHandler("pause", () => {
+      stopSoundscape();
+
+    navigator.mediaSession.playbackState = "paused";
     setIsPlaying(false);
-  });
+    });
 
   navigator.mediaSession.setActionHandler("play", () => {
-    playWaveLayerTest();
+    startSoundscape();
+
+    navigator.mediaSession.playbackState = "playing";
+
     setIsPlaying(true);
   });
-}, [selectedSound]);
+}, [selectedSound, isPlaying]);
 
   if (screen === "select") {
     return (
