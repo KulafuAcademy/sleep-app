@@ -857,10 +857,10 @@ useEffect(() => {
 <img
   src={`/backgrounds/${selectBackground}.jpg`}
   alt=""
-  className="absolute inset-0 hidden h-full w-full object-cover md:block"
+  className="absolute inset-0 "
 />
 
-<div className="absolute inset-0 hidden bg-black/45 md:block" />
+<div className="absolute inset-0" />
         <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
@@ -1232,15 +1232,15 @@ useEffect(() => {
     <img
       src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
       alt=""
-      className="absolute inset-0 hidden h-full w-full object-cover md:block"
+      className="absolute inset-0"
     />
 
-    <div className="absolute inset-0 hidden bg-black/25 md:block" />
+    <div className="absolute inset-0 " />
   </>
 )} 
-      <div className="absolute hidden md:block w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
+      <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
 
-      <div className="absolute hidden md:block w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
+      <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
       <div className="relative z-10 w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
         <div className="px-6 pt-6">
