@@ -862,7 +862,7 @@ useEffect(() => {
     playsInline
     className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
   >
-    <source src="/backgrounds/wave.mp4" type="video/mp4" />
+    <source src="/backgrounds/wave-small.mp4" type="video/mp4" />
   </video>
 ) : (
   <img
