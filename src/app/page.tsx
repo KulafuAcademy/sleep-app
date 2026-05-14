@@ -853,14 +853,14 @@ useEffect(() => {
 
   if (screen === "select") {
     return (
-  <div className="relative min-h-screen text-white flex items-center justify-center p-6 overflow-hidden">
-<img
+  <div className="relative min-h-screen bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
+  <img
   src={`/backgrounds/${selectBackground}.jpg`}
   alt=""
-  className="absolute inset-0 "
+  className="absolute inset-0 h-full w-full object-cover object-center"
 />
 
-<div className="absolute inset-0" />
+<div className="absolute inset-0 bg-black/70 md:bg-black/45" />
         <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
@@ -1232,12 +1232,12 @@ useEffect(() => {
     <img
       src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
       alt=""
-      className="absolute inset-0"
+      className="absolute inset-0 h-full w-full object-cover object-center"
     />
 
-    <div className="absolute inset-0 " />
+    <div className="absolute inset-0 bg-black/70 md:bg-black/25" />
   </>
-)} 
+)}
       <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
 
       <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
