@@ -1368,7 +1368,7 @@ useEffect(() => {
                 className={`rounded-xl border py-2.5 text-sm transition ${
                   selectedTimer === 180 && timeLeft > 0
                     ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
-                    : "border-white/10 bg-white/5 text-white/45"
+                    : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
                 {selectedTimer === 180 && timeLeft > 0
@@ -1382,7 +1382,7 @@ useEffect(() => {
                 className={`rounded-xl border py-2.5 text-sm transition ${
                   selectedTimer === 360 && timeLeft > 0
                     ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
-                    : "border-white/10 bg-white/5 text-white/45"
+                    : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
                 {selectedTimer === 360 && timeLeft > 0
@@ -1396,7 +1396,7 @@ useEffect(() => {
                 className={`rounded-xl border py-2.5 text-sm transition ${
                   selectedTimer === 480 && timeLeft > 0
                     ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
-                    : "border-white/10 bg-white/5 text-white/45"
+                    : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
                 {selectedTimer === 480 && timeLeft > 0
