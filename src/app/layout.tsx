@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "hibiki.rest",
   description: "ambient space for rest & focus",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "hibiki.rest",
+  },
 };
 
 export const viewport = {
