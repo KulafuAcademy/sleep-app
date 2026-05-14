@@ -864,7 +864,7 @@ useEffect(() => {
         <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
-        <div className="relative z-10 w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+        <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
@@ -1242,7 +1242,7 @@ useEffect(() => {
 
       <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
-      <div className="relative z-10 w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-black/30 shadow-2xl overflow-hidden">
+      <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
         <div className="px-6 pt-6">
           <button
             onClick={() => {
