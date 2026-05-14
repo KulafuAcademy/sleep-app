@@ -855,9 +855,6 @@ useEffect(() => {
     return (
   <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
 
-<p className="fixed left-2 top-2 z-50 text-xs text-red-400">
-  bg: {selectBackground}
-</p>
 
 {selectBackground === "wave-video" ? (
   <video
