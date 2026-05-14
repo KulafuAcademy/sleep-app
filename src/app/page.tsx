@@ -1191,7 +1191,7 @@ useEffect(() => {
 
                   <button
                     onClick={() => startSoundscapeTimer(180)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/45"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0
                       ? formatTime(soundscapeTimeLeft)
@@ -1200,7 +1200,7 @@ useEffect(() => {
 
                   <button
                     onClick={() => startSoundscapeTimer(360)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/45"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0
                       ? formatTime(soundscapeTimeLeft)
@@ -1209,7 +1209,7 @@ useEffect(() => {
 
                   <button
                     onClick={() => startSoundscapeTimer(480)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/45"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0
                       ? formatTime(soundscapeTimeLeft)
