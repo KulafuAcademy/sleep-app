@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   description: "ambient space for rest & focus",
 };
 
+export const viewport = {
+  themeColor: "#05070d",
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
