@@ -857,7 +857,7 @@ useEffect(() => {
   <img
   src={`/backgrounds/${selectBackground}.jpg`}
   alt=""
-  className="absolute inset-0 h-full w-full object-cover object-center"
+  className="absolute left-0 right-0 top-[calc(-1*env(safe-area-inset-top))] h-[calc(100%+env(safe-area-inset-top))] w-full object-cover object-center"
 />
 
 <div className="absolute inset-0 bg-black/70 md:bg-black/45" />
@@ -1230,10 +1230,10 @@ useEffect(() => {
      {selectedSound && (
   <>
     <img
-      src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
-      alt=""
-      className="absolute inset-0 h-full w-full object-cover object-center"
-    />
+  src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
+  alt=""
+  className="absolute left-0 right-0 top-[calc(-1*env(safe-area-inset-top))] h-[calc(100%+env(safe-area-inset-top))] w-full object-cover object-center"
+/>
 
     <div className="absolute inset-0 bg-black/70 md:bg-black/25" />
   </>
