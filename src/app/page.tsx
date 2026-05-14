@@ -854,10 +854,10 @@ useEffect(() => {
   if (screen === "select") {
     return (
   <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
-  <img
+ <img
   src={`/backgrounds/${selectBackground}.jpg`}
   alt=""
-  className="absolute left-0 right-0 top-[calc(-1*env(safe-area-inset-top))] h-[calc(100%+env(safe-area-inset-top))] w-full object-cover object-center"
+  className="fixed inset-0 h-[100dvh] w-screen object-cover object-center"
 />
 
 <div className="absolute inset-0 bg-black/70 md:bg-black/45" />
@@ -1229,10 +1229,10 @@ useEffect(() => {
     <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
      {selectedSound && (
   <>
-    <img
+   <img
   src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
   alt=""
-  className="absolute left-0 right-0 top-[calc(-1*env(safe-area-inset-top))] h-[calc(100%+env(safe-area-inset-top))] w-full object-cover object-center"
+  className="fixed inset-0 h-[100dvh] w-screen object-cover object-center"
 />
 
     <div className="absolute inset-0 bg-black/70 md:bg-black/25" />
