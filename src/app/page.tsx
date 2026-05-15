@@ -511,7 +511,8 @@ export default function Home() {
     {},
   );
 
-  const startSoundscape = async () => {
+    
+const startSoundscape = async () => {
   stopSoundscape();
 
   for (const sound of selectedMixSounds) {
@@ -535,12 +536,45 @@ export default function Home() {
     for (const audio of audios) {
       audio.loop = true;
       audio.volume = 0;
-
       await audio.play();
     }
+
+    mixAudioRefs.current[sound] = audios;
+
+    let vol = 0;
+
+    const fadeIn = setInterval(() => {
+      vol += 0.01;
+
+      const current = mixVolumes[sound];
+
+      const volMap =
+        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+        ACTIVE_VOLUME_MAP.wave;
+
+      if (vol >= 1) {
+        a1.volume = volMap.a1 * current;
+        b1.volume = volMap.b1 * current;
+        c1.volume = volMap.c1 * current;
+
+        if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
+        if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
+
+        clearInterval(fadeIn);
+      } else {
+        a1.volume = volMap.a1 * current * vol;
+        b1.volume = volMap.b1 * current * vol;
+        c1.volume = volMap.c1 * current * vol;
+
+        if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current * vol;
+        if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current * vol;
+      }
+    }, 50);
   }
 };
-    stopSoundscape();
+
+
+      const stopSoundscape = () => {
 
     for (const sound of selectedMixSounds) {
       const folder = sound.toLowerCase();
