@@ -557,7 +557,9 @@ const ACTIVE_FADE_CONFIG = isMobile
         const current = mixVolumes[sound];
 
         const volMap =
-          VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
+          ACTIVE_VOLUME_MAP[
+            folder as keyof typeof ACTIVE_VOLUME_MAP
+          ] ?? ACTIVE_VOLUME_MAP.wave;
 
         if (vol >= 1) {
           a1.volume = volMap.a1 * current;
@@ -1176,25 +1178,20 @@ const ACTIVE_FADE_CONFIG = isMobile
                       mixAudioRefs.current[sound]?.forEach((audio, index) => {
                         const folder = sound.toLowerCase();
 
-                        const volMap = VOLUME_MAP[
-                          folder as keyof typeof VOLUME_MAP
-                        ] || {
-                          a1: 0.3,
-                          b1: 0.3,
-                          c1: 0.2,
-                        };
+                        const volMap =
+                          ACTIVE_VOLUME_MAP[
+                            folder as keyof typeof ACTIVE_VOLUME_MAP
+                          ] || {
+                            a1: 0.3,
+                            b1: 0.3,
+                            c1: 0.2,
+                          };
 
                         if (index === 0) audio.volume = volMap.a1 * value;
                         if (index === 1) audio.volume = volMap.b1 * value;
                         if (index === 2) audio.volume = volMap.c1 * value;
                       });
-
-                      // if (mixAudioRefs.current[sound]) {
-                      //   mixAudioRefs.current[sound]!.forEach((audio) => {
-                      //     audio.volume = value;
-                      //   });
-                      // }
-                    }}
+                      
                     className="w-full accent-sky-300"
                   />
                 </div>
