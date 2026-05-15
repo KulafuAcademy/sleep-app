@@ -1327,8 +1327,8 @@ useEffect(() => {
                   }`}
                 >
                   {selectedTimer === 30 && timeLeft > 0
-                    ? `■ ${formatTime(timeLeft)}`
-                    : "▶ 30m"}
+                    ? `□ ${formatTime(timeLeft)}`
+                    : "▷ 30m"}
                 </button>
 
                 <button
