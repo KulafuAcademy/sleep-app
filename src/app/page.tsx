@@ -1347,9 +1347,17 @@ export default function Home() {
                       : "border-white/10 bg-white/5 text-white/75"
                   }`}
                 >
-                  {selectedTimer === 60 && timeLeft > 0
-                    ? formatTime(timeLeft)
-                    : "60m"}
+                  {selectedTimer === 60 && timeLeft > 0 ? (
+                    <span className="flex items-center justify-center gap-1">
+                      <Square size={8} fill="currentColor" strokeWidth={0} />
+                      <span>{formatTime(timeLeft)}</span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-1">
+                      <Play size={10} fill="currentColor" strokeWidth={0} />
+                      <span>60m</span>
+                    </span>
+                  )}
                 </button>
 
                 <button
@@ -1361,9 +1369,17 @@ export default function Home() {
                       : "border-white/10 bg-white/5 text-white/75"
                   }`}
                 >
-                  {selectedTimer === 120 && timeLeft > 0
-                    ? formatTime(timeLeft)
-                    : "2h"}
+                  {selectedTimer === 120 && timeLeft > 0 ? (
+                    <span className="flex items-center justify-center gap-1">
+                      <Square size={8} fill="currentColor" strokeWidth={0} />
+                      <span>{formatTime(timeLeft)}</span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-1">
+                      <Play size={10} fill="currentColor" strokeWidth={0} />
+                      <span>2h</span>
+                    </span>
+                  )}
                 </button>
               </div>
             </div>
@@ -1378,9 +1394,17 @@ export default function Home() {
                     : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
-                {selectedTimer === 180 && timeLeft > 0
-                  ? formatTime(timeLeft)
-                  : "3h"}
+                {selectedTimer === 180 && timeLeft > 0 ? (
+                  <span className="flex items-center justify-center gap-1">
+                    <Square size={8} fill="currentColor" strokeWidth={0} />
+                    <span>{formatTime(timeLeft)}</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-1">
+                    <Play size={10} fill="currentColor" strokeWidth={0} />
+                    <span>3h</span>
+                  </span>
+                )}
               </button>
 
               <button
@@ -1392,9 +1416,17 @@ export default function Home() {
                     : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
-                {selectedTimer === 360 && timeLeft > 0
-                  ? formatTime(timeLeft)
-                  : "6h"}
+                {selectedTimer === 360 && timeLeft > 0 ? (
+                  <span className="flex items-center justify-center gap-1">
+                    <Square size={8} fill="currentColor" strokeWidth={0} />
+                    <span>{formatTime(timeLeft)}</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-1">
+                    <Play size={10} fill="currentColor" strokeWidth={0} />
+                    <span>6h</span>
+                  </span>
+                )}
               </button>
 
               <button
@@ -1406,9 +1438,17 @@ export default function Home() {
                     : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
-                {selectedTimer === 480 && timeLeft > 0
-                  ? formatTime(timeLeft)
-                  : "8h"}
+                {selectedTimer === 480 && timeLeft > 0 ? (
+                  <span className="flex items-center justify-center gap-1">
+                    <Square size={8} fill="currentColor" strokeWidth={0} />
+                    <span>{formatTime(timeLeft)}</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-1">
+                    <Play size={10} fill="currentColor" strokeWidth={0} />
+                    <span>8h</span>
+                  </span>
+                )}
               </button>
             </div>
 
