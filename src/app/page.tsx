@@ -593,10 +593,13 @@ export default function Home() {
           } else {
             audio.volume = 0;
 
-            setTimeout(() => {
-              audio.pause();
-              audio.currentTime = 0;
-            }, 120);
+          setTimeout(() => {
+           audio.pause();
+
+           setTimeout(() => {
+           audio.currentTime = 0;
+          }, 300);
+         }, 120);
           }
         };
 
