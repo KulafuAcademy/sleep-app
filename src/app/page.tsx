@@ -581,7 +581,7 @@ const startSoundscape = async () => {
         let vol = audio.volume;
 
         const fadeOut = setInterval(() => {
-          vol -= 0.02;
+          vol -= 0.01;
 
           if (vol <= 0) {
             audio.volume = 0;
