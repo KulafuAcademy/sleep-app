@@ -57,14 +57,31 @@ export default function Home() {
 
   const LAYERS = ["a1", "b1", "c1"];
 
-  const VOLUME_MAP = {
-    wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
-    forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
-    rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
-    cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
-    bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
-    river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
-  };
+const VOLUME_MAP_DESKTOP = {
+  wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
+  forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
+  rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
+  cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
+  bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
+  river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
+};
+
+const VOLUME_MAP_MOBILE = {
+  wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
+  forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
+  rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
+  cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
+  bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
+  river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
+};
+
+const isMobile =
+  typeof navigator !== "undefined" &&
+  /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+const ACTIVE_VOLUME_MAP = isMobile
+  ? VOLUME_MAP_MOBILE
+  : VOLUME_MAP_DESKTOP;
 
   const playWaveLayerTest = () => {
     console.log("RUNNING playWaveLayerTest");
@@ -183,7 +200,9 @@ export default function Home() {
       const progress = Math.min(elapsed / duration, 1);
 
       const volMap =
-        VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
+       ACTIVE_VOLUME_MAP[
+       folder as keyof typeof ACTIVE_VOLUME_MAP
+       ] ?? ACTIVE_VOLUME_MAP.wave;
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
