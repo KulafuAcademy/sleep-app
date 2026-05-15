@@ -1328,12 +1328,12 @@ useEffect(() => {
                 >
                 {selectedTimer === 30 && timeLeft > 0 ? (
                   <span className="flex items-center justify-center gap-1">
-                   <span className="relative top-[1px] text-[10px]">□</span>
+                   <span className="relative text-[10px]">□</span>
                    <span>{formatTime(timeLeft)}</span>
                   </span>
               ) : (
                   <span className="flex items-center justify-center gap-1">
-                   <span className="relative top-[1px] text-[10px]">▷</span>
+                   <span className="relative text-[10px]">▷</span>
                    <span>30m</span>
                    </span>
                  )}
