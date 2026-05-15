@@ -1165,54 +1165,108 @@ export default function Home() {
                     onClick={() => startSoundscapeTimer(30)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0
-                      ? formatTime(soundscapeTimeLeft)
-                      : "30m"}
+                    {selectedSoundscapeTimer === 30 &&
+                    soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span>30m</span>
+                      </span>
+                    )}
                   </button>
 
                   <button
                     onClick={() => startSoundscapeTimer(60)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0
-                      ? formatTime(soundscapeTimeLeft)
-                      : "60m"}
+                    {selectedSoundscapeTimer === 60 &&
+                    soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span>60m</span>
+                      </span>
+                    )}
                   </button>
 
                   <button
                     onClick={() => startSoundscapeTimer(120)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0
-                      ? formatTime(soundscapeTimeLeft)
-                      : "2h"}
+                    {selectedSoundscapeTimer === 120 &&
+                    soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span>2h</span>
+                      </span>
+                    )}
                   </button>
 
                   <button
                     onClick={() => startSoundscapeTimer(180)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0
-                      ? formatTime(soundscapeTimeLeft)
-                      : "3h"}
+                    {selectedSoundscapeTimer === 180 &&
+                    soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span>3h</span>
+                      </span>
+                    )}
                   </button>
 
                   <button
                     onClick={() => startSoundscapeTimer(360)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0
-                      ? formatTime(soundscapeTimeLeft)
-                      : "6h"}
+                    {selectedSoundscapeTimer === 360 &&
+                    soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span>6h</span>
+                      </span>
+                    )}
                   </button>
 
                   <button
                     onClick={() => startSoundscapeTimer(480)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0
-                      ? formatTime(soundscapeTimeLeft)
-                      : "8h"}
+                    {selectedSoundscapeTimer === 480 &&
+                    soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span>8h</span>
+                      </span>
+                    )}
                   </button>
                 </div>
               </div>
