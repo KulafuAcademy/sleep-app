@@ -599,7 +599,7 @@ export default function Home() {
            setTimeout(() => {
            audio.currentTime = 0;
           }, 300);
-         }, 1200);
+         }, 900);
           }
         };
 
