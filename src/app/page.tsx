@@ -542,7 +542,7 @@ export default function Home() {
 };
     stopSoundscape();
 
-    selectedMixSounds.forEach((sound) => {
+    for (const sound of selectedMixSounds) {
       const folder = sound.toLowerCase();
 
       const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
@@ -585,20 +585,20 @@ export default function Home() {
           b1.volume = volMap.b1 * current;
           c1.volume = volMap.c1 * current;
 
-          if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
-          if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
+        if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
+        if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
 
-          clearInterval(fadeIn);
-        } else {
-          a1.volume = volMap.a1 * current * vol;
-          b1.volume = volMap.b1 * current * vol;
-          c1.volume = volMap.c1 * current * vol;
+        clearInterval(fadeIn);
+      } else {
+        a1.volume = volMap.a1 * current * vol;
+        b1.volume = volMap.b1 * current * vol;
+        c1.volume = volMap.c1 * current * vol;
 
-          if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
-          if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
-        }
+        if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current * vol;
+        if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current * vol;
+       }
       }, 50);
-    });
+    }
   };
 
   const stopSoundscape = () => {
