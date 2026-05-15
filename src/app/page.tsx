@@ -578,7 +578,7 @@ export default function Home() {
 
       audios.forEach((audio) => {
         const startVolume = audio.volume;
-        const duration = 2600;
+        const duration = 2200;
         const startTime = performance.now();
 
         const fadeOut = () => {
@@ -599,7 +599,7 @@ export default function Home() {
            setTimeout(() => {
            audio.currentTime = 0;
           }, 300);
-         }, 500);
+         }, 900);
           }
         };
 
