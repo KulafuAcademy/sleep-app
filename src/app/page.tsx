@@ -1,7 +1,16 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { CloudRain, Waves, Trees, Flame, Wind, Mountain } from "lucide-react";
+import {
+  CloudRain,
+  Waves,
+  Trees,
+  Flame,
+  Wind,
+  Mountain,
+  Play,
+  Square,
+} from "lucide-react";
 
 type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Cave";
 
@@ -49,13 +58,13 @@ export default function Home() {
   const LAYERS = ["a1", "b1", "c1"];
 
   const VOLUME_MAP = {
-  wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
-  forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
-  rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
-  cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
-  bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
-  river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
-};
+    wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
+    forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
+    rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
+    cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
+    bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
+    river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
+  };
 
   const playWaveLayerTest = () => {
     console.log("RUNNING playWaveLayerTest");
@@ -67,7 +76,7 @@ export default function Home() {
 
     waveAudioRef.current = [];
 
-  if (!selectedSound) return;
+    if (!selectedSound) return;
 
     const folder = selectedSound.toLowerCase();
 
@@ -76,48 +85,45 @@ export default function Home() {
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
     if (folder === "forest") {
-  a1.addEventListener("loadedmetadata", () => {
-    a1.currentTime = 23;
-  });
+      a1.addEventListener("loadedmetadata", () => {
+        a1.currentTime = 23;
+      });
 
-  b1.addEventListener("loadedmetadata", () => {
-    b1.currentTime = 71;
-  });
+      b1.addEventListener("loadedmetadata", () => {
+        b1.currentTime = 71;
+      });
 
-  c1.addEventListener("loadedmetadata", () => {
-    c1.currentTime = 41;
-  });
-}
+      c1.addEventListener("loadedmetadata", () => {
+        c1.currentTime = 41;
+      });
+    }
 
-let a2: HTMLAudioElement | null = null;
-let a3: HTMLAudioElement | null = null;
+    let a2: HTMLAudioElement | null = null;
+    let a3: HTMLAudioElement | null = null;
 
-const audios: HTMLAudioElement[] = [a1, b1, c1];
+    const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-if (folder === "forest") {
-  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+    if (folder === "forest") {
+      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-a2.addEventListener("loadedmetadata", (event) => {
-  const audio = event.currentTarget as HTMLAudioElement;
-  audio.currentTime = 107;
-});
+      a2.addEventListener("loadedmetadata", (event) => {
+        const audio = event.currentTarget as HTMLAudioElement;
+        audio.currentTime = 107;
+      });
 
-a3.addEventListener("loadedmetadata", (event) => {
-  const audio = event.currentTarget as HTMLAudioElement;
-  audio.currentTime = 149;
-});
+      a3.addEventListener("loadedmetadata", (event) => {
+        const audio = event.currentTarget as HTMLAudioElement;
+        audio.currentTime = 149;
+      });
 
-  audios.push(a2, a3);
+      audios.push(a2, a3);
+    } else if (folder !== "bonfire" && folder !== "cave") {
+      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-} else if (folder !== "bonfire" && folder !== "cave") {
-  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
-
-  audios.push(a2, a3);
-}
-
-
+      audios.push(a2, a3);
+    }
 
     waveAudioRef.current = audios;
 
@@ -136,15 +142,15 @@ a3.addEventListener("loadedmetadata", (event) => {
     if (a2) a2.volume = 0;
     if (a3) a3.volume = 0;
 
-// rainだけ開始位置をズラす
-  if (folder === "rain") {
-  a1.currentTime = 37;
-  b1.currentTime = 0;
-  c1.currentTime = 11;
+    // rainだけ開始位置をズラす
+    if (folder === "rain") {
+      a1.currentTime = 37;
+      b1.currentTime = 0;
+      c1.currentTime = 11;
 
-  if (a2) a2.currentTime = 59;
-  if (a3) a3.currentTime = 113;
-}
+      if (a2) a2.currentTime = 59;
+      if (a3) a3.currentTime = 113;
+    }
 
     a1.play();
     b1.play();
@@ -153,17 +159,20 @@ a3.addEventListener("loadedmetadata", (event) => {
     if (a2) a2.play();
     if (a3) a3.play();
 
-if (folder === "forest") {
-  setInterval(() => {
-    const delta = (Math.random() - 0.5) * 0.02;
+    if (folder === "forest") {
+      setInterval(
+        () => {
+          const delta = (Math.random() - 0.5) * 0.02;
 
-    let newVolume = c1.volume + delta;
+          let newVolume = c1.volume + delta;
 
-    newVolume = Math.max(0.05, Math.min(0.3, newVolume));
+          newVolume = Math.max(0.05, Math.min(0.3, newVolume));
 
-    c1.volume = newVolume;
-  }, 28000 + Math.random() * 20000);
-}
+          c1.volume = newVolume;
+        },
+        28000 + Math.random() * 20000,
+      );
+    }
 
     // 👇フェードイン（3秒）
     const duration = 3000;
@@ -182,7 +191,7 @@ if (folder === "forest") {
 
       if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
       if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
-    
+
       if (progress < 1) {
         requestAnimationFrame(fadeIn);
       }
@@ -193,59 +202,59 @@ if (folder === "forest") {
 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
-  waveAudioRef.current.forEach((audio) => {
-    if (!audio) return;
-    if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+    waveAudioRef.current.forEach((audio) => {
+      if (!audio) return;
+      if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
 
-    audio.currentTime = sec % audio.duration;
-    audio.play();
-  });
-};
+      audio.currentTime = sec % audio.duration;
+      audio.play();
+    });
+  };
 
-    const stopWaveLayerTest = () => {
-  if (fluctuationRef.current !== null) {
-    clearInterval(fluctuationRef.current);
-    fluctuationRef.current = null;
-  }
+  const stopWaveLayerTest = () => {
+    if (fluctuationRef.current !== null) {
+      clearInterval(fluctuationRef.current);
+      fluctuationRef.current = null;
+    }
 
-  const audios = [...waveAudioRef.current];
+    const audios = [...waveAudioRef.current];
 
-  audios.forEach((audio) => {
-    const startVolume = audio.volume;
-    const duration = 4000;
-    const startTime = performance.now();
+    audios.forEach((audio) => {
+      const startVolume = audio.volume;
+      const duration = 4000;
+      const startTime = performance.now();
 
-    const fadeOut = () => {
-      const elapsed = performance.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+      const fadeOut = () => {
+        const elapsed = performance.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
 
-      audio.volume = startVolume * (1 - progress);
+        audio.volume = startVolume * (1 - progress);
 
-      if (progress < 1) {
-        requestAnimationFrame(fadeOut);
-      } else {
-        audio.volume = 0;
-        audio.pause();
-        audio.currentTime = 0;
+        if (progress < 1) {
+          requestAnimationFrame(fadeOut);
+        } else {
+          audio.volume = 0;
+          audio.pause();
+          audio.currentTime = 0;
 
-        waveAudioRef.current = waveAudioRef.current.filter(
-          (item) => item !== audio,
-        );
-      }
-    };
+          waveAudioRef.current = waveAudioRef.current.filter(
+            (item) => item !== audio,
+          );
+        }
+      };
 
-    fadeOut();
-  });
-};
+      fadeOut();
+    });
+  };
 
-const pauseWaveLayerTestImmediately = () => {
-  waveAudioRef.current.forEach((audio) => {
-    audio.pause();
-    audio.currentTime = 0;
-  });
+  const pauseWaveLayerTestImmediately = () => {
+    waveAudioRef.current.forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
 
-  waveAudioRef.current = [];
-};
+    waveAudioRef.current = [];
+  };
 
   const startSleepTimer = (minutes: number) => {
     const isSameTimer = selectedTimer === minutes && isTimerRunning;
@@ -371,33 +380,27 @@ const pauseWaveLayerTestImmediately = () => {
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
   const backgroundNames = [
-  "rain",
-  "wave",
-  "river",
-  "bonfire",
-  "forest",
-  "cave",
-];
+    "rain",
+    "wave",
+    "river",
+    "bonfire",
+    "forest",
+    "cave",
+  ];
 
-const [selectBackground, setSelectBackground] = useState(
-  () =>
-    backgroundNames[
-      Math.floor(Math.random() * backgroundNames.length)
-    ],
-);
+  const [selectBackground, setSelectBackground] = useState(
+    () => backgroundNames[Math.floor(Math.random() * backgroundNames.length)],
+  );
 
-useEffect(() => {
-  const interval = setInterval(() => {
-    setSelectBackground(
-      backgroundNames[
-        Math.floor(Math.random() * backgroundNames.length)
-      ],
-    );
-  }, 10000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSelectBackground(
+        backgroundNames[Math.floor(Math.random() * backgroundNames.length)],
+      );
+    }, 10000);
 
-  return () => clearInterval(interval);
-}, []);
-
+    return () => clearInterval(interval);
+  }, []);
 
   const [playerVolume, setPlayerVolume] = useState(0.3);
   const [selectedMixSounds, setSelectedMixSounds] = useState<SoundName[]>([]);
@@ -471,64 +474,64 @@ useEffect(() => {
   );
 
   const startSoundscape = () => {
-  stopSoundscape();
+    stopSoundscape();
 
-  selectedMixSounds.forEach((sound) => {
-    const folder = sound.toLowerCase();
+    selectedMixSounds.forEach((sound) => {
+      const folder = sound.toLowerCase();
 
-    const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
-    const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
-    const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
+      const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
+      const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
+      const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
-    let a2: HTMLAudioElement | null = null;
-    let a3: HTMLAudioElement | null = null;
+      let a2: HTMLAudioElement | null = null;
+      let a3: HTMLAudioElement | null = null;
 
-    const audios: HTMLAudioElement[] = [a1, b1, c1];
+      const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-    if (folder !== "bonfire" && folder !== "cave") {
-      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
-      audios.push(a2, a3);
-    }
-
-    audios.forEach((audio) => {
-      audio.loop = true;
-      audio.volume = 0;
-      audio.play();
-    });
-
-    mixAudioRefs.current[sound] = audios;
-
-    let vol = 0;
-
-    const fadeIn = setInterval(() => {
-      vol += 0.01;
-
-      const current = mixVolumes[sound];
-
-      const volMap =
-        VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
-
-      if (vol >= 1) {
-        a1.volume = volMap.a1 * current;
-        b1.volume = volMap.b1 * current;
-        c1.volume = volMap.c1 * current;
-
-        if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
-        if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
-
-        clearInterval(fadeIn);
-      } else {
-        a1.volume = volMap.a1 * current * vol;
-        b1.volume = volMap.b1 * current * vol;
-        c1.volume = volMap.c1 * current * vol;
-
-                if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
-                if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
+      if (folder !== "bonfire" && folder !== "cave") {
+        a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+        a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+        audios.push(a2, a3);
       }
-    }, 50);
-  });
-};
+
+      audios.forEach((audio) => {
+        audio.loop = true;
+        audio.volume = 0;
+        audio.play();
+      });
+
+      mixAudioRefs.current[sound] = audios;
+
+      let vol = 0;
+
+      const fadeIn = setInterval(() => {
+        vol += 0.01;
+
+        const current = mixVolumes[sound];
+
+        const volMap =
+          VOLUME_MAP[folder as keyof typeof VOLUME_MAP] ?? VOLUME_MAP.wave;
+
+        if (vol >= 1) {
+          a1.volume = volMap.a1 * current;
+          b1.volume = volMap.b1 * current;
+          c1.volume = volMap.c1 * current;
+
+          if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
+          if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
+
+          clearInterval(fadeIn);
+        } else {
+          a1.volume = volMap.a1 * current * vol;
+          b1.volume = volMap.b1 * current * vol;
+          c1.volume = volMap.c1 * current * vol;
+
+          if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
+          if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
+        }
+      }, 50);
+    });
+  };
 
   const stopSoundscape = () => {
     Object.values(mixAudioRefs.current).forEach((audios) => {
@@ -796,7 +799,6 @@ useEffect(() => {
     }
   };
 
-
   const handleSelectSound = (sound: SoundName) => {
     if (isPlaying) {
       stopRain();
@@ -805,42 +807,41 @@ useEffect(() => {
     setSelectedSound(sound);
   };
 
-   useEffect(() => {
+  useEffect(() => {
     if (!("mediaSession" in navigator)) return;
 
     navigator.mediaSession.metadata = new MediaMetadata({
       title: "hibiki.rest",
       artwork: [
         {
-         src: "/apple-icon.png",
-         sizes: "180x180",
-         type: "image/png",
+          src: "/apple-icon.png",
+          sizes: "180x180",
+          type: "image/png",
         },
       ],
     });
 
     //navigator.mediaSession.playbackState =isPlaying ? "playing" : "paused";
 
-   navigator.mediaSession.setActionHandler("pause", () => {
-  Object.values(mixAudioRefs.current).forEach((audios) => {
-    audios?.forEach((audio) => {
-      audio.pause();
-      audio.currentTime = 0;
+    navigator.mediaSession.setActionHandler("pause", () => {
+      Object.values(mixAudioRefs.current).forEach((audios) => {
+        audios?.forEach((audio) => {
+          audio.pause();
+          audio.currentTime = 0;
+        });
+      });
+
+      waveAudioRef.current.forEach((audio) => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+
+      navigator.mediaSession.playbackState = "paused";
+      setIsPlaying(false);
     });
-  });
 
-  waveAudioRef.current.forEach((audio) => {
-    audio.pause();
-    audio.currentTime = 0;
-  });
-
-  navigator.mediaSession.playbackState = "paused";
-  setIsPlaying(false);
-});
-
-  
     navigator.mediaSession.setActionHandler("play", () => {
-    setIsPlaying(true);
+      setIsPlaying(true);
     });
 
     navigator.mediaSession.setActionHandler("nexttrack", null);
@@ -848,33 +849,30 @@ useEffect(() => {
     navigator.mediaSession.setActionHandler("seekbackward", null);
     navigator.mediaSession.setActionHandler("seekforward", null);
     navigator.mediaSession.setActionHandler("seekto", null);
-
-}, [selectedSound, isPlaying]);
+  }, [selectedSound, isPlaying]);
 
   if (screen === "select") {
     return (
-  <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
+      <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
+        {selectBackground === "wave-video" ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
+          >
+            <source src="/backgrounds/wave-small.mp4" type="video/mp4" />
+          </video>
+        ) : (
+          <img
+            src={`/backgrounds/${selectBackground}.jpg`}
+            alt=""
+            className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
+          />
+        )}
 
-
-{selectBackground === "wave-video" ? (
-  <video
-    autoPlay
-    muted
-    loop
-    playsInline
-    className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
-  >
-    <source src="/backgrounds/wave-small.mp4" type="video/mp4" />
-  </video>
-) : (
-  <img
-    src={`/backgrounds/${selectBackground}.jpg`}
-    alt=""
-    className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
-  />
-)}
-
-<div className="absolute inset-0 bg-black/70 md:bg-black/45" />
+        <div className="absolute inset-0 bg-black/70 md:bg-black/45" />
         <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
@@ -938,17 +936,17 @@ useEffect(() => {
               </div>
             </div>
 
-          <button
-            onClick={() => {
-               if (!selectedSound) return;
-               setScreen("player");
+            <button
+              onClick={() => {
+                if (!selectedSound) return;
+                setScreen("player");
               }}
-               className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] active:scale-[0.98]"
-              >
-               {selectedSound
-                  ? `Continue with ${selectedSound}`
-                 : "Choose a sound"}
-                </button>
+              className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] active:scale-[0.98]"
+            >
+              {selectedSound
+                ? `Continue with ${selectedSound}`
+                : "Choose a sound"}
+            </button>
 
             <button
               onClick={() => setScreen("soundscape")}
@@ -1130,13 +1128,14 @@ useEffect(() => {
                       // 👇ここに貼る
                       mixAudioRefs.current[sound]?.forEach((audio, index) => {
                         const folder = sound.toLowerCase();
-                        
-                        const volMap =
-                         VOLUME_MAP[folder as keyof typeof VOLUME_MAP] || {
-                         a1: 0.3,
-                         b1: 0.3,
-                         c1: 0.2,
-                    };
+
+                        const volMap = VOLUME_MAP[
+                          folder as keyof typeof VOLUME_MAP
+                        ] || {
+                          a1: 0.3,
+                          b1: 0.3,
+                          c1: 0.2,
+                        };
 
                         if (index === 0) audio.volume = volMap.a1 * value;
                         if (index === 1) audio.volume = volMap.b1 * value;
@@ -1241,17 +1240,17 @@ useEffect(() => {
 
   return (
     <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
-     {selectedSound && (
-  <>
- <img
-  src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
-  alt=""
-  className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
-/>
+      {selectedSound && (
+        <>
+          <img
+            src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
+            alt=""
+            className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
+          />
 
-    <div className="absolute inset-0 bg-black/70 md:bg-black/25" />
-  </>
-)}
+          <div className="absolute inset-0 bg-black/70 md:bg-black/25" />
+        </>
+      )}
       <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
 
       <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
@@ -1326,17 +1325,17 @@ useEffect(() => {
                       : "border-white/10 bg-white/5 text-white/75"
                   }`}
                 >
-                {selectedTimer === 30 && timeLeft > 0 ? (
-                  <span className="flex items-center justify-center gap-1">
-                   <span className="relative text-[10px]">□</span>
-                   <span>{formatTime(timeLeft)}</span>
-                  </span>
-              ) : (
-                  <span className="flex items-center justify-center gap-1">
-                   <span className="relative text-[10px]">▷</span>
-                   <span>30m</span>
-                   </span>
-                 )}
+                  {selectedTimer === 30 && timeLeft > 0 ? (
+                    <span className="flex items-center justify-center gap-1">
+                      <Square size={8} fill="currentColor" strokeWidth={0} />
+                      <span>{formatTime(timeLeft)}</span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-1">
+                      <Play size={10} fill="currentColor" strokeWidth={0} />
+                      <span>30m</span>
+                    </span>
+                  )}
                 </button>
 
                 <button
@@ -1501,62 +1500,62 @@ useEffect(() => {
               </div>
             )}
 
-              {process.env.NODE_ENV === "development" && (
-                <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
-                  <div className="mb-2 text-xs text-yellow-200">
-                    Debug Time: {debugTimeSec}s /{" "}
-                    {Math.floor(debugTimeSec / 3600)}:
-                    {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(
-                      2,
-                      "0",
-                    )}
-                    :{String(debugTimeSec % 60).padStart(2, "0")}
-                  </div>
+            {process.env.NODE_ENV === "development" && (
+              <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
+                <div className="mb-2 text-xs text-yellow-200">
+                  Debug Time: {debugTimeSec}s /{" "}
+                  {Math.floor(debugTimeSec / 3600)}:
+                  {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(
+                    2,
+                    "0",
+                  )}
+                  :{String(debugTimeSec % 60).padStart(2, "0")}
+                </div>
 
+                <input
+                  type="range"
+                  min={0}
+                  max={28800}
+                  step={1}
+                  value={debugTimeSec}
+                  onChange={(e) => {
+                    const sec = Number(e.target.value);
+                    setDebugTimeSec(sec);
+                    jumpWaveToTime(sec);
+                  }}
+                  className="w-full"
+                />
+
+                <div className="mt-3 flex gap-2">
                   <input
-                    type="range"
+                    type="number"
                     min={0}
                     max={28800}
-                    step={1}
-                    value={debugTimeSec}
-                    onChange={(e) => {
-                      const sec = Number(e.target.value);
+                    value={debugInputSec}
+                    onChange={(e) => setDebugInputSec(e.target.value)}
+                    placeholder="Enter seconds"
+                    className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const sec = Number(debugInputSec);
+                      if (Number.isNaN(sec)) return;
+
                       setDebugTimeSec(sec);
                       jumpWaveToTime(sec);
                     }}
-                    className="w-full"
-                  />
-
-                  <div className="mt-3 flex gap-2">
-                    <input
-                      type="number"
-                      min={0}
-                      max={28800}
-                      value={debugInputSec}
-                      onChange={(e) => setDebugInputSec(e.target.value)}
-                      placeholder="Enter seconds"
-                      className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const sec = Number(debugInputSec);
-                        if (Number.isNaN(sec)) return;
-
-                        setDebugTimeSec(sec);
-                        jumpWaveToTime(sec);
-                      }}
-                      className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
-                    >
-                      Jump
-                    </button>
-                  </div>
+                    className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
+                  >
+                    Jump
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-   );
+    </div>
+  );
 }
