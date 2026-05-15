@@ -1527,27 +1527,29 @@ const ACTIVE_FADE_CONFIG = isMobile
                 )}
               </button>
 
-              <button
-                type="button"
-                onClick={() => startSleepTimer(480)}
-                className={`rounded-xl border py-2.5 text-sm transition ${
-                  selectedTimer === 480 && timeLeft > 0
-                    ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
-                    : "border-white/10 bg-white/5 text-white/75"
-                }`}
+            <button
+              type="button"
+              onClick={() => startSleepTimer(480)}
+              className={`rounded-xl border py-2.5 text-sm transition ${
+                 selectedTimer === 480 && timeLeft > 0
+                 ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
+                 : "border-white/10 bg-white/5 text-white/75"
+              }`}
               >
-                {selectedTimer === 480 && timeLeft > 0 ? (
-                  <span className="flex items-center justify-center gap-1">
-                    <Square size={8} fill="currentColor" strokeWidth={0} />
-                    <span>{formatTime(timeLeft)}</span>
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-1">
-                    <Play size={10} fill="currentColor" strokeWidth={0} />
-                    <span>8h</span>
-                  </span>
-                )}
-              </button>
+             {selectedTimer === 480 && timeLeft > 0 ? (
+              <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+               <Square size={8} fill="currentColor" strokeWidth={0} />
+               <span className="text-xs leading-none">
+                 {formatTime(timeLeft)}
+               </span>
+              </span>
+           ) : (
+              <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+               <Play size={10} fill="currentColor" strokeWidth={0} />
+               <span className="text-sm leading-none">8h</span>
+              </span>
+           )}
+            </button>
             </div>
 
             {false && (
