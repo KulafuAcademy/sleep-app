@@ -577,25 +577,30 @@ const startSoundscape = async () => {
     Object.values(mixAudioRefs.current).forEach((audios) => {
       if (!audios) return;
 
-      audios.forEach((audio) => {
-        let vol = audio.volume;
+    audios.forEach((audio) => {
+  const startVolume = audio.volume;
+  const duration = 4000;
+  const startTime = performance.now();
 
-        const fadeOut = setInterval(() => {
-          vol -= 0.01;
+  const fadeOut = () => {
+    const elapsed = performance.now() - startTime;
 
-          if (vol <= 0) {
-            audio.volume = 0;
-            clearInterval(fadeOut);
-            audio.pause();
-            audio.currentTime = 0;
-          } else {
-            audio.volume = vol;
-          }
-        }, 50);
-      });
+    const progress = Math.min(elapsed / duration, 1);
+
+    audio.volume = startVolume * (1 - progress);
+
+    if (progress < 1) {
+      requestAnimationFrame(fadeOut);
+    } else {
+      audio.volume = 0;
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  };
+
+       fadeOut();
     });
-
-    mixAudioRefs.current = {};
+   }); 
   };
 
   const [highLevel, setHighLevel] = useState(0.015);
