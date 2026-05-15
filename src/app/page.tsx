@@ -1326,9 +1326,17 @@ useEffect(() => {
                       : "border-white/10 bg-white/5 text-white/75"
                   }`}
                 >
-                  {selectedTimer === 30 && timeLeft > 0
-                    ? `□ ${formatTime(timeLeft)}`
-                    : "▷ 30m"}
+                {selectedTimer === 30 && timeLeft > 0 ? (
+                  <span className="flex items-center justify-center gap-1">
+                   <span className="relative top-[1px] text-[10px]">□</span>
+                   <span>{formatTime(timeLeft)}</span>
+                  </span>
+              ) : (
+                  <span className="flex items-center justify-center gap-1">
+                   <span className="relative top-[1px] text-[10px]">▷</span>
+                   <span>30m</span>
+                   </span>
+                 )}
                 </button>
 
                 <button
