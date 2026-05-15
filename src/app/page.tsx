@@ -1191,7 +1191,7 @@ const ACTIVE_FADE_CONFIG = isMobile
                         if (index === 1) audio.volume = volMap.b1 * value;
                         if (index === 2) audio.volume = volMap.c1 * value;
                       });
-                      
+                      }}
                     className="w-full accent-sky-300"
                   />
                 </div>
