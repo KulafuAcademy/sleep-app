@@ -57,47 +57,45 @@ export default function Home() {
 
   const LAYERS = ["a1", "b1", "c1"];
 
-const VOLUME_MAP_DESKTOP = {
-  wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
-  forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
-  rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
-  cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
-  bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
-  river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
-};
+  const VOLUME_MAP_DESKTOP = {
+    wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
+    forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
+    rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
+    cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
+    bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
+    river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
+  };
 
-const VOLUME_MAP_MOBILE = {
-  wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
-  forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
-  rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
-  cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
-  bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
-  river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
-};
+  const VOLUME_MAP_MOBILE = {
+    wave: { a1: 0.05, b1: 0.1, c1: 0.05, a2: 0.18, a3: 0.18 },
+    forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
+    rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
+    cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
+    bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
+    river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
+  };
 
-const isMobile =
-  typeof navigator !== "undefined" &&
-  /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isMobile =
+    typeof navigator !== "undefined" &&
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-const ACTIVE_VOLUME_MAP = isMobile
-  ? VOLUME_MAP_MOBILE
-  : VOLUME_MAP_DESKTOP;
+  const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
   const FADE_CONFIG_DESKTOP = {
-  fadeInMs: 3000,
-  fadeOutMs: 4000,
-  curve: 1,
-};
+    fadeInMs: 3000,
+    fadeOutMs: 4000,
+    curve: 1,
+  };
 
-const FADE_CONFIG_MOBILE = {
-  fadeInMs: 1800,
-  fadeOutMs: 2500,
-  curve: 0.7,
-};
+  const FADE_CONFIG_MOBILE = {
+    fadeInMs: 1800,
+    fadeOutMs: 2500,
+    curve: 0.7,
+  };
 
-const ACTIVE_FADE_CONFIG = isMobile
-  ? FADE_CONFIG_MOBILE
-  : FADE_CONFIG_DESKTOP;
+  const ACTIVE_FADE_CONFIG = isMobile
+    ? FADE_CONFIG_MOBILE
+    : FADE_CONFIG_DESKTOP;
 
   const playWaveLayerTest = () => {
     console.log("RUNNING playWaveLayerTest");
@@ -216,15 +214,11 @@ const ACTIVE_FADE_CONFIG = isMobile
 
       const rawProgress = Math.min(elapsed / duration, 1);
 
-      const progress = Math.pow(
-       rawProgress,
-       ACTIVE_FADE_CONFIG.curve
-      );
+      const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
 
       const volMap =
-        ACTIVE_VOLUME_MAP[
-          folder as keyof typeof ACTIVE_VOLUME_MAP
-        ] ?? ACTIVE_VOLUME_MAP.wave;
+        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+        ACTIVE_VOLUME_MAP.wave;
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
@@ -267,13 +261,10 @@ const ACTIVE_FADE_CONFIG = isMobile
 
       const fadeOut = () => {
         const elapsed = performance.now() - startTime;
-        
+
         const rawProgress = Math.min(elapsed / duration, 1);
 
-        const progress = Math.pow(
-          rawProgress,
-          ACTIVE_FADE_CONFIG.curve
-        );
+        const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
 
         audio.volume = startVolume * (1 - progress);
 
@@ -557,9 +548,8 @@ const ACTIVE_FADE_CONFIG = isMobile
         const current = mixVolumes[sound];
 
         const volMap =
-          ACTIVE_VOLUME_MAP[
-            folder as keyof typeof ACTIVE_VOLUME_MAP
-          ] ?? ACTIVE_VOLUME_MAP.wave;
+          ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+          ACTIVE_VOLUME_MAP.wave;
 
         if (vol >= 1) {
           a1.volume = volMap.a1 * current;
@@ -1178,20 +1168,19 @@ const ACTIVE_FADE_CONFIG = isMobile
                       mixAudioRefs.current[sound]?.forEach((audio, index) => {
                         const folder = sound.toLowerCase();
 
-                        const volMap =
-                          ACTIVE_VOLUME_MAP[
-                            folder as keyof typeof ACTIVE_VOLUME_MAP
-                          ] || {
-                            a1: 0.3,
-                            b1: 0.3,
-                            c1: 0.2,
-                          };
+                        const volMap = ACTIVE_VOLUME_MAP[
+                          folder as keyof typeof ACTIVE_VOLUME_MAP
+                        ] || {
+                          a1: 0.3,
+                          b1: 0.3,
+                          c1: 0.2,
+                        };
 
                         if (index === 0) audio.volume = volMap.a1 * value;
                         if (index === 1) audio.volume = volMap.b1 * value;
                         if (index === 2) audio.volume = volMap.c1 * value;
                       });
-                      }}
+                    }}
                     className="w-full accent-sky-300"
                   />
                 </div>
@@ -1209,16 +1198,17 @@ const ACTIVE_FADE_CONFIG = isMobile
                     onClick={() => startSoundscapeTimer(30)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 30 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1">
+                    {selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                        <span className="text-xs leading-none">
+                          {formatTime(soundscapeTimeLeft)}
+                        </span>
                       </span>
                     ) : (
-                      <span className="flex items-center justify-center gap-1">
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span>30m</span>
+                        <span className="text-sm leading-none">30m</span>
                       </span>
                     )}
                   </button>
@@ -1227,16 +1217,17 @@ const ACTIVE_FADE_CONFIG = isMobile
                     onClick={() => startSoundscapeTimer(60)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 60 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1">
+                    {selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                        <span className="text-xs leading-none">
+                          {formatTime(soundscapeTimeLeft)}
+                        </span>
                       </span>
                     ) : (
-                      <span className="flex items-center justify-center gap-1">
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span>60m</span>
+                        <span className="text-sm leading-none">60m</span>
                       </span>
                     )}
                   </button>
@@ -1245,16 +1236,17 @@ const ACTIVE_FADE_CONFIG = isMobile
                     onClick={() => startSoundscapeTimer(120)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 120 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1">
+                    {selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                        <span className="text-xs leading-none">
+                          {formatTime(soundscapeTimeLeft)}
+                        </span>
                       </span>
                     ) : (
-                      <span className="flex items-center justify-center gap-1">
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span>2h</span>
+                        <span className="text-sm leading-none">2h</span>
                       </span>
                     )}
                   </button>
@@ -1263,16 +1255,17 @@ const ACTIVE_FADE_CONFIG = isMobile
                     onClick={() => startSoundscapeTimer(180)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 180 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1">
+                    {selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                        <span className="text-xs leading-none">
+                          {formatTime(soundscapeTimeLeft)}
+                        </span>
                       </span>
                     ) : (
-                      <span className="flex items-center justify-center gap-1">
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span>3h</span>
+                        <span className="text-sm leading-none">3h</span>
                       </span>
                     )}
                   </button>
@@ -1281,16 +1274,17 @@ const ACTIVE_FADE_CONFIG = isMobile
                     onClick={() => startSoundscapeTimer(360)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 360 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1">
+                    {selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                        <span className="text-xs leading-none">
+                          {formatTime(soundscapeTimeLeft)}
+                        </span>
                       </span>
                     ) : (
-                      <span className="flex items-center justify-center gap-1">
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span>6h</span>
+                        <span className="text-sm leading-none">6h</span>
                       </span>
                     )}
                   </button>
@@ -1299,16 +1293,17 @@ const ACTIVE_FADE_CONFIG = isMobile
                     onClick={() => startSoundscapeTimer(480)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 480 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1">
+                    {selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span>{formatTime(soundscapeTimeLeft)}</span>
+                        <span className="text-xs leading-none">
+                          {formatTime(soundscapeTimeLeft)}
+                        </span>
                       </span>
                     ) : (
-                      <span className="flex items-center justify-center gap-1">
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span>8h</span>
+                        <span className="text-sm leading-none">8h</span>
                       </span>
                     )}
                   </button>
@@ -1318,7 +1313,7 @@ const ACTIVE_FADE_CONFIG = isMobile
             {/* 👇ここに追加 */}
             {/*<button
   onClick={() => {
-    if (isSoundscapePlaying) {
+    if (isSoundscapePlaying) 
       stopSoundscape();
       setIsSoundscapePlaying(false);
     } else {
@@ -1424,14 +1419,16 @@ const ACTIVE_FADE_CONFIG = isMobile
                   }`}
                 >
                   {selectedTimer === 30 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1">
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                       <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span>{formatTime(timeLeft)}</span>
+                      <span className="text-xs leading-none">
+                        {formatTime(timeLeft)}
+                      </span>
                     </span>
                   ) : (
-                    <span className="flex items-center justify-center gap-1">
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                       <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span>30m</span>
+                      <span className="text-sm leading-none">30m</span>
                     </span>
                   )}
                 </button>
@@ -1446,14 +1443,16 @@ const ACTIVE_FADE_CONFIG = isMobile
                   }`}
                 >
                   {selectedTimer === 60 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1">
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                       <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span>{formatTime(timeLeft)}</span>
+                      <span className="text-xs leading-none">
+                        {formatTime(timeLeft)}
+                      </span>
                     </span>
                   ) : (
-                    <span className="flex items-center justify-center gap-1">
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                       <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span>60m</span>
+                      <span className="text-sm leading-none">60m</span>
                     </span>
                   )}
                 </button>
@@ -1468,14 +1467,16 @@ const ACTIVE_FADE_CONFIG = isMobile
                   }`}
                 >
                   {selectedTimer === 120 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1">
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                       <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span>{formatTime(timeLeft)}</span>
+                      <span className="text-xs leading-none">
+                        {formatTime(timeLeft)}
+                      </span>
                     </span>
                   ) : (
-                    <span className="flex items-center justify-center gap-1">
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                       <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span>2h</span>
+                      <span className="text-sm leading-none">2h</span>
                     </span>
                   )}
                 </button>
@@ -1493,14 +1494,16 @@ const ACTIVE_FADE_CONFIG = isMobile
                 }`}
               >
                 {selectedTimer === 180 && timeLeft > 0 ? (
-                  <span className="flex items-center justify-center gap-1">
+                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                     <Square size={8} fill="currentColor" strokeWidth={0} />
-                    <span>{formatTime(timeLeft)}</span>
+                    <span className="text-xs leading-none">
+                      {formatTime(timeLeft)}
+                    </span>
                   </span>
                 ) : (
-                  <span className="flex items-center justify-center gap-1">
+                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                     <Play size={10} fill="currentColor" strokeWidth={0} />
-                    <span>3h</span>
+                    <span className="text-sm leading-none">3h</span>
                   </span>
                 )}
               </button>
@@ -1515,41 +1518,43 @@ const ACTIVE_FADE_CONFIG = isMobile
                 }`}
               >
                 {selectedTimer === 360 && timeLeft > 0 ? (
-                  <span className="flex items-center justify-center gap-1">
+                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                     <Square size={8} fill="currentColor" strokeWidth={0} />
-                    <span>{formatTime(timeLeft)}</span>
+                    <span className="text-xs leading-none">
+                      {formatTime(timeLeft)}
+                    </span>
                   </span>
                 ) : (
-                  <span className="flex items-center justify-center gap-1">
+                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                     <Play size={10} fill="currentColor" strokeWidth={0} />
-                    <span>6h</span>
+                    <span className="text-sm leading-none">6h</span>
                   </span>
                 )}
               </button>
 
-            <button
-              type="button"
-              onClick={() => startSleepTimer(480)}
-              className={`rounded-xl border py-2.5 text-sm transition ${
-                 selectedTimer === 480 && timeLeft > 0
-                 ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
-                 : "border-white/10 bg-white/5 text-white/75"
-              }`}
+              <button
+                type="button"
+                onClick={() => startSleepTimer(480)}
+                className={`rounded-xl border py-2.5 text-sm transition ${
+                  selectedTimer === 480 && timeLeft > 0
+                    ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
+                    : "border-white/10 bg-white/5 text-white/75"
+                }`}
               >
-             {selectedTimer === 480 && timeLeft > 0 ? (
-              <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-               <Square size={8} fill="currentColor" strokeWidth={0} />
-               <span className="text-xs leading-none">
-                 {formatTime(timeLeft)}
-               </span>
-              </span>
-           ) : (
-              <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-               <Play size={10} fill="currentColor" strokeWidth={0} />
-               <span className="text-sm leading-none">8h</span>
-              </span>
-           )}
-            </button>
+                {selectedTimer === 480 && timeLeft > 0 ? (
+                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                    <Square size={8} fill="currentColor" strokeWidth={0} />
+                    <span className="text-xs leading-none">
+                      {formatTime(timeLeft)}
+                    </span>
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                    <Play size={10} fill="currentColor" strokeWidth={0} />
+                    <span className="text-sm leading-none">8h</span>
+                  </span>
+                )}
+              </button>
             </div>
 
             {false && (
