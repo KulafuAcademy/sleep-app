@@ -511,7 +511,35 @@ export default function Home() {
     {},
   );
 
-  const startSoundscape = () => {
+  const startSoundscape = async () => {
+  stopSoundscape();
+
+  for (const sound of selectedMixSounds) {
+    const folder = sound.toLowerCase();
+
+    const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
+    const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
+    const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
+
+    let a2: HTMLAudioElement | null = null;
+    let a3: HTMLAudioElement | null = null;
+
+    const audios: HTMLAudioElement[] = [a1, b1, c1];
+
+    if (folder !== "bonfire" && folder !== "cave") {
+      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+      audios.push(a2, a3);
+    }
+
+    for (const audio of audios) {
+      audio.loop = true;
+      audio.volume = 0;
+
+      await audio.play();
+    }
+  }
+};
     stopSoundscape();
 
     selectedMixSounds.forEach((sound) => {
@@ -532,11 +560,12 @@ export default function Home() {
         audios.push(a2, a3);
       }
 
-      audios.forEach((audio) => {
-        audio.loop = true;
-        audio.volume = 0;
-        audio.play();
-      });
+      for (const audio of audios) {
+       audio.loop = true;
+       audio.volume = 0;
+
+       await audio.play();
+      }
 
       mixAudioRefs.current[sound] = audios;
 
