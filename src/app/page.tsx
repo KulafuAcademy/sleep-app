@@ -83,6 +83,22 @@ const ACTIVE_VOLUME_MAP = isMobile
   ? VOLUME_MAP_MOBILE
   : VOLUME_MAP_DESKTOP;
 
+  const FADE_CONFIG_DESKTOP = {
+  fadeInMs: 3000,
+  fadeOutMs: 4000,
+  curve: 1,
+};
+
+const FADE_CONFIG_MOBILE = {
+  fadeInMs: 1800,
+  fadeOutMs: 2500,
+  curve: 0.7,
+};
+
+const ACTIVE_FADE_CONFIG = isMobile
+  ? FADE_CONFIG_MOBILE
+  : FADE_CONFIG_DESKTOP;
+
   const playWaveLayerTest = () => {
     console.log("RUNNING playWaveLayerTest");
 
@@ -191,18 +207,24 @@ const ACTIVE_VOLUME_MAP = isMobile
       );
     }
 
-    // 👇フェードイン（3秒）
-    const duration = 3000;
+    // 👇フェードイン
+    const duration = ACTIVE_FADE_CONFIG.fadeInMs;
     const startTime = performance.now();
 
     const fadeIn = () => {
       const elapsed = performance.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+
+      const rawProgress = Math.min(elapsed / duration, 1);
+
+      const progress = Math.pow(
+       rawProgress,
+       ACTIVE_FADE_CONFIG.curve
+      );
 
       const volMap =
-       ACTIVE_VOLUME_MAP[
-       folder as keyof typeof ACTIVE_VOLUME_MAP
-       ] ?? ACTIVE_VOLUME_MAP.wave;
+        ACTIVE_VOLUME_MAP[
+          folder as keyof typeof ACTIVE_VOLUME_MAP
+        ] ?? ACTIVE_VOLUME_MAP.wave;
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
@@ -240,12 +262,18 @@ const ACTIVE_VOLUME_MAP = isMobile
 
     audios.forEach((audio) => {
       const startVolume = audio.volume;
-      const duration = 4000;
+      const duration = ACTIVE_FADE_CONFIG.fadeOutMs;
       const startTime = performance.now();
 
       const fadeOut = () => {
         const elapsed = performance.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+        
+        const rawProgress = Math.min(elapsed / duration, 1);
+
+        const progress = Math.pow(
+          rawProgress,
+          ACTIVE_FADE_CONFIG.curve
+        );
 
         audio.volume = startVolume * (1 - progress);
 
