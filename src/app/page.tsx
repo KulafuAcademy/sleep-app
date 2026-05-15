@@ -511,96 +511,98 @@ export default function Home() {
     {},
   );
 
-    
-const startSoundscape = async () => {
-  stopSoundscape();
+  const startSoundscape = async () => {
+    stopSoundscape();
 
-  for (const sound of selectedMixSounds) {
-    const folder = sound.toLowerCase();
+    for (const sound of selectedMixSounds) {
+      const folder = sound.toLowerCase();
 
-    const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
-    const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
-    const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
+      const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
+      const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
+      const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
-    let a2: HTMLAudioElement | null = null;
-    let a3: HTMLAudioElement | null = null;
+      let a2: HTMLAudioElement | null = null;
+      let a3: HTMLAudioElement | null = null;
 
-    const audios: HTMLAudioElement[] = [a1, b1, c1];
+      const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-    if (folder !== "bonfire" && folder !== "cave") {
-      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
-      audios.push(a2, a3);
-    }
-
-    for (const audio of audios) {
-      audio.loop = true;
-      audio.volume = 0;
-      await audio.play();
-    }
-
-    mixAudioRefs.current[sound] = audios;
-
-    let vol = 0;
-
-    const fadeIn = setInterval(() => {
-      vol += 0.01;
-
-      const current = mixVolumes[sound];
-
-      const volMap =
-        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-        ACTIVE_VOLUME_MAP.wave;
-
-      if (vol >= 1) {
-        a1.volume = volMap.a1 * current;
-        b1.volume = volMap.b1 * current;
-        c1.volume = volMap.c1 * current;
-
-        if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
-        if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
-
-        clearInterval(fadeIn);
-      } else {
-        a1.volume = volMap.a1 * current * vol;
-        b1.volume = volMap.b1 * current * vol;
-        c1.volume = volMap.c1 * current * vol;
-
-        if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current * vol;
-        if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current * vol;
+      if (folder !== "bonfire" && folder !== "cave") {
+        a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+        a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+        audios.push(a2, a3);
       }
-    }, 50);
-  }
-};
+
+      for (const audio of audios) {
+        audio.loop = true;
+        audio.volume = 0;
+        await audio.play();
+      }
+
+      mixAudioRefs.current[sound] = audios;
+
+      let vol = 0;
+
+      const fadeIn = setInterval(() => {
+        vol += 0.01;
+
+        const current = mixVolumes[sound];
+
+        const volMap =
+          ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+          ACTIVE_VOLUME_MAP.wave;
+
+        if (vol >= 1) {
+          a1.volume = volMap.a1 * current;
+          b1.volume = volMap.b1 * current;
+          c1.volume = volMap.c1 * current;
+
+          if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
+          if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
+
+          clearInterval(fadeIn);
+        } else {
+          a1.volume = volMap.a1 * current * vol;
+          b1.volume = volMap.b1 * current * vol;
+          c1.volume = volMap.c1 * current * vol;
+
+          if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current * vol;
+          if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current * vol;
+        }
+      }, 50);
+    }
+  };
 
   const stopSoundscape = () => {
     Object.values(mixAudioRefs.current).forEach((audios) => {
       if (!audios) return;
 
-    audios.forEach((audio) => {
-  const startVolume = audio.volume;
-  const duration = 4000;
-  const startTime = performance.now();
+      audios.forEach((audio) => {
+        const startVolume = audio.volume;
+        const duration = 4000;
+        const startTime = performance.now();
 
-  const fadeOut = () => {
-    const elapsed = performance.now() - startTime;
+        const fadeOut = () => {
+          const elapsed = performance.now() - startTime;
 
-    const progress = Math.min(elapsed / duration, 1);
+          const progress = Math.min(elapsed / duration, 1);
 
-    audio.volume = startVolume * (1 - progress);
+          audio.volume = startVolume * (1 - progress);
 
-    if (progress < 1) {
-      requestAnimationFrame(fadeOut);
-    } else {
-      audio.volume = 0;
-      audio.pause();
-      audio.currentTime = 0;
-    }
-  };
+          if (progress < 1) {
+            requestAnimationFrame(fadeOut);
+          } else {
+            audio.volume = 0;
 
-       fadeOut();
+            setTimeout(() => {
+              audio.pause();
+              audio.currentTime = 0;
+            }, 120);
+          }
+        };
+
+        fadeOut();
+      });
     });
-   }); 
   };
 
   const [highLevel, setHighLevel] = useState(0.015);
@@ -1204,7 +1206,8 @@ const startSoundscape = async () => {
                     onClick={() => startSoundscapeTimer(30)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? (
+                    {selectedSoundscapeTimer === 30 &&
+                    soundscapeTimeLeft > 0 ? (
                       <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
                         <span className="text-xs leading-none">
@@ -1223,7 +1226,8 @@ const startSoundscape = async () => {
                     onClick={() => startSoundscapeTimer(60)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? (
+                    {selectedSoundscapeTimer === 60 &&
+                    soundscapeTimeLeft > 0 ? (
                       <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
                         <span className="text-xs leading-none">
@@ -1242,7 +1246,8 @@ const startSoundscape = async () => {
                     onClick={() => startSoundscapeTimer(120)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? (
+                    {selectedSoundscapeTimer === 120 &&
+                    soundscapeTimeLeft > 0 ? (
                       <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
                         <span className="text-xs leading-none">
@@ -1261,7 +1266,8 @@ const startSoundscape = async () => {
                     onClick={() => startSoundscapeTimer(180)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? (
+                    {selectedSoundscapeTimer === 180 &&
+                    soundscapeTimeLeft > 0 ? (
                       <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
                         <span className="text-xs leading-none">
@@ -1280,7 +1286,8 @@ const startSoundscape = async () => {
                     onClick={() => startSoundscapeTimer(360)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? (
+                    {selectedSoundscapeTimer === 360 &&
+                    soundscapeTimeLeft > 0 ? (
                       <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
                         <span className="text-xs leading-none">
@@ -1299,7 +1306,8 @@ const startSoundscape = async () => {
                     onClick={() => startSoundscapeTimer(480)}
                     className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
-                    {selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? (
+                    {selectedSoundscapeTimer === 480 &&
+                    soundscapeTimeLeft > 0 ? (
                       <span className="flex items-center justify-center gap-1 whitespace-nowrap">
                         <Square size={8} fill="currentColor" strokeWidth={0} />
                         <span className="text-xs leading-none">
