@@ -109,9 +109,9 @@ export default function Home() {
     resetDelay: 300,
   };
 
-const ACTIVE_AUDIO_STOP_CONFIG = isMobile
-  ? AUDIO_STOP_CONFIG_MOBILE
-  : AUDIO_STOP_CONFIG_DESKTOP;  
+  const ACTIVE_AUDIO_STOP_CONFIG = isMobile
+    ? AUDIO_STOP_CONFIG_MOBILE
+    : AUDIO_STOP_CONFIG_DESKTOP;
 
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
@@ -126,7 +126,6 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
     if (!selectedSound) return;
 
     const folder = selectedSound.toLowerCase();
-
 
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
@@ -198,15 +197,13 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
 
       if (a2) a2.currentTime = 59;
       if (a3) a3.currentTime = 113;
-
-      
     }
 
     const startAudios = async () => {
-     for (const audio of audios) {
-     audio.volume = 0;
-     await audio.play();
-     }
+      for (const audio of audios) {
+        audio.volume = 0;
+        await audio.play();
+      }
     };
 
     startAudios();
@@ -223,15 +220,26 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
       const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
 
       const volMap =
-         ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-         ACTIVE_VOLUME_MAP.wave;
+        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+        ACTIVE_VOLUME_MAP.wave;
 
-         console.log("PLAYER FOREST CHECK", {
-          selectedSound,
-          folder,
-          isMobile,
-          volMap,
-       });
+      console.log("PLAYER FOREST CHECK", {
+        selectedSound,
+        folder,
+        isMobile,
+        volMap,
+      });
+
+      if (folder === "forest") {
+        a1.volume = 0;
+        b1.volume = 0;
+        c1.volume = 0;
+
+        if (a2) a2.volume = 0;
+        if (a3) a3.volume = 0;
+
+        return;
+      }
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
@@ -245,7 +253,7 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
       }
     };
 
-      fadeIn();
+    fadeIn();
   };
 
   // 👇開発用時間スライダー
@@ -564,10 +572,10 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
           ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
           ACTIVE_VOLUME_MAP.wave;
 
-          console.log("selectedSound", selectedSound);
-          console.log("folder", folder);
-          console.log("isMobile", isMobile);
-          console.log("volMap", volMap);
+        console.log("selectedSound", selectedSound);
+        console.log("folder", folder);
+        console.log("isMobile", isMobile);
+        console.log("volMap", volMap);
 
         if (vol >= 1) {
           a1.volume = volMap.a1 * current;
@@ -611,13 +619,13 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
           } else {
             audio.volume = 0;
 
-          setTimeout(() => {
-           audio.pause();
+            setTimeout(() => {
+              audio.pause();
 
-           setTimeout(() => {
-           audio.currentTime = 0;
-          }, ACTIVE_AUDIO_STOP_CONFIG.resetDelay);
-         }, ACTIVE_AUDIO_STOP_CONFIG.pauseDelay);
+              setTimeout(() => {
+                audio.currentTime = 0;
+              }, ACTIVE_AUDIO_STOP_CONFIG.resetDelay);
+            }, ACTIVE_AUDIO_STOP_CONFIG.pauseDelay);
           }
         };
 
