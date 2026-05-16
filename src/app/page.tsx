@@ -199,69 +199,67 @@ export default function Home() {
       if (a3) a3.currentTime = 113;
     }
 
-    const startAudios = async () => {
 
-      for (const audio of audios) {
-      audio.muted = true;
-      audio.volume = 0;
+   // 👇フェードイン
+const duration = ACTIVE_FADE_CONFIG.fadeInMs;
+const startTime = performance.now();
 
-      await audio.play();
+const fadeIn = () => {
+  const elapsed = performance.now() - startTime;
+  const rawProgress = Math.min(elapsed / duration, 1);
+  const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
 
-      setTimeout(() => {
-      audio.muted = false;
-    }, 200);
+  const volMap =
+    ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+    ACTIVE_VOLUME_MAP.wave;
+
+  console.log("PLAYER FOREST CHECK", {
+    selectedSound,
+    folder,
+    isMobile,
+    volMap,
+  });
+
+  if (folder === "forest") {
+    a1.volume = 0;
+    b1.volume = 0;
+    c1.volume = 0;
+    if (a2) a2.volume = 0;
+    if (a3) a3.volume = 0;
+    return;
+  }
+
+  a1.volume = volMap.a1 * progress;
+  b1.volume = volMap.b1 * progress;
+  c1.volume = volMap.c1 * progress;
+
+  if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
+  if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
+
+  if (progress < 1) {
+    requestAnimationFrame(fadeIn);
   }
 };
 
- startAudios();
+const startAudios = async () => {
+  for (const audio of audios) {
+    audio.muted = true;
+    audio.volume = 0;
+    await audio.play();
+  }
 
-    // 👇フェードイン
-    const duration = ACTIVE_FADE_CONFIG.fadeInMs;
-    const startTime = performance.now();
-
-    const fadeIn = () => {
-      const elapsed = performance.now() - startTime;
-
-      const rawProgress = Math.min(elapsed / duration, 1);
-
-      const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
-
-      const volMap =
-        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-        ACTIVE_VOLUME_MAP.wave;
-
-      console.log("PLAYER FOREST CHECK", {
-        selectedSound,
-        folder,
-        isMobile,
-        volMap,
-      });
-
-      if (folder === "forest") {
-        a1.volume = 0;
-        b1.volume = 0;
-        c1.volume = 0;
-
-        if (a2) a2.volume = 0;
-        if (a3) a3.volume = 0;
-
-        return;
-      }
-
-      a1.volume = volMap.a1 * progress;
-      b1.volume = volMap.b1 * progress;
-      c1.volume = volMap.c1 * progress;
-
-      if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
-      if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
-
-      if (progress < 1) {
-        requestAnimationFrame(fadeIn);
-      }
-    };
+  setTimeout(() => {
+    for (const audio of audios) {
+      audio.muted = false;
+      audio.volume = 0;
+    }
 
     fadeIn();
-  };
+  }, 500);
+};
+
+startAudios();
+};
 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
