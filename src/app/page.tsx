@@ -253,6 +253,10 @@ export default function Home() {
         await audio.play();
       }
 
+      if (folder === "forest") {
+        return;
+      }
+
       setTimeout(() => {
         for (const audio of audios) {
           audio.muted = false;
