@@ -137,19 +137,19 @@ export default function Home() {
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
-    if (folder === "forest") {
-      a1.addEventListener("loadedmetadata", () => {
-        a1.currentTime = 23;
-      });
+    //if (folder === "forest") {
+   //   a1.addEventListener("loadedmetadata", () => {
+    //    a1.currentTime = 23;
+    //  });
+//
+  //    b1.addEventListener("loadedmetadata", () => {
+    //    b1.currentTime = 71;
+      //});
 
-      b1.addEventListener("loadedmetadata", () => {
-        b1.currentTime = 71;
-      });
-
-      c1.addEventListener("loadedmetadata", () => {
-        c1.currentTime = 41;
-      });
-    }
+      //c1.addEventListener("loadedmetadata", () => {
+      //  c1.currentTime = 41;
+      //});
+    //}
 
     let a2: HTMLAudioElement | null = null;
     let a3: HTMLAudioElement | null = null;
@@ -160,15 +160,15 @@ export default function Home() {
       a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
       a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-      a2.addEventListener("loadedmetadata", (event) => {
-        const audio = event.currentTarget as HTMLAudioElement;
-        audio.currentTime = 107;
-      });
+      //a2.addEventListener("loadedmetadata", (event) => {
+      //  const audio = event.currentTarget as HTMLAudioElement;
+      //  audio.currentTime = 107;
+      //});
 
-      a3.addEventListener("loadedmetadata", (event) => {
-        const audio = event.currentTarget as HTMLAudioElement;
-        audio.currentTime = 149;
-      });
+      //a3.addEventListener("loadedmetadata", (event) => {
+      //  const audio = event.currentTarget as HTMLAudioElement;
+       // audio.currentTime = 149;
+      //});
 
       audios.push(a2, a3);
     } else if (folder !== "bonfire" && folder !== "cave") {
