@@ -225,14 +225,7 @@ export default function Home() {
         volMap,
       });
 
-      if (folder === "forest") {
-        a1.volume = 0;
-        b1.volume = 0;
-        c1.volume = 0;
-        if (a2) a2.volume = 0;
-        if (a3) a3.volume = 0;
-        return;
-      }
+
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
@@ -246,18 +239,23 @@ export default function Home() {
       }
     };
 
-    const startAudios = async () => {
+      const startAudios = async () => {
+      if (folder === "forest") {
+    return;
+    }
+
       for (const audio of audios) {
-        audio.volume = 0;
-        await audio.play();
-      }
+      audio.volume = 0;
+      await audio.play();
+    }
 
-      fadeIn();
-    };
-
-    startAudios();
+    fadeIn();
   };
 
+   startAudios();
+
+  };
+ 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
     waveAudioRef.current.forEach((audio) => {
