@@ -137,48 +137,46 @@ export default function Home() {
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
-    //if (folder === "forest") {
-   //   a1.addEventListener("loadedmetadata", () => {
-    //    a1.currentTime = 23;
-    //  });
-//
-  //    b1.addEventListener("loadedmetadata", () => {
-    //    b1.currentTime = 71;
-      //});
+    if (folder === "forest") {
+      a1.addEventListener("loadedmetadata", () => {
+       a1.currentTime = 23;
+     });
 
-      //c1.addEventListener("loadedmetadata", () => {
-      //  c1.currentTime = 41;
-      //});
-    //}
+      b1.addEventListener("loadedmetadata", () => {
+       b1.currentTime = 71;
+      });
+
+      c1.addEventListener("loadedmetadata", () => {
+        c1.currentTime = 41;
+      });
+    }
 
     let a2: HTMLAudioElement | null = null;
     let a3: HTMLAudioElement | null = null;
 
-    const audios: HTMLAudioElement[] =
-     folder === "forest" ? [a1] : [a1, b1, c1];
+    const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-    //if (folder === "forest") {
-    //  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-    //  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+if (folder === "forest") {
+  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-      //a2.addEventListener("loadedmetadata", (event) => {
-      //  const audio = event.currentTarget as HTMLAudioElement;
-      //  audio.currentTime = 107;
-      //});
+  a2.addEventListener("loadedmetadata", (event) => {
+    const audio = event.currentTarget as HTMLAudioElement;
+    audio.currentTime = 107;
+  });
 
-      //a3.addEventListener("loadedmetadata", (event) => {
-      //  const audio = event.currentTarget as HTMLAudioElement;
-       // audio.currentTime = 149;
-      //});
+  a3.addEventListener("loadedmetadata", (event) => {
+    const audio = event.currentTarget as HTMLAudioElement;
+    audio.currentTime = 149;
+  });
 
-     // audios.push(a2, a3);
- 
-      if (folder !== "bonfire" && folder !== "cave" && folder !== "forest") {
-      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+  audios.push(a2, a3);
+} else if (folder !== "bonfire" && folder !== "cave") {
+  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-      audios.push(a2, a3);
-    }
+  audios.push(a2, a3);
+}
 
     waveAudioRef.current = audios;
 
@@ -220,12 +218,6 @@ export default function Home() {
         ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
         ACTIVE_VOLUME_MAP.wave;
 
-      console.log("PLAYER FOREST CHECK", {
-        selectedSound,
-        folder,
-        isMobile,
-        volMap,
-      });
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
@@ -240,29 +232,16 @@ export default function Home() {
     };
 
     const startAudios = async () => {
-      if (folder === "forest") {
-        for (const audio of audios) {
-          audio.volume = 0;
-
-          await new Promise((resolve) => setTimeout(resolve, 300));
-
-          await audio.play();
-        }
-
-        fadeIn();
-        return;
-      }
-
-      for (const audio of audios) {
+       for (const audio of audios) {
         audio.volume = 0;
         await audio.play();
       }
 
-      fadeIn();
+     fadeIn();
     };
 
     startAudios();
-  };
+   };
 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
