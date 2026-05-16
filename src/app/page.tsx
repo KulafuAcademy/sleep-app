@@ -206,20 +206,6 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
     if (a2) a2.play();
     if (a3) a3.play();
 
-    if (folder === "forest") {
-      setInterval(
-        () => {
-          const delta = (Math.random() - 0.5) * 0.02;
-
-          let newVolume = c1.volume + delta;
-
-          newVolume = Math.max(0.05, Math.min(0.3, newVolume));
-
-          c1.volume = newVolume;
-        },
-        28000 + Math.random() * 20000,
-      );
-    }
 
     // 👇フェードイン
     const duration = ACTIVE_FADE_CONFIG.fadeInMs;
