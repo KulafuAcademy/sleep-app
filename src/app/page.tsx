@@ -238,7 +238,9 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
       }
     };
 
-    fadeIn();
+    if (folder !== "forest") {
+      fadeIn();
+    }
   };
 
   // 👇開発用時間スライダー
