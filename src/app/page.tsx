@@ -248,23 +248,11 @@ export default function Home() {
 
     const startAudios = async () => {
       for (const audio of audios) {
-        audio.muted = true;
         audio.volume = 0;
         await audio.play();
       }
 
-      if (folder === "forest") {
-        return;
-      }
-
-      setTimeout(() => {
-        for (const audio of audios) {
-          audio.muted = false;
-          audio.volume = 0;
-        }
-
-        fadeIn();
-      }, 500);
+      fadeIn();
     };
 
     startAudios();
