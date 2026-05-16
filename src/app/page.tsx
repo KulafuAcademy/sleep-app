@@ -127,10 +127,6 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
 
     const folder = selectedSound.toLowerCase();
 
-    if (folder === "forest") {
-      console.log("FOREST BLOCKED TEST");
-      return;
-       }
 
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
@@ -202,15 +198,18 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
 
       if (a2) a2.currentTime = 59;
       if (a3) a3.currentTime = 113;
+
+      
     }
 
-    a1.play();
-    b1.play();
-    c1.play();
+    if (folder !== "forest") {
+      a1.play();
+      b1.play();
+      c1.play();
 
-    if (a2) a2.play();
-    if (a3) a3.play();
-
+      if (a2) a2.play();
+      if (a3) a3.play();
+    }
 
     // 👇フェードイン
     const duration = ACTIVE_FADE_CONFIG.fadeInMs;
