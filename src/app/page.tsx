@@ -200,6 +200,8 @@ export default function Home() {
     }
 
     const startAudios = async () => {
+      if (folder === "forest") return;
+
       for (const audio of audios) {
         audio.volume = 0;
         await audio.play();
