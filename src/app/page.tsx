@@ -121,6 +121,12 @@ export default function Home() {
       audio.currentTime = 0;
     });
 
+    waveAudioRef.current.forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.src = "";
+    });
+
     waveAudioRef.current = [];
 
     if (!selectedSound) return;
@@ -199,67 +205,66 @@ export default function Home() {
       if (a3) a3.currentTime = 113;
     }
 
+    // 👇フェードイン
+    const duration = ACTIVE_FADE_CONFIG.fadeInMs;
+    const startTime = performance.now();
 
-   // 👇フェードイン
-const duration = ACTIVE_FADE_CONFIG.fadeInMs;
-const startTime = performance.now();
+    const fadeIn = () => {
+      const elapsed = performance.now() - startTime;
+      const rawProgress = Math.min(elapsed / duration, 1);
+      const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
 
-const fadeIn = () => {
-  const elapsed = performance.now() - startTime;
-  const rawProgress = Math.min(elapsed / duration, 1);
-  const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
+      const volMap =
+        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+        ACTIVE_VOLUME_MAP.wave;
 
-  const volMap =
-    ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-    ACTIVE_VOLUME_MAP.wave;
+      console.log("PLAYER FOREST CHECK", {
+        selectedSound,
+        folder,
+        isMobile,
+        volMap,
+      });
 
-  console.log("PLAYER FOREST CHECK", {
-    selectedSound,
-    folder,
-    isMobile,
-    volMap,
-  });
+      if (folder === "forest") {
+        a1.volume = 0;
+        b1.volume = 0;
+        c1.volume = 0;
+        if (a2) a2.volume = 0;
+        if (a3) a3.volume = 0;
+        return;
+      }
 
-  if (folder === "forest") {
-    a1.volume = 0;
-    b1.volume = 0;
-    c1.volume = 0;
-    if (a2) a2.volume = 0;
-    if (a3) a3.volume = 0;
-    return;
-  }
+      a1.volume = volMap.a1 * progress;
+      b1.volume = volMap.b1 * progress;
+      c1.volume = volMap.c1 * progress;
 
-  a1.volume = volMap.a1 * progress;
-  b1.volume = volMap.b1 * progress;
-  c1.volume = volMap.c1 * progress;
+      if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
+      if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
 
-  if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
-  if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
+      if (progress < 1) {
+        requestAnimationFrame(fadeIn);
+      }
+    };
 
-  if (progress < 1) {
-    requestAnimationFrame(fadeIn);
-  }
-};
+    const startAudios = async () => {
+      for (const audio of audios) {
+        audio.muted = true;
+        audio.volume = 0;
+        await audio.play();
+      }
 
-const startAudios = async () => {
-  for (const audio of audios) {
-    audio.muted = true;
-    audio.volume = 0;
-    await audio.play();
-  }
+      setTimeout(() => {
+        for (const audio of audios) {
+          audio.muted = false;
+          audio.volume = 0;
+        }
 
-  setTimeout(() => {
-    for (const audio of audios) {
-      audio.muted = false;
-      audio.volume = 0;
-    }
+        fadeIn();
+      }, 500);
+    };
 
-    fadeIn();
-  }, 500);
-};
-
-startAudios();
-};
+    startAudios();
+  };
 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
