@@ -113,7 +113,7 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
   ? AUDIO_STOP_CONFIG_MOBILE
   : AUDIO_STOP_CONFIG_DESKTOP;  
 
-  const playWaveLayerTest = () => {
+  const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
 
     waveAudioRef.current.forEach((audio) => {
@@ -202,14 +202,14 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
       
     }
 
-    if (folder !== "forest") {
-      a1.play();
-      b1.play();
-      c1.play();
+    const startAudios = async () => {
+     for (const audio of audios) {
+     audio.volume = 0;
+     await audio.play();
+     }
+    };
 
-      if (a2) a2.play();
-      if (a3) a3.play();
-    }
+    startAudios();
 
     // 👇フェードイン
     const duration = ACTIVE_FADE_CONFIG.fadeInMs;
