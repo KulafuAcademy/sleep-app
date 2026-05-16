@@ -97,6 +97,22 @@ export default function Home() {
     ? FADE_CONFIG_MOBILE
     : FADE_CONFIG_DESKTOP;
 
+  const AUDIO_STOP_CONFIG_DESKTOP = {
+    fadeOutDuration: 2600,
+    pauseDelay: 300,
+    resetDelay: 100,
+  };
+
+  const AUDIO_STOP_CONFIG_MOBILE = {
+    fadeOutDuration: 2200,
+    pauseDelay: 900,
+    resetDelay: 300,
+  };
+
+const ACTIVE_AUDIO_STOP_CONFIG = isMobile
+  ? AUDIO_STOP_CONFIG_MOBILE
+  : AUDIO_STOP_CONFIG_DESKTOP;  
+
   const playWaveLayerTest = () => {
     console.log("RUNNING playWaveLayerTest");
 
@@ -578,7 +594,7 @@ export default function Home() {
 
       audios.forEach((audio) => {
         const startVolume = audio.volume;
-        const duration = 2200;
+        const duration = ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration;
         const startTime = performance.now();
 
         const fadeOut = () => {
@@ -598,8 +614,8 @@ export default function Home() {
 
            setTimeout(() => {
            audio.currentTime = 0;
-          }, 300);
-         }, 900);
+          }, ACTIVE_AUDIO_STOP_CONFIG.resetDelay);
+         }, ACTIVE_AUDIO_STOP_CONFIG.pauseDelay);
           }
         };
 
