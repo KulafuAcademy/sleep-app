@@ -127,6 +127,11 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
 
     const folder = selectedSound.toLowerCase();
 
+    if (folder === "forest") {
+      console.log("FOREST BLOCKED TEST");
+      return;
+       }
+
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
