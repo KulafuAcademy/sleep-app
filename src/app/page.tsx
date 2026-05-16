@@ -223,8 +223,15 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
       const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
 
       const volMap =
-        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-        ACTIVE_VOLUME_MAP.wave;
+         ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+         ACTIVE_VOLUME_MAP.wave;
+
+         console.log("PLAYER FOREST CHECK", {
+          selectedSound,
+          folder,
+          isMobile,
+          volMap,
+       });
 
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
@@ -238,9 +245,7 @@ const ACTIVE_AUDIO_STOP_CONFIG = isMobile
       }
     };
 
-    if (folder !== "forest") {
       fadeIn();
-    }
   };
 
   // 👇開発用時間スライダー
