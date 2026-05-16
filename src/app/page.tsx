@@ -154,7 +154,8 @@ export default function Home() {
     let a2: HTMLAudioElement | null = null;
     let a3: HTMLAudioElement | null = null;
 
-    const audios: HTMLAudioElement[] = [a1, b1, c1];
+    const audios: HTMLAudioElement[] =
+     folder === "forest" ? [a1] : [a1, b1, c1];
 
     //if (folder === "forest") {
     //  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
@@ -552,7 +553,8 @@ export default function Home() {
       let a2: HTMLAudioElement | null = null;
       let a3: HTMLAudioElement | null = null;
 
-      const audios: HTMLAudioElement[] = [a1, b1, c1];
+      const audios: HTMLAudioElement[] =
+       folder === "forest" ? [a1] : [a1, b1, c1];
 
       if (folder !== "bonfire" && folder !== "cave") {
         a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
