@@ -225,8 +225,6 @@ export default function Home() {
         volMap,
       });
 
-
-
       a1.volume = volMap.a1 * progress;
       b1.volume = volMap.b1 * progress;
       c1.volume = volMap.c1 * progress;
@@ -239,23 +237,31 @@ export default function Home() {
       }
     };
 
-      const startAudios = async () => {
+    const startAudios = async () => {
       if (folder === "forest") {
-    return;
-    }
+        for (const audio of audios) {
+          audio.volume = 0;
+
+          await new Promise((resolve) => setTimeout(resolve, 300));
+
+          await audio.play();
+        }
+
+        fadeIn();
+        return;
+      }
 
       for (const audio of audios) {
-      audio.volume = 0;
-      await audio.play();
-    }
+        audio.volume = 0;
+        await audio.play();
+      }
 
-    fadeIn();
+      fadeIn();
+    };
+
+    startAudios();
   };
 
-   startAudios();
-
-  };
- 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
     waveAudioRef.current.forEach((audio) => {
