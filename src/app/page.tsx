@@ -1553,11 +1553,18 @@ export default function Home() {
           <div className="px-6 pt-6">
             <button
               onClick={() => {
+                pauseWaveLayerTestImmediately();
+
                 stopSoundscape();
                 setIsSoundscapePlaying(false);
                 setIsSoundscapeTimerRunning(false);
                 setSoundscapeTimeLeft(0);
                 setSelectedSoundscapeTimer(null);
+
+                setIsPlaying(false);
+                setIsTimerRunning(false);
+                setTimeLeft(0);
+                setSelectedTimer(null);
 
                 if (timerRef.current) {
                   clearInterval(timerRef.current);
