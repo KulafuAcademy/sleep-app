@@ -194,11 +194,11 @@ export default function Home() {
       stopForestHowls();
 
       const forestLayers = [
-        { name: "a1", seek: 0 },
-        { name: "b1", seek: 0 },
-        { name: "c1", seek: 0 },
-        { name: "a2", seek: 0 },
-        { name: "a3", seek: 0 },
+        { name: "a1" },
+        { name: "b1" },
+        { name: "c1" },
+        { name: "a2" },
+        { name: "a3" },
       ] as const;
 
       const forestVolMap = ACTIVE_VOLUME_MAP.forest;
@@ -218,7 +218,6 @@ export default function Home() {
           const id = entry.sound.play();
           entry.id = id;
 
-          entry.sound.seek(layer.seek, id);
           entry.sound.volume(0, id);
 
           const targetVolume = forestVolMap[layer.name] ?? 0;
