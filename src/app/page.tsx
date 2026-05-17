@@ -116,20 +116,19 @@ export default function Home() {
     ? AUDIO_STOP_CONFIG_MOBILE
     : AUDIO_STOP_CONFIG_DESKTOP;
 
-const stopForestHowls = () => {
-  forestHowlsRef.current.forEach((sound) => {
-    sound.stop();
-    sound.unload();
-  });
+  const stopForestHowls = () => {
+    forestHowlsRef.current.forEach((sound) => {
+      sound.stop();
+      sound.unload();
+    });
 
-  forestHowlsRef.current = [];
-};
+    forestHowlsRef.current = [];
+  };
 
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
 
-   stopForestHowls();
-
+    stopForestHowls();
 
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
@@ -154,11 +153,11 @@ const stopForestHowls = () => {
 
     if (folder === "forest") {
       a1.addEventListener("loadedmetadata", () => {
-       a1.currentTime = 23;
-     });
+        a1.currentTime = 23;
+      });
 
       b1.addEventListener("loadedmetadata", () => {
-       b1.currentTime = 71;
+        b1.currentTime = 71;
       });
 
       c1.addEventListener("loadedmetadata", () => {
@@ -169,113 +168,117 @@ const stopForestHowls = () => {
     let a2: HTMLAudioElement | null = null;
     let a3: HTMLAudioElement | null = null;
 
-  const audios: HTMLAudioElement[] = [a1, b1, c1];
+    const audios: HTMLAudioElement[] = [a1, b1, c1];
 
-if (folder === "forest") {
-  stopForestHowls();
+    if (folder === "forest") {
+      stopForestHowls();
 
-  const forestLayers = [
-  { name: "a1", seek: 23 },
-  { name: "b1", seek: 71 },
-  { name: "c1", seek: 41 },
-  { name: "a2", seek: 107 },
-  { name: "a3", seek: 149 },
-] as const;
+      const forestLayers = [
+        { name: "a1", seek: 23 },
+        { name: "b1", seek: 71 },
+        { name: "c1", seek: 41 },
+        { name: "a2", seek: 107 },
+        { name: "a3", seek: 149 },
+      ] as const;
 
-  const forestVolMap = ACTIVE_VOLUME_MAP.forest;  
+      const forestVolMap = ACTIVE_VOLUME_MAP.forest;
 
-  const sounds = forestLayers.map((layer) => {
-    const sound = new Howl({
-      src: [`/sound/forest/v1/${layer.name}.wav`],
-      loop: true,
-      volume: 0,
-      html5: false,
-    });
+      const sounds = forestLayers.map((layer) => {
+        const sound = new Howl({
+          src: [`/sound/forest/v1/${layer.name}.wav`],
+          loop: true,
+          volume: 0,
+          html5: false,
+        });
 
-  sound.once("load", () => {
-  sound.seek(layer.seek);
-  sound.volume(forestVolMap[layer.name] ?? 0);
-  sound.play();
-  });
+        sound.once("load", () => {
+          const id = sound.play();
 
-    return sound;
-  });
+          sound.seek(layer.seek, id);
+          sound.volume(0, id);
 
-  forestHowlsRef.current = sounds;
-  return;
-}
+          const targetVolume = forestVolMap[layer.name] ?? 0;
 
-if (folder !== "bonfire" && folder !== "cave") {
-  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+          sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+        });
 
-  audios.push(a2, a3);
-}
+        return sound;
+      });
 
-waveAudioRef.current = audios;
+      forestHowlsRef.current = sounds;
+      return;
+    }
 
-a1.loop = true;
-b1.loop = true;
-c1.loop = true;
+    if (folder !== "bonfire" && folder !== "cave") {
+      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
+      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
-if (a2) a2.loop = true;
-if (a3) a3.loop = true;
+      audios.push(a2, a3);
+    }
 
-// 無音スタート
-a1.volume = 0;
-b1.volume = 0;
-c1.volume = 0;
+    waveAudioRef.current = audios;
 
-if (a2) a2.volume = 0;
-if (a3) a3.volume = 0;
+    a1.loop = true;
+    b1.loop = true;
+    c1.loop = true;
 
-// rainだけ開始位置をズラす
-if (folder === "rain") {
-  a1.currentTime = 37;
-  b1.currentTime = 0;
-  c1.currentTime = 11;
+    if (a2) a2.loop = true;
+    if (a3) a3.loop = true;
 
-  if (a2) a2.currentTime = 59;
-  if (a3) a3.currentTime = 113;
-}
+    // 無音スタート
+    a1.volume = 0;
+    b1.volume = 0;
+    c1.volume = 0;
 
-// 👇フェードイン
-const duration = ACTIVE_FADE_CONFIG.fadeInMs;
-const startTime = performance.now();
+    if (a2) a2.volume = 0;
+    if (a3) a3.volume = 0;
 
-const fadeIn = () => {
-  const elapsed = performance.now() - startTime;
-  const rawProgress = Math.min(elapsed / duration, 1);
-  const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
+    // rainだけ開始位置をズラす
+    if (folder === "rain") {
+      a1.currentTime = 37;
+      b1.currentTime = 0;
+      c1.currentTime = 11;
 
-  const volMap =
-    ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-    ACTIVE_VOLUME_MAP.wave;
+      if (a2) a2.currentTime = 59;
+      if (a3) a3.currentTime = 113;
+    }
 
-  a1.volume = volMap.a1 * progress;
-  b1.volume = volMap.b1 * progress;
-  c1.volume = volMap.c1 * progress;
+    // 👇フェードイン
+    const duration = ACTIVE_FADE_CONFIG.fadeInMs;
+    const startTime = performance.now();
 
-  if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
-  if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
+    const fadeIn = () => {
+      const elapsed = performance.now() - startTime;
+      const rawProgress = Math.min(elapsed / duration, 1);
+      const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
 
-  if (progress < 1) {
-    requestAnimationFrame(fadeIn);
-  }
-};
+      const volMap =
+        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+        ACTIVE_VOLUME_MAP.wave;
 
-const startAudios = async () => {
-  for (const audio of audios) {
-    audio.volume = 0;
-    await audio.play();
-  }
+      a1.volume = volMap.a1 * progress;
+      b1.volume = volMap.b1 * progress;
+      c1.volume = volMap.c1 * progress;
 
-  fadeIn();
-};
+      if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
+      if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
 
-startAudios();
-};
+      if (progress < 1) {
+        requestAnimationFrame(fadeIn);
+      }
+    };
 
+    const startAudios = async () => {
+      for (const audio of audios) {
+        audio.volume = 0;
+        await audio.play();
+      }
+
+      fadeIn();
+    };
+
+    startAudios();
+  };
 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
@@ -567,7 +570,7 @@ startAudios();
       let a3: HTMLAudioElement | null = null;
 
       const audios: HTMLAudioElement[] =
-       folder === "forest" ? [a1] : [a1, b1, c1];
+        folder === "forest" ? [a1] : [a1, b1, c1];
 
       if (folder !== "bonfire" && folder !== "cave") {
         a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
