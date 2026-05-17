@@ -255,10 +255,29 @@ export default function Home() {
   };
 
   const stopCaveHowls = () => {
-  caveHowlsRef.current.forEach(({ sound }) => {
-    sound.volume(0);
-    sound.stop();
-    sound.unload();
+  caveHowlsRef.current.forEach(({ sound, id }) => {
+    const currentVolume =
+      id !== null ? Number(sound.volume(id)) : Number(sound.volume());
+
+    const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
+
+    if (id !== null) {
+      sound.fade(
+        safeVolume,
+        0,
+        ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
+        id,
+      );
+    } else {
+      sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+    }
+
+    setTimeout(() => {
+      if (id !== null) sound.stop(id);
+      else sound.stop();
+
+      sound.unload();
+    }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
   });
 
   caveHowlsRef.current = [];
@@ -362,7 +381,7 @@ export default function Home() {
         src: [`/sound/cave/v1/${name}.wav`],
         loop: true,
         volume: 0,
-        html5: true,
+        html5: false,
         preload: true,
       }),
       id: null as number | null,
