@@ -65,6 +65,9 @@ const riverHowlsRef = useRef<
 const rainHowlsRef = useRef<
   { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" | "a2" | "a3" }[]
 >([]);
+const bonfireHowlsRef = useRef<
+  { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" }[]
+>([]);
 
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
@@ -244,6 +247,35 @@ const stopRainHowls = () => {
   rainHowlsRef.current = [];
 };
 
+const stopBonfireHowls = () => {
+  bonfireHowlsRef.current.forEach(({ sound, id }) => {
+    const currentVolume =
+      id !== null ? Number(sound.volume(id)) : Number(sound.volume());
+
+    const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
+
+    if (id !== null) {
+      sound.fade(
+        safeVolume,
+        0,
+        ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
+        id,
+      );
+    } else {
+      sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+    }
+
+    setTimeout(() => {
+      if (id !== null) sound.stop(id);
+      else sound.stop();
+
+      sound.unload();
+    }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
+  });
+
+  bonfireHowlsRef.current = [];
+};
+
 const prepareForestHowls = () => {
   stopForestHowls();
 
@@ -323,6 +355,27 @@ const prepareWaveHowls = () => {
 
   rainHowlsRef.current = sounds;
 };
+
+  const prepareBonfireHowls = () => {
+  stopBonfireHowls();
+
+  const bonfireLayers = ["a1", "b1", "c1"] as const;
+
+  const sounds = bonfireLayers.map((name) => ({
+    sound: new Howl({
+      src: [`/sound/bonfire/v1/${name}.wav`],
+      loop: true,
+      volume: 0,
+      html5: false,
+      preload: true,
+    }),
+    id: null as number | null,
+    name,
+  }));
+
+  bonfireHowlsRef.current = sounds;
+};
+
 
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
@@ -444,6 +497,27 @@ const prepareWaveHowls = () => {
     entry.sound.volume(0, id);
 
     const targetVolume = rainVolMap[entry.name] ?? 0;
+
+    entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+  });
+
+  return;
+}
+
+  if (folder === "bonfire") {
+  if (bonfireHowlsRef.current.length === 0) {
+    prepareBonfireHowls();
+  }
+
+  const bonfireVolMap = ACTIVE_VOLUME_MAP.bonfire;
+
+  bonfireHowlsRef.current.forEach((entry) => {
+    const id = entry.sound.play();
+    entry.id = id;
+
+    entry.sound.volume(0, id);
+
+    const targetVolume = bonfireVolMap[entry.name] ?? 0;
 
     entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
   });
@@ -578,6 +652,7 @@ const prepareWaveHowls = () => {
     stopWaveHowls();
     stopRiverHowls();
     stopRainHowls();
+    stopBonfireHowls();
 
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
@@ -1170,6 +1245,10 @@ const prepareWaveHowls = () => {
 
     if (sound === "Rain") {
       prepareRainHowls();
+    }
+
+    if (sound === "Bonfire") {
+      prepareBonfireHowls();
     }
 
   };
