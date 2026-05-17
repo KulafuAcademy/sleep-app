@@ -53,7 +53,9 @@ export default function Home() {
     number | null
   >(null);
   const waveAudioRef = useRef<HTMLAudioElement[]>([]);
-  const forestHowlsRef = useRef<{ sound: Howl; id: number | null }[]>([]);
+  const forestHowlsRef = useRef<
+  { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" | "a2" | "a3" }[]
+>([]);
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
   const [debugInputSec, setDebugInputSec] = useState("");
@@ -145,10 +147,28 @@ export default function Home() {
   forestHowlsRef.current = [];
 };
 
+const prepareForestHowls = () => {
+  stopForestHowls();
+
+  const forestLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
+
+  const sounds = forestLayers.map((name) => ({
+    sound: new Howl({
+      src: [`/sound/forest/v1/${name}.wav`],
+      loop: true,
+      volume: 0,
+      html5: false,
+      preload: true,
+    }),
+    id: null as number | null,
+    name,
+  }));
+
+  forestHowlsRef.current = sounds;
+};
+
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
-
-    stopForestHowls();
 
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
@@ -191,47 +211,25 @@ export default function Home() {
     const audios: HTMLAudioElement[] = [a1, b1, c1];
 
     if (folder === "forest") {
-      stopForestHowls();
+  if (forestHowlsRef.current.length === 0) {
+    prepareForestHowls();
+  }
 
-      const forestLayers = [
-        { name: "a1" },
-        { name: "b1" },
-        { name: "c1" },
-        { name: "a2" },
-        { name: "a3" },
-      ] as const;
+  const forestVolMap = ACTIVE_VOLUME_MAP.forest;
 
-      const forestVolMap = ACTIVE_VOLUME_MAP.forest;
+  forestHowlsRef.current.forEach((entry) => {
+    const id = entry.sound.play();
+    entry.id = id;
 
-      const sounds = forestLayers.map((layer) => {
-        const entry = {
-          sound: new Howl({
-            src: [`/sound/forest/v1/${layer.name}.wav`],
-            loop: true,
-            volume: 0,
-            html5: false,
-            preload: true,
-          }),
-          id: null as number | null,
-        };
+    entry.sound.volume(0, id);
 
-        entry.sound.once("load", () => {
-          const id = entry.sound.play();
-          entry.id = id;
+    const targetVolume = forestVolMap[entry.name] ?? 0;
 
-          entry.sound.volume(0, id);
+    entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+  });
 
-          const targetVolume = forestVolMap[layer.name] ?? 0;
-
-          entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
-        });
-
-        return entry;
-      });
-
-      forestHowlsRef.current = sounds;
-      return;
-    }
+  return;
+}
 
     if (folder !== "bonfire" && folder !== "cave") {
       a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
@@ -926,12 +924,17 @@ export default function Home() {
   };
 
   const handleSelectSound = (sound: SoundName) => {
-    if (isPlaying) {
-      stopRain();
-      setIsPlaying(false);
-    }
-    setSelectedSound(sound);
-  };
+  if (isPlaying) {
+    stopRain();
+    setIsPlaying(false);
+  }
+
+  setSelectedSound(sound);
+
+  if (sound === "Forest") {
+    prepareForestHowls();
+  }
+};
 
   useEffect(() => {
     if (!("mediaSession" in navigator)) return;
