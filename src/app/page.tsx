@@ -401,7 +401,7 @@ export default function Home() {
   silentKeeperRef.current = new Howl({
     src: ["/sound/silence.mp3"],
     loop: true,
-    volume: 0,
+    volume: 0.001,
     html5: true,
     preload: true,
   });
