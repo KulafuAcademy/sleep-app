@@ -12,7 +12,9 @@ import {
   Square,
 } from "lucide-react";
 
-import { Howl } from "howler";
+import { Howl, Howler } from "howler";
+
+Howler.autoSuspend = false;
 
 type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Cave";
 
@@ -255,33 +257,28 @@ export default function Home() {
   };
 
   const stopCaveHowls = () => {
-  caveHowlsRef.current.forEach(({ sound, id }) => {
-    const currentVolume =
-      id !== null ? Number(sound.volume(id)) : Number(sound.volume());
+    caveHowlsRef.current.forEach(({ sound, id }) => {
+      const currentVolume =
+        id !== null ? Number(sound.volume(id)) : Number(sound.volume());
 
-    const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
+      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
 
-    if (id !== null) {
-      sound.fade(
-        safeVolume,
-        0,
-        ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
-        id,
-      );
-    } else {
-      sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-    }
+      if (id !== null) {
+        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration, id);
+      } else {
+        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+      }
 
-    setTimeout(() => {
-      if (id !== null) sound.stop(id);
-      else sound.stop();
+      setTimeout(() => {
+        if (id !== null) sound.stop(id);
+        else sound.stop();
 
-      sound.unload();
-    }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-  });
+        sound.unload();
+      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
+    });
 
-  caveHowlsRef.current = [];
-};
+    caveHowlsRef.current = [];
+  };
 
   const prepareForestHowls = () => {
     const forestLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
@@ -784,24 +781,37 @@ export default function Home() {
       setIsTimerRunning(false);
       setSelectedTimer(null);
 
-      if (gainRef.current) {
-        let volume = gainRef.current.gain.value;
-
-        const fadeOut = setInterval(() => {
-          if (volume > 0) {
-            volume -= 0.02;
-            gainRef.current!.gain.value = Math.max(volume, 0);
-          } else {
-            clearInterval(fadeOut);
-
-            if (isPlaying) {
-              toggle();
-            }
-          }
-        }, 100);
-      }
+      pauseWaveLayerTestImmediately();
+      setIsPlaying(false);
     }
   }, [timeLeft, isTimerRunning]);
+
+  useEffect(() => {
+    const resumeAudioContext = () => {
+      if (Howler.ctx && Howler.ctx.state === "suspended") {
+        Howler.ctx.resume();
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        resumeAudioContext();
+      }
+    };
+
+    const handlePageShow = () => {
+      resumeAudioContext();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, []);
+
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -1817,23 +1827,23 @@ export default function Home() {
 
       <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
         <div className="px-6 pt-6">
-         <button
-         onClick={() => {
-         pauseWaveLayerTestImmediately();
+          <button
+            onClick={() => {
+              pauseWaveLayerTestImmediately();
 
-         setIsPlaying(false);
-         setIsTimerRunning(false);
-         setTimeLeft(0);
-         setSelectedTimer(null);
-         setSelectedSound(null);
+              setIsPlaying(false);
+              setIsTimerRunning(false);
+              setTimeLeft(0);
+              setSelectedTimer(null);
+              setSelectedSound(null);
 
-         setScreen("select");
-       }}
-         className="text-sm text-white/60"
-         >
-       ← Back
-        </button>
-       </div>  
+              setScreen("select");
+            }}
+            className="text-sm text-white/60"
+          >
+            ← Back
+          </button>
+        </div>
 
         <div className="px-6 pt-2 pb-5 text-center">
           <HibikiLogo />
