@@ -388,8 +388,16 @@ export default function Home() {
     caveHowlsRef.current = sounds;
   };
 
+   const unlockHowlerAudio = async () => {
+     if (Howler.ctx && Howler.ctx.state !== "running") {
+       await Howler.ctx.resume();
+    }
+  };
+  
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
+
+    await unlockHowlerAudio();
 
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
