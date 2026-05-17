@@ -279,7 +279,6 @@ export default function Home() {
   };
 
   const prepareForestHowls = () => {
-    stopForestHowls();
 
     const forestLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
@@ -299,7 +298,6 @@ export default function Home() {
   };
 
   const prepareWaveHowls = () => {
-    stopWaveHowls();
 
     const waveLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
@@ -319,7 +317,6 @@ export default function Home() {
   };
 
   const prepareRiverHowls = () => {
-    stopRiverHowls();
 
     const riverLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
@@ -339,7 +336,6 @@ export default function Home() {
   };
 
   const prepareRainHowls = () => {
-    stopRainHowls();
 
     const rainLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
@@ -359,7 +355,6 @@ export default function Home() {
   };
 
   const prepareBonfireHowls = () => {
-    stopBonfireHowls();
 
     const bonfireLayers = ["a1", "b1", "c1"] as const;
 
@@ -379,7 +374,6 @@ export default function Home() {
   };
 
   const prepareCaveHowls = () => {
-    stopCaveHowls();
 
     const caveLayers = ["a1", "b1", "c1"] as const;
 
