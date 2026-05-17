@@ -174,11 +174,11 @@ export default function Home() {
       stopForestHowls();
 
       const forestLayers = [
-        { name: "a1", seek: 23 },
-        { name: "b1", seek: 71 },
-        { name: "c1", seek: 41 },
-        { name: "a2", seek: 107 },
-        { name: "a3", seek: 149 },
+        { name: "a1", seek: 0 },
+        { name: "b1", seek: 0 },
+        { name: "c1", seek: 0 },
+        { name: "a2", seek: 0 },
+        { name: "a3", seek: 0 },
       ] as const;
 
       const forestVolMap = ACTIVE_VOLUME_MAP.forest;
