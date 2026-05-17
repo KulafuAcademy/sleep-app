@@ -56,6 +56,9 @@ export default function Home() {
   const forestHowlsRef = useRef<
   { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" | "a2" | "a3" }[]
 >([]);
+const waveHowlsRef = useRef<
+  { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" | "a2" | "a3" }[]
+>([]);
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
   const [debugInputSec, setDebugInputSec] = useState("");
@@ -147,6 +150,35 @@ export default function Home() {
   forestHowlsRef.current = [];
 };
 
+const stopWaveHowls = () => {
+  waveHowlsRef.current.forEach(({ sound, id }) => {
+    const currentVolume =
+      id !== null ? Number(sound.volume(id)) : Number(sound.volume());
+
+    const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
+
+    if (id !== null) {
+      sound.fade(
+        safeVolume,
+        0,
+        ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
+        id,
+      );
+    } else {
+      sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+    }
+
+    setTimeout(() => {
+      if (id !== null) sound.stop(id);
+      else sound.stop();
+
+      sound.unload();
+    }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
+  });
+
+  waveHowlsRef.current = [];
+};
+
 const prepareForestHowls = () => {
   stopForestHowls();
 
@@ -165,6 +197,26 @@ const prepareForestHowls = () => {
   }));
 
   forestHowlsRef.current = sounds;
+};
+
+const prepareWaveHowls = () => {
+  stopWaveHowls();
+
+  const waveLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
+
+  const sounds = waveLayers.map((name) => ({
+    sound: new Howl({
+      src: [`/sound/wave/v1/${name}.wav`],
+      loop: true,
+      volume: 0,
+      html5: false,
+      preload: true,
+    }),
+    id: null as number | null,
+    name,
+  }));
+
+  waveHowlsRef.current = sounds;
 };
 
   const playWaveLayerTest = async () => {
@@ -224,6 +276,27 @@ const prepareForestHowls = () => {
     entry.sound.volume(0, id);
 
     const targetVolume = forestVolMap[entry.name] ?? 0;
+
+    entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+  });
+
+  return;
+}
+
+  if (folder === "wave") {
+  if (waveHowlsRef.current.length === 0) {
+    prepareWaveHowls();
+  }
+
+  const waveVolMap = ACTIVE_VOLUME_MAP.wave;
+
+  waveHowlsRef.current.forEach((entry) => {
+    const id = entry.sound.play();
+    entry.id = id;
+
+    entry.sound.volume(0, id);
+
+    const targetVolume = waveVolMap[entry.name] ?? 0;
 
     entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
   });
@@ -354,6 +427,8 @@ const prepareForestHowls = () => {
 
   const pauseWaveLayerTestImmediately = () => {
     stopForestHowls();
+    stopWaveHowls();
+
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
       audio.currentTime = 0;
@@ -934,6 +1009,11 @@ const prepareForestHowls = () => {
   if (sound === "Forest") {
     prepareForestHowls();
   }
+
+   if (sound === "Wave") {
+    prepareWaveHowls();
+  }
+
 };
 
   useEffect(() => {
