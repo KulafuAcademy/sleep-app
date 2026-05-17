@@ -531,7 +531,7 @@ const prepareWaveHowls = () => {
     setTimeLeft(minutes * 60 - 1);
     setIsTimerRunning(true);
 
-    stopWaveLayerTest();
+    pauseWaveLayerTestImmediately();
     playWaveLayerTest();
     setIsPlaying(true);
   };
