@@ -279,7 +279,6 @@ export default function Home() {
   };
 
   const prepareForestHowls = () => {
-
     const forestLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
     const sounds = forestLayers.map((name) => ({
@@ -298,7 +297,6 @@ export default function Home() {
   };
 
   const prepareWaveHowls = () => {
-
     const waveLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
     const sounds = waveLayers.map((name) => ({
@@ -317,7 +315,6 @@ export default function Home() {
   };
 
   const prepareRiverHowls = () => {
-
     const riverLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
     const sounds = riverLayers.map((name) => ({
@@ -336,7 +333,6 @@ export default function Home() {
   };
 
   const prepareRainHowls = () => {
-
     const rainLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
     const sounds = rainLayers.map((name) => ({
@@ -355,7 +351,6 @@ export default function Home() {
   };
 
   const prepareBonfireHowls = () => {
-
     const bonfireLayers = ["a1", "b1", "c1"] as const;
 
     const sounds = bonfireLayers.map((name) => ({
@@ -374,7 +369,6 @@ export default function Home() {
   };
 
   const prepareCaveHowls = () => {
-
     const caveLayers = ["a1", "b1", "c1"] as const;
 
     const sounds = caveLayers.map((name) => ({
@@ -1459,7 +1453,16 @@ export default function Home() {
           {/* 👇ここに追加（Backボタン） */}
           <div className="px-6 pt-6">
             <button
-              onClick={() => setScreen("player")}
+              onClick={() => {
+                pauseWaveLayerTestImmediately();
+
+                setIsPlaying(false);
+                setIsTimerRunning(false);
+                setTimeLeft(0);
+                setSelectedTimer(null);
+
+                setScreen("player");
+              }}
               className="text-sm text-white/60"
             >
               ← Back
