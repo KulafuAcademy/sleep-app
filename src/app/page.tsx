@@ -1820,12 +1820,13 @@ export default function Home() {
     <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
       {selectedSound && (
         <>
+          {/*
           <img
             src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
             alt=""
             className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
           />
-
+          */}
           <div className="absolute inset-0 bg-black/70 md:bg-black/25" />
         </>
       )}
