@@ -53,7 +53,7 @@ export default function Home() {
     number | null
   >(null);
   const waveAudioRef = useRef<HTMLAudioElement[]>([]);
-  const forestHowlsRef = useRef<Howl[]>([]);
+  const forestHowlsRef = useRef<{ sound: Howl; id: number | null }[]>([]);
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
   const [debugInputSec, setDebugInputSec] = useState("");
@@ -117,19 +117,33 @@ export default function Home() {
     : AUDIO_STOP_CONFIG_DESKTOP;
 
   const stopForestHowls = () => {
-    forestHowlsRef.current.forEach((sound) => {
-      const currentVolume = sound.volume();
+  forestHowlsRef.current.forEach(({ sound, id }) => {
+    const currentVolume =
+      id !== null ? Number(sound.volume(id)) : Number(sound.volume());
 
-      sound.fade(currentVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+    const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
 
-      setTimeout(() => {
-        sound.stop();
-        sound.unload();
-      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-    });
+    if (id !== null) {
+      sound.fade(
+        safeVolume,
+        0,
+        ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
+        id,
+      );
+    } else {
+      sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+    }
 
-    forestHowlsRef.current = [];
-  };
+    setTimeout(() => {
+      if (id !== null) sound.stop(id);
+      else sound.stop();
+
+      sound.unload();
+    }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
+  });
+
+  forestHowlsRef.current = [];
+};
 
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
@@ -190,25 +204,29 @@ export default function Home() {
       const forestVolMap = ACTIVE_VOLUME_MAP.forest;
 
       const sounds = forestLayers.map((layer) => {
-        const sound = new Howl({
-          src: [`/sound/forest/v1/${layer.name}.wav`],
-          loop: true,
-          volume: 0,
-          html5: false,
-        });
+        const entry = {
+          sound: new Howl({
+            src: [`/sound/forest/v1/${layer.name}.wav`],
+            loop: true,
+            volume: 0,
+            html5: false,
+          }),
+          id: null as number | null,
+        };
 
-        sound.once("load", () => {
-          const id = sound.play();
+        entry.sound.once("load", () => {
+          const id = entry.sound.play();
+          entry.id = id;
 
-          sound.seek(layer.seek, id);
-          sound.volume(0, id);
+          entry.sound.seek(layer.seek, id);
+          entry.sound.volume(0, id);
 
           const targetVolume = forestVolMap[layer.name] ?? 0;
 
-          sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+          entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
         });
 
-        return sound;
+        return entry;
       });
 
       forestHowlsRef.current = sounds;
