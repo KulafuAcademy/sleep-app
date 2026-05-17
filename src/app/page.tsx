@@ -73,6 +73,7 @@ export default function Home() {
   const caveHowlsRef = useRef<
     { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" }[]
   >([]);
+  const silentKeeperRef = useRef<Howl | null>(null);
 
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
@@ -393,11 +394,35 @@ export default function Home() {
        await Howler.ctx.resume();
     }
   };
+
+   const startSilentKeeper = () => {
+  if (silentKeeperRef.current) return;
+
+  silentKeeperRef.current = new Howl({
+    src: ["/sound/silence.mp3"],
+    loop: true,
+    volume: 0,
+    html5: true,
+    preload: true,
+  });
+
+  silentKeeperRef.current.play();
+};
+
+const stopSilentKeeper = () => {
+  if (!silentKeeperRef.current) return;
+
+  silentKeeperRef.current.stop();
+  silentKeeperRef.current.unload();
+  silentKeeperRef.current = null;
+};
   
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
 
     await unlockHowlerAudio();
+    startSilentKeeper();
+
 
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
@@ -687,6 +712,8 @@ export default function Home() {
   };
 
   const pauseWaveLayerTestImmediately = () => {
+    stopSilentKeeper();
+    
     stopForestHowls();
     stopWaveHowls();
     stopRiverHowls();
