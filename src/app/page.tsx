@@ -62,6 +62,9 @@ const waveHowlsRef = useRef<
 const riverHowlsRef = useRef<
   { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" | "a2" | "a3" }[]
 >([]);
+const rainHowlsRef = useRef<
+  { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" | "a2" | "a3" }[]
+>([]);
 
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
@@ -212,6 +215,35 @@ const stopRiverHowls = () => {
   riverHowlsRef.current = [];
 };
 
+const stopRainHowls = () => {
+  rainHowlsRef.current.forEach(({ sound, id }) => {
+    const currentVolume =
+      id !== null ? Number(sound.volume(id)) : Number(sound.volume());
+
+    const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
+
+    if (id !== null) {
+      sound.fade(
+        safeVolume,
+        0,
+        ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
+        id,
+      );
+    } else {
+      sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+    }
+
+    setTimeout(() => {
+      if (id !== null) sound.stop(id);
+      else sound.stop();
+
+      sound.unload();
+    }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
+  });
+
+  rainHowlsRef.current = [];
+};
+
 const prepareForestHowls = () => {
   stopForestHowls();
 
@@ -270,6 +302,26 @@ const prepareWaveHowls = () => {
   }));
 
   riverHowlsRef.current = sounds;
+};
+
+ const prepareRainHowls = () => {
+  stopRainHowls();
+
+  const rainLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
+
+  const sounds = rainLayers.map((name) => ({
+    sound: new Howl({
+      src: [`/sound/rain/v1/${name}.wav`],
+      loop: true,
+      volume: 0,
+      html5: false,
+      preload: true,
+    }),
+    id: null as number | null,
+    name,
+  }));
+
+  rainHowlsRef.current = sounds;
 };
 
   const playWaveLayerTest = async () => {
@@ -371,6 +423,27 @@ const prepareWaveHowls = () => {
     entry.sound.volume(0, id);
 
     const targetVolume = riverVolMap[entry.name] ?? 0;
+
+    entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+  });
+
+  return;
+}
+
+  if (folder === "rain") {
+  if (rainHowlsRef.current.length === 0) {
+    prepareRainHowls();
+  }
+
+  const rainVolMap = ACTIVE_VOLUME_MAP.rain;
+
+  rainHowlsRef.current.forEach((entry) => {
+    const id = entry.sound.play();
+    entry.id = id;
+
+    entry.sound.volume(0, id);
+
+    const targetVolume = rainVolMap[entry.name] ?? 0;
 
     entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
   });
@@ -504,6 +577,7 @@ const prepareWaveHowls = () => {
     stopForestHowls();
     stopWaveHowls();
     stopRiverHowls();
+    stopRainHowls();
 
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
@@ -1093,6 +1167,11 @@ const prepareWaveHowls = () => {
     if (sound === "River") {
        prepareRiverHowls();
     }
+
+    if (sound === "Rain") {
+      prepareRainHowls();
+    }
+
   };
 
   useEffect(() => {
