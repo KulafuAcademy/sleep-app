@@ -93,7 +93,7 @@ export default function Home() {
   };
 
   const FADE_CONFIG_MOBILE = {
-    fadeInMs: 1800,
+    fadeInMs: 900,
     fadeOutMs: 2500,
     curve: 0.7,
   };
