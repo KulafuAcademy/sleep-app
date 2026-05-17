@@ -331,6 +331,7 @@ export default function Home() {
   };
 
   const pauseWaveLayerTestImmediately = () => {
+    stopForestHowls();
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
       audio.currentTime = 0;
@@ -378,6 +379,7 @@ export default function Home() {
       }
 
       if (isSoundscapePlaying) {
+        stopForestHowls();
         stopSoundscape();
         setIsSoundscapePlaying(false);
       }
