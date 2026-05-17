@@ -255,28 +255,14 @@ export default function Home() {
   };
 
   const stopCaveHowls = () => {
-    caveHowlsRef.current.forEach(({ sound, id }) => {
-      const currentVolume =
-        id !== null ? Number(sound.volume(id)) : Number(sound.volume());
+  caveHowlsRef.current.forEach(({ sound }) => {
+    sound.volume(0);
+    sound.stop();
+    sound.unload();
+  });
 
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      if (id !== null) {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration, id);
-      } else {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-      }
-
-      setTimeout(() => {
-        if (id !== null) sound.stop(id);
-        else sound.stop();
-
-        sound.unload();
-      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-    });
-
-    caveHowlsRef.current = [];
-  };
+  caveHowlsRef.current = [];
+};
 
   const prepareForestHowls = () => {
     const forestLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
