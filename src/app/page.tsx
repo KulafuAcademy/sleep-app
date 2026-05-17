@@ -272,6 +272,8 @@ const startAudios = async () => {
 };
 
 startAudios();
+};
+
 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
