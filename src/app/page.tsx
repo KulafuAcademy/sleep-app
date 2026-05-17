@@ -118,8 +118,14 @@ export default function Home() {
 
   const stopForestHowls = () => {
     forestHowlsRef.current.forEach((sound) => {
-      sound.stop();
-      sound.unload();
+      const currentVolume = sound.volume();
+
+      sound.fade(currentVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+
+      setTimeout(() => {
+        sound.stop();
+        sound.unload();
+      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
     });
 
     forestHowlsRef.current = [];
@@ -343,13 +349,13 @@ export default function Home() {
   const startSleepTimer = (minutes: number) => {
     const isSameTimer = selectedTimer === minutes && isTimerRunning;
 
-   if (isSameTimer) {
-     pauseWaveLayerTestImmediately();
+    if (isSameTimer) {
+      pauseWaveLayerTestImmediately();
 
-     setIsPlaying(false);
-     setIsTimerRunning(false);
-     setTimeLeft(0);
-     setSelectedTimer(null);
+      setIsPlaying(false);
+      setIsTimerRunning(false);
+      setTimeLeft(0);
+      setSelectedTimer(null);
 
       return;
     }
