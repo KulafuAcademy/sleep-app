@@ -71,7 +71,7 @@ export default function Home() {
 
   const VOLUME_MAP_MOBILE = {
     wave: { a1: 0.0, b1: 0.0, c1: 0.025, a2: 0.3, a3: 0.05 },
-    forest: { a1: 0.0, b1: 0.0, c1: 0.0, a2: 0.0, a3: 0.0 },
+    forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
     rain: { a1: 0.24, b1: 0.12, c1: 0.08, a2: 0.12, a3: 0.07 },
     cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
     bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
@@ -175,12 +175,14 @@ if (folder === "forest") {
   stopForestHowls();
 
   const forestLayers = [
-    { name: "a1", seek: 23, volume: 0 },
-    { name: "b1", seek: 71, volume: 0 },
-    { name: "c1", seek: 41, volume: 0 },
-    { name: "a2", seek: 107, volume: 0 },
-    { name: "a3", seek: 149, volume: 0 },
-  ];
+  { name: "a1", seek: 23 },
+  { name: "b1", seek: 71 },
+  { name: "c1", seek: 41 },
+  { name: "a2", seek: 107 },
+  { name: "a3", seek: 149 },
+] as const;
+
+  const forestVolMap = ACTIVE_VOLUME_MAP.forest;  
 
   const sounds = forestLayers.map((layer) => {
     const sound = new Howl({
@@ -190,11 +192,11 @@ if (folder === "forest") {
       html5: false,
     });
 
-    sound.once("load", () => {
-      sound.seek(layer.seek);
-      sound.volume(0);
-      sound.play();
-    });
+  sound.once("load", () => {
+  sound.seek(layer.seek);
+  sound.volume(forestVolMap[layer.name] ?? 0);
+  sound.play();
+  });
 
     return sound;
   });
