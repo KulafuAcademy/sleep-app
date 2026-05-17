@@ -1812,23 +1812,23 @@ export default function Home() {
 
       <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
         <div className="px-6 pt-6">
-          <button
-            onClick={() => {
-              stopWaveLayerTest();
+         <button
+         onClick={() => {
+         pauseWaveLayerTestImmediately();
 
-              setIsPlaying(false);
-              setIsTimerRunning(false);
-              setTimeLeft(0);
-              setSelectedTimer(null);
-              setSelectedSound(null);
+         setIsPlaying(false);
+         setIsTimerRunning(false);
+         setTimeLeft(0);
+         setSelectedTimer(null);
+         setSelectedSound(null);
 
-              setScreen("select");
-            }}
-            className="text-sm text-white/60"
-          >
-            ← Back
-          </button>
-        </div>
+         setScreen("select");
+       }}
+         className="text-sm text-white/60"
+         >
+       ← Back
+        </button>
+       </div>  
 
         <div className="px-6 pt-2 pb-5 text-center">
           <HibikiLogo />
