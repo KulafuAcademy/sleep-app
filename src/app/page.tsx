@@ -343,14 +343,13 @@ export default function Home() {
   const startSleepTimer = (minutes: number) => {
     const isSameTimer = selectedTimer === minutes && isTimerRunning;
 
-    if (isSameTimer) {
-      setIsTimerRunning(false);
-      setTimeLeft(0);
-      setSelectedTimer(null);
+   if (isSameTimer) {
+     pauseWaveLayerTestImmediately();
 
-      if (isPlaying) {
-        toggle();
-      }
+     setIsPlaying(false);
+     setIsTimerRunning(false);
+     setTimeLeft(0);
+     setSelectedTimer(null);
 
       return;
     }
