@@ -12,6 +12,8 @@ import {
   Square,
 } from "lucide-react";
 
+import { Howl } from "howler";
+
 type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Cave";
 
 const sounds: {
@@ -51,6 +53,7 @@ export default function Home() {
     number | null
   >(null);
   const waveAudioRef = useRef<HTMLAudioElement[]>([]);
+  const forestHowlsRef = useRef<Howl[]>([]);
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
   const [debugInputSec, setDebugInputSec] = useState("");
@@ -113,8 +116,20 @@ export default function Home() {
     ? AUDIO_STOP_CONFIG_MOBILE
     : AUDIO_STOP_CONFIG_DESKTOP;
 
+const stopForestHowls = () => {
+  forestHowlsRef.current.forEach((sound) => {
+    sound.stop();
+    sound.unload();
+  });
+
+  forestHowlsRef.current = [];
+};
+
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
+
+   stopForestHowls();
+
 
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
@@ -154,94 +169,109 @@ export default function Home() {
     let a2: HTMLAudioElement | null = null;
     let a3: HTMLAudioElement | null = null;
 
-    const audios: HTMLAudioElement[] = [a1, b1, c1];
+  const audios: HTMLAudioElement[] = [a1, b1, c1];
 
 if (folder === "forest") {
-  a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-  a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
+  stopForestHowls();
 
-  a2.addEventListener("loadedmetadata", (event) => {
-    const audio = event.currentTarget as HTMLAudioElement;
-    audio.currentTime = 107;
+  const forestLayers = [
+    { name: "a1", seek: 23, volume: 0 },
+    { name: "b1", seek: 71, volume: 0 },
+    { name: "c1", seek: 41, volume: 0 },
+    { name: "a2", seek: 107, volume: 0 },
+    { name: "a3", seek: 149, volume: 0 },
+  ];
+
+  const sounds = forestLayers.map((layer) => {
+    const sound = new Howl({
+      src: [`/sound/forest/v1/${layer.name}.wav`],
+      loop: true,
+      volume: 0,
+      html5: false,
+    });
+
+    sound.once("load", () => {
+      sound.seek(layer.seek);
+      sound.volume(0);
+      sound.play();
+    });
+
+    return sound;
   });
 
-  a3.addEventListener("loadedmetadata", (event) => {
-    const audio = event.currentTarget as HTMLAudioElement;
-    audio.currentTime = 149;
-  });
+  forestHowlsRef.current = sounds;
+  return;
+}
 
-  audios.push(a2, a3);
-} else if (folder !== "bonfire" && folder !== "cave") {
+if (folder !== "bonfire" && folder !== "cave") {
   a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
   a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
 
   audios.push(a2, a3);
 }
 
-    waveAudioRef.current = audios;
+waveAudioRef.current = audios;
 
-    a1.loop = true;
-    b1.loop = true;
-    c1.loop = true;
+a1.loop = true;
+b1.loop = true;
+c1.loop = true;
 
-    if (a2) a2.loop = true;
-    if (a3) a3.loop = true;
+if (a2) a2.loop = true;
+if (a3) a3.loop = true;
 
-    // 無音スタート
-    a1.volume = 0;
-    b1.volume = 0;
-    c1.volume = 0;
+// 無音スタート
+a1.volume = 0;
+b1.volume = 0;
+c1.volume = 0;
 
-    if (a2) a2.volume = 0;
-    if (a3) a3.volume = 0;
+if (a2) a2.volume = 0;
+if (a3) a3.volume = 0;
 
-    // rainだけ開始位置をズラす
-    if (folder === "rain") {
-      a1.currentTime = 37;
-      b1.currentTime = 0;
-      c1.currentTime = 11;
+// rainだけ開始位置をズラす
+if (folder === "rain") {
+  a1.currentTime = 37;
+  b1.currentTime = 0;
+  c1.currentTime = 11;
 
-      if (a2) a2.currentTime = 59;
-      if (a3) a3.currentTime = 113;
-    }
+  if (a2) a2.currentTime = 59;
+  if (a3) a3.currentTime = 113;
+}
 
-    // 👇フェードイン
-    const duration = ACTIVE_FADE_CONFIG.fadeInMs;
-    const startTime = performance.now();
+// 👇フェードイン
+const duration = ACTIVE_FADE_CONFIG.fadeInMs;
+const startTime = performance.now();
 
-    const fadeIn = () => {
-      const elapsed = performance.now() - startTime;
-      const rawProgress = Math.min(elapsed / duration, 1);
-      const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
+const fadeIn = () => {
+  const elapsed = performance.now() - startTime;
+  const rawProgress = Math.min(elapsed / duration, 1);
+  const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
 
-      const volMap =
-        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-        ACTIVE_VOLUME_MAP.wave;
+  const volMap =
+    ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+    ACTIVE_VOLUME_MAP.wave;
 
+  a1.volume = volMap.a1 * progress;
+  b1.volume = volMap.b1 * progress;
+  c1.volume = volMap.c1 * progress;
 
-      a1.volume = volMap.a1 * progress;
-      b1.volume = volMap.b1 * progress;
-      c1.volume = volMap.c1 * progress;
+  if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
+  if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
 
-      if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
-      if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
+  if (progress < 1) {
+    requestAnimationFrame(fadeIn);
+  }
+};
 
-      if (progress < 1) {
-        requestAnimationFrame(fadeIn);
-      }
-    };
+const startAudios = async () => {
+  for (const audio of audios) {
+    audio.volume = 0;
+    await audio.play();
+  }
 
-    const startAudios = async () => {
-       for (const audio of audios) {
-        audio.volume = 0;
-        await audio.play();
-      }
+  fadeIn();
+};
 
-     fadeIn();
-    };
-
-    startAudios();
-   };
+startAudios();
 
   // 👇開発用時間スライダー
   const jumpWaveToTime = (sec: number) => {
