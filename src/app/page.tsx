@@ -210,6 +210,7 @@ export default function Home() {
             loop: true,
             volume: 0,
             html5: false,
+            preload: true,
           }),
           id: null as number | null,
         };
