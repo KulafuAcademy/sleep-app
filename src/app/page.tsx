@@ -1673,7 +1673,7 @@ export default function Home() {
                       });
 
                       // 👇ここに貼る
-                      mixHowlsRef.current[sound]?.forEach((entry) => {
+                      mixHowlsRef.current[sound]?.forEach((entry, index) => {
                         const folder = sound.toLowerCase();
 
                         const volMap =
@@ -1681,10 +1681,20 @@ export default function Home() {
                             folder as keyof typeof ACTIVE_VOLUME_MAP
                           ] ?? ACTIVE_VOLUME_MAP.wave;
 
-                        const baseVolume =
-                          entry.name in volMap
-                            ? volMap[entry.name as keyof typeof volMap]
-                            : 0;
+                        let baseVolume = 0;
+
+                        if (index === 0) baseVolume = volMap.a1;
+                        if (index === 1) baseVolume = volMap.b1;
+                        if (index === 2) baseVolume = volMap.c1;
+
+                        if (index === 3 && "a2" in volMap) {
+                          baseVolume = volMap.a2;
+                        }
+
+                        if (index === 4 && "a3" in volMap) {
+                          baseVolume = volMap.a3;
+                        }
+
                         const nextVolume = baseVolume * value;
 
                         if (entry.id !== null) {
