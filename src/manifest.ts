@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "hibiki.rest",
+    name: "HIBIKI",
     short_name: "HIBIKI",
     description: "ambient space for rest & focus",
     start_url: "/",
