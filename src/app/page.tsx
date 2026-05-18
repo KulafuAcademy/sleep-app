@@ -1009,13 +1009,12 @@ export default function Home() {
         const id = entry.sound.play();
         entry.id = id;
 
-        entry.sound.volume(0);
-
         const baseVolume =
           entry.name in volMap ? volMap[entry.name as keyof typeof volMap] : 0;
+
         const targetVolume = baseVolume * mixVolumes[sound];
 
-        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs);
+        entry.sound.volume(targetVolume);
       });
     }
   };
