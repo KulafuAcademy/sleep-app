@@ -1584,7 +1584,15 @@ export default function Home() {
 
               {selectedMixSounds.length === 2 && (
                 <button
-                  onClick={() => setScreen("soundscapeEdit")}
+                  onClick={() => {
+                    setMixVolumes((prev) => ({
+                      ...prev,
+                      [selectedMixSounds[0]]: 0.5,
+                      [selectedMixSounds[1]]: 0.5,
+                    }));
+
+                    setScreen("soundscapeEdit");
+                  }}
                   className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30"
                 >
                   Continue
@@ -1620,6 +1628,12 @@ export default function Home() {
                 if (timerRef.current) {
                   clearInterval(timerRef.current);
                 }
+
+                setMixVolumes((prev) => ({
+                  ...prev,
+                  [selectedMixSounds[0]]: 0.5,
+                  [selectedMixSounds[1]]: 0.5,
+                }));
 
                 setScreen("soundscape");
               }}
@@ -1706,7 +1720,9 @@ export default function Home() {
 
                         console.log("slider value", value);
                         console.log("entry id", entry.id);
-                        console.log("playing",entry.sound.playing(entry.id ?? undefined),
+                        console.log(
+                          "playing",
+                          entry.sound.playing(entry.id ?? undefined),
                         );
                       });
                     }}
