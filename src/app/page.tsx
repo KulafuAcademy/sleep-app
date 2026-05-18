@@ -32,7 +32,7 @@ const sounds: {
 
 function HibikiLogo() {
   return (
-    <div className="mx-auto mb-10 h-24 w-24 flex items-center justify-center">
+    <div className="mx-auto h-24 w-24 flex items-center justify-center">
       <img
         src="/logo/hibiki-enso.png"
         alt="HIBIKI"
@@ -957,108 +957,107 @@ export default function Home() {
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
     {},
   );
+  const mixHowlsRef = useRef<
+    Partial<
+      Record<
+        SoundName,
+        {
+          sound: Howl;
+          id: number | null;
+          name: "a1" | "b1" | "c1" | "a2" | "a3";
+        }[]
+      >
+    >
+  >({});
 
   const startSoundscape = async () => {
     stopSoundscape();
 
+    startSilentKeeper();
+
     for (const sound of selectedMixSounds) {
       const folder = sound.toLowerCase();
 
-      const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
-      const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
-      const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
+      const volMap =
+        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+        ACTIVE_VOLUME_MAP.wave;
 
-      let a2: HTMLAudioElement | null = null;
-      let a3: HTMLAudioElement | null = null;
+      const layerNames =
+        folder === "bonfire" || folder === "cave"
+          ? (["a1", "b1", "c1"] as const)
+          : (["a1", "b1", "c1", "a2", "a3"] as const);
 
-      const audios: HTMLAudioElement[] =
-        folder === "forest" ? [a1] : [a1, b1, c1];
+      const entries = layerNames.map((name) => {
+        const howl = new Howl({
+          src: [`/sound/${folder}/v1/${name}.wav`],
+          loop: true,
+          volume: 0,
+          html5: true,
+          preload: true,
+        });
 
-      if (folder !== "bonfire" && folder !== "cave") {
-        a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-        a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
-        audios.push(a2, a3);
-      }
+        return {
+          sound: howl,
+          id: null as number | null,
+          name,
+        };
+      });
 
-      for (const audio of audios) {
-        audio.loop = true;
-        audio.volume = 0;
-        await audio.play();
-      }
+      mixHowlsRef.current[sound] = entries;
 
-      mixAudioRefs.current[sound] = audios;
+      entries.forEach((entry) => {
+        const id = entry.sound.play();
+        entry.id = id;
 
-      let vol = 0;
+        entry.sound.volume(0, id);
 
-      const fadeIn = setInterval(() => {
-        vol += 0.01;
+        const baseVolume =
+          entry.name in volMap ? volMap[entry.name as keyof typeof volMap] : 0;
+        const targetVolume = baseVolume * mixVolumes[sound];
 
-        const current = mixVolumes[sound];
-
-        const volMap =
-          ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-          ACTIVE_VOLUME_MAP.wave;
-
-        console.log("selectedSound", selectedSound);
-        console.log("folder", folder);
-        console.log("isMobile", isMobile);
-        console.log("volMap", volMap);
-
-        if (vol >= 1) {
-          a1.volume = volMap.a1 * current;
-          b1.volume = volMap.b1 * current;
-          c1.volume = volMap.c1 * current;
-
-          if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current;
-          if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current;
-
-          clearInterval(fadeIn);
-        } else {
-          a1.volume = volMap.a1 * current * vol;
-          b1.volume = volMap.b1 * current * vol;
-          c1.volume = volMap.c1 * current * vol;
-
-          if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * current * vol;
-          if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * current * vol;
-        }
-      }, 50);
+        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+      });
     }
   };
 
   const stopSoundscape = () => {
-    Object.values(mixAudioRefs.current).forEach((audios) => {
-      if (!audios) return;
+    stopSilentKeeper();
 
-      audios.forEach((audio) => {
-        const startVolume = audio.volume;
-        const duration = ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration;
-        const startTime = performance.now();
+    Object.values(mixHowlsRef.current).forEach((entries) => {
+      if (!entries) return;
 
-        const fadeOut = () => {
-          const elapsed = performance.now() - startTime;
+      entries.forEach((entry) => {
+        const { sound, id } = entry;
 
-          const progress = Math.min(elapsed / duration, 1);
+        const currentVolume =
+          id !== null ? Number(sound.volume(id)) : Number(sound.volume());
 
-          audio.volume = startVolume * (1 - progress);
+        const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
 
-          if (progress < 1) {
-            requestAnimationFrame(fadeOut);
+        if (id !== null) {
+          sound.fade(
+            safeVolume,
+            0,
+            ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
+            id,
+          );
+        } else {
+          sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
+        }
+
+        setTimeout(() => {
+          if (id !== null) {
+            sound.stop(id);
           } else {
-            audio.volume = 0;
-
-            setTimeout(() => {
-              audio.pause();
-
-              setTimeout(() => {
-                audio.currentTime = 0;
-              }, ACTIVE_AUDIO_STOP_CONFIG.resetDelay);
-            }, ACTIVE_AUDIO_STOP_CONFIG.pauseDelay);
+            sound.stop();
           }
-        };
 
-        fadeOut();
+          sound.unload();
+        }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
       });
     });
+
+    mixHowlsRef.current = {};
   };
 
   const [highLevel, setHighLevel] = useState(0.015);
@@ -1674,20 +1673,25 @@ export default function Home() {
                       });
 
                       // 👇ここに貼る
-                      mixAudioRefs.current[sound]?.forEach((audio, index) => {
+                      mixHowlsRef.current[sound]?.forEach((entry) => {
                         const folder = sound.toLowerCase();
 
-                        const volMap = ACTIVE_VOLUME_MAP[
-                          folder as keyof typeof ACTIVE_VOLUME_MAP
-                        ] || {
-                          a1: 0.3,
-                          b1: 0.3,
-                          c1: 0.2,
-                        };
+                        const volMap =
+                          ACTIVE_VOLUME_MAP[
+                            folder as keyof typeof ACTIVE_VOLUME_MAP
+                          ] ?? ACTIVE_VOLUME_MAP.wave;
 
-                        if (index === 0) audio.volume = volMap.a1 * value;
-                        if (index === 1) audio.volume = volMap.b1 * value;
-                        if (index === 2) audio.volume = volMap.c1 * value;
+                        const baseVolume =
+                          entry.name in volMap
+                            ? volMap[entry.name as keyof typeof volMap]
+                            : 0;
+                        const nextVolume = baseVolume * value;
+
+                        if (entry.id !== null) {
+                          entry.sound.volume(nextVolume, entry.id);
+                        } else {
+                          entry.sound.volume(nextVolume);
+                        }
                       });
                     }}
                     className="w-full accent-sky-300"
