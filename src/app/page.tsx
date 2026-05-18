@@ -1929,7 +1929,7 @@ export default function Home() {
           </button>
         </div>
 
-        <div className="px-6 pt-2 text-center">
+        <div className="px-6 pt-0 text-center">
           <HibikiLogo />
 
           <div className="flex min-h-[150px] items-center justify-center">
