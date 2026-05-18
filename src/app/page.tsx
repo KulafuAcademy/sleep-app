@@ -1009,13 +1009,13 @@ export default function Home() {
         const id = entry.sound.play();
         entry.id = id;
 
-        entry.sound.volume(0, id);
+        entry.sound.volume(0);
 
         const baseVolume =
           entry.name in volMap ? volMap[entry.name as keyof typeof volMap] : 0;
         const targetVolume = baseVolume * mixVolumes[sound];
 
-        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs);
       });
     }
   };
@@ -1697,11 +1697,6 @@ export default function Home() {
 
                         const nextVolume = baseVolume * value;
 
-                        if (entry.id !== null) {
-                          entry.sound.volume(nextVolume, entry.id);
-                        } else {
-                          entry.sound.volume(nextVolume);
-                        }
                       });
                     }}
                     className="w-full accent-sky-300"
