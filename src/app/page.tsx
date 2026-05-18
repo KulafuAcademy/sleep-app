@@ -1659,77 +1659,86 @@ export default function Home() {
               <div className="text-sm text-white/75 text-center">
                 Mix your sound
               </div>
-              {selectedMixSounds.map((sound) => (
-                <div key={sound}>
-                  <div className="mb-2 flex justify-between text-sm text-white/75">
-                    <span>{sound}</span>
-                    <span className="text-white/40">
-                      {Math.round(mixVolumes[sound] * 100)}%
-                    </span>
+              {[...selectedMixSounds]
+                .sort(
+                  (a, b) =>
+                    sounds.findIndex((item) => item.name === a) -
+                    sounds.findIndex((item) => item.name === b),
+                )
+                .map((sound) => (
+                  <div key={sound}>
+                    <div className="mb-2 flex justify-between text-sm text-white/75">
+                      <span>{sound}</span>
+                      <span className="text-white/40">
+                        {Math.round(mixVolumes[sound] * 100)}%
+                      </span>
+                    </div>
+
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.01"
+                      value={mixVolumes[sound]}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        console.log("🔥 RANGE HIT");
+
+                        console.log("🔥 THIS SLIDER ACTIVE");
+
+                        setMixVolumes({
+                          ...mixVolumes,
+                          [sound]: value,
+                        });
+
+                        // 👇ここに貼る
+                        mixHowlsRef.current[sound]?.forEach((entry, index) => {
+                          const folder = sound.toLowerCase();
+
+                          const volMap =
+                            ACTIVE_VOLUME_MAP[
+                              folder as keyof typeof ACTIVE_VOLUME_MAP
+                            ] ?? ACTIVE_VOLUME_MAP.wave;
+
+                          let baseVolume = 0;
+
+                          if (index === 0) baseVolume = volMap.a1;
+                          if (index === 1) baseVolume = volMap.b1;
+                          if (index === 2) baseVolume = volMap.c1;
+
+                          if (index === 3 && "a2" in volMap) {
+                            baseVolume = volMap.a2;
+                          }
+
+                          if (index === 4 && "a3" in volMap) {
+                            baseVolume = volMap.a3;
+                          }
+
+                          const nextVolume = baseVolume * value;
+
+                          if (entry.id !== null) {
+                            entry.sound.volume(nextVolume, entry.id);
+                            entry.sound.mute(value === 0, entry.id);
+                          }
+
+                          console.log("slider volume", nextVolume);
+                          console.log(
+                            "actual howl volume",
+                            entry.sound.volume(),
+                          );
+
+                          console.log("slider value", value);
+                          console.log("entry id", entry.id);
+                          console.log(
+                            "playing",
+                            entry.sound.playing(entry.id ?? undefined),
+                          );
+                        });
+                      }}
+                      className="w-full accent-sky-300"
+                    />
                   </div>
-
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={mixVolumes[sound]}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      console.log("🔥 RANGE HIT");
-
-                      console.log("🔥 THIS SLIDER ACTIVE");
-
-                      setMixVolumes({
-                        ...mixVolumes,
-                        [sound]: value,
-                      });
-
-                      // 👇ここに貼る
-                      mixHowlsRef.current[sound]?.forEach((entry, index) => {
-                        const folder = sound.toLowerCase();
-
-                        const volMap =
-                          ACTIVE_VOLUME_MAP[
-                            folder as keyof typeof ACTIVE_VOLUME_MAP
-                          ] ?? ACTIVE_VOLUME_MAP.wave;
-
-                        let baseVolume = 0;
-
-                        if (index === 0) baseVolume = volMap.a1;
-                        if (index === 1) baseVolume = volMap.b1;
-                        if (index === 2) baseVolume = volMap.c1;
-
-                        if (index === 3 && "a2" in volMap) {
-                          baseVolume = volMap.a2;
-                        }
-
-                        if (index === 4 && "a3" in volMap) {
-                          baseVolume = volMap.a3;
-                        }
-
-                        const nextVolume = baseVolume * value;
-
-                        if (entry.id !== null) {
-                          entry.sound.volume(nextVolume, entry.id);
-                          entry.sound.mute(value === 0, entry.id);
-                        }
-
-                        console.log("slider volume", nextVolume);
-                        console.log("actual howl volume", entry.sound.volume());
-
-                        console.log("slider value", value);
-                        console.log("entry id", entry.id);
-                        console.log(
-                          "playing",
-                          entry.sound.playing(entry.id ?? undefined),
-                        );
-                      });
-                    }}
-                    className="w-full accent-sky-300"
-                  />
-                </div>
-              ))}
+                ))}
             </div>
             {/* 👇 Sleep Timer（ここに追加） */}
             <div className="mt-6">
