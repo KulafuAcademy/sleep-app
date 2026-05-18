@@ -1698,10 +1698,16 @@ export default function Home() {
 
                         if (entry.id !== null) {
                           entry.sound.volume(nextVolume, entry.id);
+                          entry.sound.mute(value === 0, entry.id);
                         }
 
                         console.log("slider volume", nextVolume);
                         console.log("actual howl volume", entry.sound.volume());
+
+                        console.log("slider value", value);
+                        console.log("entry id", entry.id);
+                        console.log("playing",entry.sound.playing(entry.id ?? undefined),
+                        );
                       });
                     }}
                     className="w-full accent-sky-300"
