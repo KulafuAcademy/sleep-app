@@ -1014,7 +1014,7 @@ export default function Home() {
 
         const targetVolume = baseVolume * mixVolumes[sound];
 
-        entry.sound.volume(targetVolume);
+        entry.sound.volume(targetVolume, id);
       });
     }
   };
@@ -1695,7 +1695,10 @@ export default function Home() {
                         }
 
                         const nextVolume = baseVolume * value;
-                        entry.sound.volume(nextVolume);
+
+                        if (entry.id !== null) {
+                          entry.sound.volume(nextVolume, entry.id);
+                        }
 
                         console.log("slider volume", nextVolume);
                         console.log("actual howl volume", entry.sound.volume());
