@@ -389,40 +389,39 @@ export default function Home() {
     caveHowlsRef.current = sounds;
   };
 
-   const unlockHowlerAudio = async () => {
-     if (Howler.ctx && Howler.ctx.state !== "running") {
-       await Howler.ctx.resume();
+  const unlockHowlerAudio = async () => {
+    if (Howler.ctx && Howler.ctx.state !== "running") {
+      await Howler.ctx.resume();
     }
   };
 
-   const startSilentKeeper = () => {
-  if (silentKeeperRef.current) return;
+  const startSilentKeeper = () => {
+    if (silentKeeperRef.current) return;
 
-  silentKeeperRef.current = new Howl({
-    src: ["/sound/silence.mp3"],
-    loop: true,
-    volume: 0.005,
-    html5: true,
-    preload: true,
-  });
+    silentKeeperRef.current = new Howl({
+      src: ["/sound/silence.mp3"],
+      loop: true,
+      volume: 0.005,
+      html5: true,
+      preload: true,
+    });
 
-  silentKeeperRef.current.play();
-};
+    silentKeeperRef.current.play();
+  };
 
-const stopSilentKeeper = () => {
-  if (!silentKeeperRef.current) return;
+  const stopSilentKeeper = () => {
+    if (!silentKeeperRef.current) return;
 
-  silentKeeperRef.current.stop();
-  silentKeeperRef.current.unload();
-  silentKeeperRef.current = null;
-};
-  
+    silentKeeperRef.current.stop();
+    silentKeeperRef.current.unload();
+    silentKeeperRef.current = null;
+  };
+
   const playWaveLayerTest = async () => {
     console.log("RUNNING playWaveLayerTest");
 
     await unlockHowlerAudio();
     startSilentKeeper();
-
 
     waveAudioRef.current.forEach((audio) => {
       audio.pause();
@@ -713,7 +712,7 @@ const stopSilentKeeper = () => {
 
   const pauseWaveLayerTestImmediately = () => {
     stopSilentKeeper();
-    
+
     stopForestHowls();
     stopWaveHowls();
     stopRiverHowls();
@@ -1416,14 +1415,16 @@ const stopSilentKeeper = () => {
 
           <HibikiLogo />
 
-          <div className="px-6 pt-2 pb-5 text-center">
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-              Choose Sound
-            </h1>
+          <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight">
+                Choose Sound
+              </h1>
 
-            <p className="mt-2 text-sm leading-6 text-white/60">
-              Select your environment
-            </p>
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                Select your environment
+              </p>
+            </div>
           </div>
 
           <div className="px-6 pb-6">
@@ -1883,15 +1884,20 @@ const stopSilentKeeper = () => {
           </button>
         </div>
 
-        <div className="px-6 pt-2 pb-5 text-center">
+        <div className="px-6 pt-2 text-center">
           <HibikiLogo />
 
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-            {getSoundConfig().title}
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-white/60">
-            {getSoundConfig().subtitle}
-          </p>
+          <div className="flex min-h-[150px] items-center justify-center">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight">
+                {getSoundConfig().title}
+              </h1>
+
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                {getSoundConfig().subtitle}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="px-6 pb-6">
