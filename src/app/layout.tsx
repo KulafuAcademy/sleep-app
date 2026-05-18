@@ -14,12 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "hibiki.rest",
+  title: "HIBIKI",
   description: "ambient space for rest & focus",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "hibiki.rest",
+    title: "HIBIKI",
   },
 };
 
