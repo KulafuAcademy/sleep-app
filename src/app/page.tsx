@@ -1401,10 +1401,10 @@ export default function Home() {
         */}
 
         <div className="absolute inset-0 bg-black/70 md:bg-black/45" />
-        <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
-        <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
+        <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
+        <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
 
-        <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+        <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm min-h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
@@ -1431,31 +1431,32 @@ export default function Home() {
                 {sounds.map((item) => {
                   const Icon = item.icon;
                   const isSelected = selectedSound === item.name;
-
+  
                   return (
                     <button
                       key={item.name}
                       onClick={() => handleSelectSound(item.name)}
                       className="group flex flex-col items-center"
-                    >
+                    > 
                       <div
                         className={`flex h-20 w-20 items-center justify-center rounded-[22px] border backdrop-blur-md shadow-lg transition-all duration-200 ${
                           isSelected
-                            ? "border-sky-300/40 bg-sky-300/10 scale-[1.05]"
-                            : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"
+                            
+                            ? "border-[#B8B8B8] bg-[#B8B8B8] scale-[1.01]"
+                            : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"   
                         }`}
                       >
                         <Icon
                           className={`w-8 h-8 transition-all ${
                             isSelected
-                              ? "text-sky-300 scale-110"
-                              : "text-white/60 group-hover:text-white"
+                              ? "text-[#111111] scale-110"
+                              : "text-white/60 group-hover:text-white"   
                           }`}
                         />
                       </div>
                       <span
                         className={`mt-2 text-xs ${
-                          isSelected ? "text-sky-200" : "text-white/65"
+                          isSelected ? "text-[#E8E8E8]" : "text-white/65"
                         }`}
                       >
                         {item.name}
@@ -1471,17 +1472,17 @@ export default function Home() {
                 if (!selectedSound) return;
                 setScreen("player");
               }}
-              className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] active:scale-[0.98]"
+              className="mt-6 w-full rounded-2xl border border-[#40444D] bg-[#2A2D33] py-4 text-base font-medium text-[#D8D8D8] shadow-lg shadow-black/20 transition hover:bg-[#343842] hover:scale-[1.02] active:scale-[0.98]"
             >
               {selectedSound
                 ? `Continue with ${selectedSound}`
                 : "Choose a sound"}
             </button>
 
-            <button
-              onClick={() => setScreen("soundscape")}
-              className="mt-4 flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left transition hover:bg-white/10"
-            >
+              <button
+                onClick={() => setScreen("soundscape")}
+                className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center transition hover:bg-white/10"
+              >
               <div>
                 <p className="text-sm font-medium text-white/85">
                   Create Soundscape
@@ -1498,9 +1499,9 @@ export default function Home() {
   }
 
   if (screen === "soundscape") {
-    return (
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
-        <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+  return (
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
+      <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
           {/* 👇ここに追加（Backボタン） */}
           <div className="px-6 pt-6">
             <button
@@ -1532,7 +1533,7 @@ export default function Home() {
               Mix your own ambient world
             </p>
 
-            <p className="mt-2 mb-6 text-base text-sky-200">
+            <p className="mt-2 mb-6 text-base text-[#D8D8D8]">
               {selectedMixSounds.join(" + ")}
             </p>
           </div>
@@ -1558,21 +1559,21 @@ export default function Home() {
                       <div
                         className={`flex h-20 w-20 items-center justify-center rounded-[22px] border backdrop-blur-md shadow-lg transition-all duration-200 ${
                           isSelected
-                            ? "border-sky-300/40 bg-sky-300/10 scale-[1.05]"
+                            ? "border-[#B8B8B8] bg-[#B8B8B8] scale-[1.01]"
                             : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"
                         }`}
                       >
                         <Icon
                           className={`w-8 h-8 transition-all ${
-                            isSelected
-                              ? "text-sky-300 scale-110"
-                              : "text-white/60 group-hover:text-white"
+                           isSelected
+                             ? "text-[#111111] scale-110"
+                             : "text-white/60 group-hover:text-white" 
                           }`}
                         />
                       </div>
                       <span
                         className={`mt-2 text-xs ${
-                          isSelected ? "text-sky-200" : "text-white/65"
+                        isSelected ? "text-[#E8E8E8]" : "text-white/65"  
                         }`}
                       >
                         {item.name}
@@ -1593,7 +1594,7 @@ export default function Home() {
 
                     setScreen("soundscapeEdit");
                   }}
-                  className="mt-6 w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30"
+                  className="mt-6 w-full rounded-2xl border border-[#40444D] bg-[#2A2D33] py-4 text-base font-medium text-[#D8D8D8] shadow-lg shadow-black/20 transition hover:bg-[#343842]"
                 >
                   Continue
                 </button>
@@ -1607,8 +1608,8 @@ export default function Home() {
 
   if (screen === "soundscapeEdit") {
     return (
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
-        <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
+     <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">  
           <div className="px-6 pt-6">
             <button
               onClick={() => {
@@ -1649,7 +1650,7 @@ export default function Home() {
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
               Create Soundscape
             </h1>
-            <p className="mt-6 mb-6 text-base text-sky-200">
+            <p className="mt-6 mb-6 text-base text-[#D8D8D8]">
               {selectedMixSounds.join(" + ")}
             </p>
           </div>
@@ -1735,7 +1736,7 @@ export default function Home() {
                           );
                         });
                       }}
-                      className="w-full accent-sky-300"
+                      className="w-full accent-[#B8B8B8]"
                     />
                   </div>
                 ))}
@@ -1750,7 +1751,7 @@ export default function Home() {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => startSoundscapeTimer(30)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]": "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 30 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1770,7 +1771,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(60)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "border-[#D6D6D6] bg-[#D6D6D6] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 60 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1790,7 +1791,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(120)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "border-[#D6D6D6] bg-[#D6D6D6] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 120 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1810,7 +1811,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(180)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "border-[#D6D6D6] bg-[#D6D6D6] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 180 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1830,7 +1831,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(360)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "border-[#D6D6D6] bg-[#D6D6D6] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 360 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1850,7 +1851,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(480)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "border-sky-300/50 bg-sky-300/20 text-sky-200" : "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "border-[#D6D6D6] bg-[#D6D6D6] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 480 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1892,7 +1893,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
+  <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
       {selectedSound && (
         <>
           {/*
@@ -1902,12 +1903,9 @@ export default function Home() {
             className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
           />
           */}
-          <div className="absolute inset-0 bg-black/70 md:bg-black/25" />
+          <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
         </>
       )}
-      <div className="absolute w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl animate-pulse top-[-100px] left-[-100px]" />
-
-      <div className="absolute w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse bottom-[-120px] right-[-80px]" />
 
       <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
         <div className="px-6 pt-6">
@@ -1980,7 +1978,7 @@ export default function Home() {
                   }}
                   className={`rounded-xl border py-2.5 text-sm transition ${
                     selectedTimer === 30 && timeLeft > 0
-                      ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
+                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                       : "border-white/10 bg-white/5 text-white/75"
                   }`}
                 >
@@ -2004,7 +2002,7 @@ export default function Home() {
                   onClick={() => startSleepTimer(60)}
                   className={`rounded-xl border py-2.5 text-sm transition ${
                     selectedTimer === 60 && timeLeft > 0
-                      ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
+                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                       : "border-white/10 bg-white/5 text-white/75"
                   }`}
                 >
@@ -2028,7 +2026,7 @@ export default function Home() {
                   onClick={() => startSleepTimer(120)}
                   className={`rounded-xl border py-2.5 text-sm transition ${
                     selectedTimer === 120 && timeLeft > 0
-                      ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
+                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                       : "border-white/10 bg-white/5 text-white/75"
                   }`}
                 >
@@ -2055,7 +2053,7 @@ export default function Home() {
                 onClick={() => startSleepTimer(180)}
                 className={`rounded-xl border py-2.5 text-sm transition ${
                   selectedTimer === 180 && timeLeft > 0
-                    ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
+                    ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                     : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
@@ -2079,7 +2077,7 @@ export default function Home() {
                 onClick={() => startSleepTimer(360)}
                 className={`rounded-xl border py-2.5 text-sm transition ${
                   selectedTimer === 360 && timeLeft > 0
-                    ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
+                    ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                     : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
@@ -2103,7 +2101,7 @@ export default function Home() {
                 onClick={() => startSleepTimer(480)}
                 className={`rounded-xl border py-2.5 text-sm transition ${
                   selectedTimer === 480 && timeLeft > 0
-                    ? "border-sky-300/50 bg-sky-300/20 text-sky-200"
+                    ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                     : "border-white/10 bg-white/5 text-white/75"
                 }`}
               >
