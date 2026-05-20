@@ -1465,20 +1465,20 @@ export default function Home() {
                 })}
               </div>
             </div>
-  
-            
+
             <button
               onClick={() => {
                 if (!selectedSound) return;
                 setScreen("player");
               }}
-              className="mt-6 w-full rounded-2xl border border-white/10 bg-white/8 backdrop-blur-md py-4 text-base font-medium text-white/60 transition-all duration-200 hover:bg-white/8 hover:scale-[1.03]"
-              >
+              className={`mt-6 w-full rounded-2xl border border-white/10 ${
+                selectedSound ? "bg-white/8" : "bg-white/5"
+              } backdrop-blur-md py-4 text-base font-medium text-white/60 transition-all duration-200 hover:bg-white/8 hover:scale-[1.03] active:bg-white/8 active:scale-[0.98]`}
+            >
               {selectedSound
                 ? `Continue with ${selectedSound}`
                 : "Choose a sound"}
             </button>
-
 
             <button
               onClick={() => setScreen("soundscape")}
