@@ -1431,26 +1431,25 @@ export default function Home() {
                 {sounds.map((item) => {
                   const Icon = item.icon;
                   const isSelected = selectedSound === item.name;
-  
+
                   return (
                     <button
                       key={item.name}
                       onClick={() => handleSelectSound(item.name)}
                       className="group flex flex-col items-center"
-                    > 
+                    >
                       <div
                         className={`flex h-20 w-20 items-center justify-center rounded-[22px] border backdrop-blur-md shadow-lg transition-all duration-200 ${
                           isSelected
-                            
                             ? "border-[#B8B8B8] bg-[#B8B8B8] scale-[1.01]"
-                            : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"   
+                            : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"
                         }`}
                       >
                         <Icon
                           className={`w-8 h-8 transition-all ${
                             isSelected
                               ? "text-[#111111] scale-110"
-                              : "text-white/60 group-hover:text-white"   
+                              : "text-white/60 group-hover:text-white"
                           }`}
                         />
                       </div>
@@ -1472,17 +1471,17 @@ export default function Home() {
                 if (!selectedSound) return;
                 setScreen("player");
               }}
-              className="mt-6 w-full rounded-2xl border border-[#40444D] bg-[#2A2D33] py-4 text-base font-medium text-[#D8D8D8] shadow-lg shadow-black/20 transition hover:bg-[#343842] hover:scale-[1.02] active:scale-[0.98]"
+              className="mt-6 w-full rounded-2xl border border-white/10 bg-white/5 py-4 text-base font-medium text-white/75 shadow-lg shadow-black/20 transition hover:bg-white/8 hover:scale-[1.02] active:scale-[0.98]"
             >
               {selectedSound
                 ? `Continue with ${selectedSound}`
                 : "Choose a sound"}
             </button>
 
-              <button
-                onClick={() => setScreen("soundscape")}
-                className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center transition hover:bg-white/10"
-              >
+            <button
+              onClick={() => setScreen("soundscape")}
+              className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center transition hover:bg-white/10"
+            >
               <div>
                 <p className="text-sm font-medium text-white/85">
                   Create Soundscape
@@ -1499,9 +1498,9 @@ export default function Home() {
   }
 
   if (screen === "soundscape") {
-  return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
-      <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
+    return (
+      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
+        <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
           {/* 👇ここに追加（Backボタン） */}
           <div className="px-6 pt-6">
             <button
@@ -1565,15 +1564,15 @@ export default function Home() {
                       >
                         <Icon
                           className={`w-8 h-8 transition-all ${
-                           isSelected
-                             ? "text-[#111111] scale-110"
-                             : "text-white/60 group-hover:text-white" 
+                            isSelected
+                              ? "text-[#111111] scale-110"
+                              : "text-white/60 group-hover:text-white"
                           }`}
                         />
                       </div>
                       <span
                         className={`mt-2 text-xs ${
-                        isSelected ? "text-[#E8E8E8]" : "text-white/65"  
+                          isSelected ? "text-[#E8E8E8]" : "text-white/65"
                         }`}
                       >
                         {item.name}
@@ -1608,8 +1607,8 @@ export default function Home() {
 
   if (screen === "soundscapeEdit") {
     return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
-     <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">  
+      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
+        <div className="relative w-full max-w-sm min-h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
           <div className="px-6 pt-6">
             <button
               onClick={() => {
@@ -1751,7 +1750,7 @@ export default function Home() {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => startSoundscapeTimer(30)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]": "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 30 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1893,7 +1892,7 @@ export default function Home() {
   }
 
   return (
-  <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
+    <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
       {selectedSound && (
         <>
           {/*
