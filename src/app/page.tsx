@@ -1471,7 +1471,7 @@ export default function Home() {
                 if (!selectedSound) return;
                 setScreen("player");
               }}
-              className="mt-6 w-full rounded-2xl border border-white/10 bg-white/5 py-4 text-base font-medium text-white/75 shadow-lg shadow-black/20 transition hover:bg-white/8 hover:scale-[1.02] active:scale-[0.98]"
+              className="mt-6 w-full rounded-2xl border border-white/10 bg-white/5 py-4 text-base font-medium text-white/75 transition hover:bg-white/8 hover:scale-[1.02] active:scale-[0.98]"
             >
               {selectedSound
                 ? `Continue with ${selectedSound}`
