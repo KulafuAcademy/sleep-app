@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "HIBIKI",
   description: "ambient space for rest & focus",
+
+  icons: {
+    icon: "/favicon.png",
+  },
+
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
