@@ -18,8 +18,9 @@ export const metadata: Metadata = {
   description: "ambient space for rest & focus",
 
   icons: {
-    icon: "/favicon.png",
-  },
+  icon: "/favicon.png",
+  apple: "/apple-icon.png",
+},
 
   appleWebApp: {
     capable: true,
