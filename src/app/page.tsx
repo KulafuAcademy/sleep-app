@@ -1736,7 +1736,7 @@ export default function Home() {
                           );
                         });
                       }}
-                      className="w-full accent-[#B8B8B8]"
+                      className="hibiki-slider w-full"
                     />
                   </div>
                 ))}
