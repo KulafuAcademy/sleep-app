@@ -1523,7 +1523,7 @@ export default function Home() {
           </div>
 
           {/* 👇タイトル */}
-          <div className="px-6 pt-8 text-center">
+          <div className="px-6 pt-6 text-center">
             <HibikiLogo />
 
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
@@ -1645,7 +1645,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="px-6 pt-8 text-center">
+          <div className="px-6 pt-6 text-center">
             <HibikiLogo />
 
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
@@ -1928,7 +1928,7 @@ export default function Home() {
           </button>
         </div>
 
-        <div className="px-6 pt-0 text-center">
+        <div className="px-6 pt-6 text-center">
           <HibikiLogo />
 
           <div className="flex min-h-[150px] items-center justify-center">
