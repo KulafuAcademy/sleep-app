@@ -1379,7 +1379,7 @@ export default function Home() {
 
   if (screen === "select") {
     return (
-      <div className="relative z-10 mt-0 w-full max-w-sm h-[min(740px,calc(100dvh-48px))] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 overflow-hidden">
         {/*
         {selectBackground === "wave-video" ? (
           <video
@@ -1895,23 +1895,15 @@ export default function Home() {
       </div>
     );
   }
+       return (
+  <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden">
+    {selectedSound && (
+      <>
+        <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
+      </>
+    )}
 
-  return (
-    <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden">
-      {selectedSound && (
-        <>
-          {/*
-          <img
-            src={`/backgrounds/${selectedSound.toLowerCase()}.jpg`}
-            alt=""
-            className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
-          />
-          */}
-          <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
-        </>
-      )}
-
-      <div className="relative z-10 mt-0 w-full max-w-sm h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0">
+    <div className="relative z-10 mt-0 w-full max-w-sm h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0">     
         <div className="px-6 pt-6">
           <button
             onClick={() => {
