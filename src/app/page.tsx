@@ -1379,7 +1379,7 @@ export default function Home() {
 
   if (screen === "select") {
     return (
-      <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden">
+      <div className="relative z-10 mt-0 w-full max-w-sm h-[min(740px,calc(100dvh-48px))] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
         {/*
         {selectBackground === "wave-video" ? (
           <video
