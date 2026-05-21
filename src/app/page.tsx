@@ -1379,7 +1379,7 @@ export default function Home() {
 
   if (screen === "select") {
     return (
-      <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 pb-0 pt-6 overflow-hidden">
+      <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#1f2a44_0%,_#0d1321_45%,_#05070d_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden">
         {/*
         {selectBackground === "wave-video" ? (
           <video
@@ -1404,7 +1404,7 @@ export default function Home() {
         <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
 
-        <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm min-h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+        <div className="relative z-10 mt-0 w-full max-w-sm h-[720px] rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
@@ -1894,7 +1894,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 pb-0 pt-6 overflow-hidden">
+    <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden">
       {selectedSound && (
         <>
           {/*
