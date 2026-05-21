@@ -1514,7 +1514,7 @@ export default function Home() {
                 setTimeLeft(0);
                 setSelectedTimer(null);
 
-                setScreen("player");
+                setScreen("select");
               }}
               className="text-sm text-white/60"
             >
@@ -2268,3 +2268,4 @@ export default function Home() {
   );
  }
 }
+
