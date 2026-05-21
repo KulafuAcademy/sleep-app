@@ -1521,23 +1521,25 @@ export default function Home() {
               ← Back
             </button>
           </div>
-
+          
           {/* 👇タイトル */}
-          <div className="px-6 pt-6 text-center">
-            <HibikiLogo />
+          <HibikiLogo />
 
+          <div className="px-6 pt-0 text-center">
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
               Create Soundscape
             </h1>
 
-            <p className="mt-2 text-sm leading-6 text-white/60">
-              Mix your own ambient world
-            </p>
+           <p className="mt-2 text-sm leading-6 text-white/60">
+             Mix your own ambient world
+           </p>
 
-            <p className="mt-2 mb-6 text-base text-[#D8D8D8]">
-              {selectedMixSounds.join(" + ")}
-            </p>
-          </div>
+           <p className="mt-2 mb-6 text-base text-[#D8D8D8]">
+    
+           {selectedMixSounds.join(" + ")}
+           </p>
+           </div>
+
 
           {/* 👇サウンド選択 */}
           <div className="px-6 pb-6">
@@ -1645,17 +1647,18 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="px-6 pt-6 text-center">
-            <HibikiLogo />
+          <HibikiLogo />
 
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-              Create Soundscape
-            </h1>
+           <div className="px-6 pt-0 text-center">
+             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+               Create Soundscape
+             </h1>
+
             <p className="mt-6 mb-6 text-base text-[#D8D8D8]">
-              {selectedMixSounds.join(" + ")}
+             {selectedMixSounds.join(" + ")}
             </p>
-          </div>
-
+            </div>
+ 
           <div className="px-6 pb-6">
             <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-5">
               <div className="text-sm text-white/75 text-center">
@@ -1928,9 +1931,9 @@ export default function Home() {
           </button>
         </div>
 
-        <div className="px-6 pt-6 text-center">
-          <HibikiLogo />
-
+        <HibikiLogo />
+        
+        <div className="px-6 pt-0 text-center">
           <div className="flex min-h-[150px] items-center justify-center">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">
