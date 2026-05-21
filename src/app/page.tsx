@@ -1485,7 +1485,7 @@ export default function Home() {
               className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center transition hover:bg-white/10"
             >
               <div>
-                <p className="text-sm font-medium text-white/85">
+                <p className="text-sm font-medium text-white/60">
                   Create Soundscape
                 </p>
                 <p className="text-xs text-white/45">
