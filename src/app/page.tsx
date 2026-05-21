@@ -1404,7 +1404,7 @@ export default function Home() {
         <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
 
-        <div className="relative z-10 mt-0 w-full max-w-sm min-h-[760px] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0">
+        <div className="relative z-10 mt-0 w-full max-w-sm min-h-[740px] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0">
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
@@ -1502,7 +1502,7 @@ export default function Home() {
   if (screen === "soundscape") {
     return (
       <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
-        <div className="relative w-full max-w-sm min-h-[760px] translate-y-6 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0">
+        <div className="relative w-full max-w-sm min-h-[740px] translate-y-6 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0">
           {/* 👇ここに追加（Backボタン） */}
           <div className="px-6 pt-6">
             <button
@@ -1612,7 +1612,7 @@ export default function Home() {
   if (screen === "soundscapeEdit") {
     return (
       <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
-        <div className="relative w-full max-w-sm min-h-[760px] translate-y-6 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0">
+        <div className="relative w-full max-w-sm min-h-[740px] translate-y-6 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0">
           <div className="px-6 pt-6">
             <button
               onClick={() => {
@@ -1911,7 +1911,7 @@ export default function Home() {
         </>
       )}
 
-      <div className="relative z-10 mt-0 w-full max-w-sm h-[760px] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0">
+      <div className="relative z-10 mt-0 w-full max-w-sm h-[740px] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0">
         <div className="px-6 pt-6">
           <button
             onClick={() => {
