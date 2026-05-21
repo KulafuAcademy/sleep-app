@@ -1514,6 +1514,17 @@ export default function Home() {
                 setTimeLeft(0);
                 setSelectedTimer(null);
 
+                setSelectedMixSounds([]);
+
+                setMixVolumes({
+                  Rain: 0.5,
+                  Wave: 0.5,
+                  River: 0.5,
+                  Bonfire: 0.5,
+                  Forest: 0.5,
+                  Cave: 0.5,
+                });
+
                 setScreen("select");
               }}
               className="text-sm text-white/60"
@@ -1521,7 +1532,7 @@ export default function Home() {
               ← Back
             </button>
           </div>
-          
+
           {/* 👇タイトル */}
           <HibikiLogo />
 
@@ -1530,16 +1541,14 @@ export default function Home() {
               Create Soundscape
             </h1>
 
-           <p className="mt-2 text-sm leading-6 text-white/60">
-             Mix your own ambient world
-           </p>
+            <p className="mt-2 text-sm leading-6 text-white/60">
+              Mix your own ambient world
+            </p>
 
-           <p className="mt-2 mb-6 text-base text-[#D8D8D8]">
-    
-           {selectedMixSounds.join(" + ")}
-           </p>
-           </div>
-
+            <p className="mt-2 mb-6 text-base text-[#D8D8D8]">
+              {selectedMixSounds.join(" + ")}
+            </p>
+          </div>
 
           {/* 👇サウンド選択 */}
           <div className="px-6 pb-6">
@@ -1649,16 +1658,16 @@ export default function Home() {
 
           <HibikiLogo />
 
-           <div className="px-6 pt-0 text-center">
-             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-               Create Soundscape
-             </h1>
+          <div className="px-6 pt-0 text-center">
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+              Create Soundscape
+            </h1>
 
             <p className="mt-6 mb-6 text-base text-[#D8D8D8]">
-             {selectedMixSounds.join(" + ")}
+              {selectedMixSounds.join(" + ")}
             </p>
-            </div>
- 
+          </div>
+
           <div className="px-6 pb-6">
             <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-5">
               <div className="text-sm text-white/75 text-center">
@@ -1895,56 +1904,55 @@ export default function Home() {
       </div>
     );
   }
-   
 
   if (screen === "player") {
-      return (
-       <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden">
-         {selectedSound && (
-           <>
+    return (
+      <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden">
+        {selectedSound && (
+          <>
             <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
-           </>
-          )}
-   
-    <div className="relative z-10 mt-0 w-full max-w-sm h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0">     
-        <div className="px-6 pt-6">
-          <button
-            onClick={() => {
-              pauseWaveLayerTestImmediately();
+          </>
+        )}
 
-              setIsPlaying(false);
-              setIsTimerRunning(false);
-              setTimeLeft(0);
-              setSelectedTimer(null);
-              setSelectedSound(null);
+        <div className="relative z-10 mt-0 w-full max-w-sm h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0">
+          <div className="px-6 pt-6">
+            <button
+              onClick={() => {
+                pauseWaveLayerTestImmediately();
 
-              setScreen("select");
-            }}
-            className="text-sm text-white/60"
-          >
-            ← Back
-          </button>
-        </div>
+                setIsPlaying(false);
+                setIsTimerRunning(false);
+                setTimeLeft(0);
+                setSelectedTimer(null);
+                setSelectedSound(null);
 
-        <HibikiLogo />
-        
-        <div className="px-6 pt-0 text-center">
-          <div className="flex min-h-[150px] items-center justify-center">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight">
-                {getSoundConfig().title}
-              </h1>
+                setScreen("select");
+              }}
+              className="text-sm text-white/60"
+            >
+              ← Back
+            </button>
+          </div>
 
-              <p className="mt-2 text-sm leading-6 text-white/60">
-                {getSoundConfig().subtitle}
-              </p>
+          <HibikiLogo />
+
+          <div className="px-6 pt-0 text-center">
+            <div className="flex min-h-[150px] items-center justify-center">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  {getSoundConfig().title}
+                </h1>
+
+                <p className="mt-2 text-sm leading-6 text-white/60">
+                  {getSoundConfig().subtitle}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="px-6 pb-6">
-          <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
-            {/*
+          <div className="px-6 pb-6">
+            <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
+              {/*
             <button
               onClick={toggle}
               className="w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] active:scale-[0.98]"
@@ -1954,8 +1962,8 @@ export default function Home() {
 
           */}
 
-            {/* DEV ONLY: manual test trigger */}
-            {/* 
+              {/* DEV ONLY: manual test trigger */}
+              {/* 
             <button
             onClick={playChapu}
              className="mt-4 w-full rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm text-white/75"
@@ -1964,308 +1972,307 @@ export default function Home() {
             </button>
             */}
 
-            <div className="mt-5">
-              <div className="pb-8 text-sm text-white/75 text-center ">
-                Rest with this sound
-              </div>
-
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    startSleepTimer(30);
-                  }}
-                  className={`rounded-xl border py-2.5 text-sm transition ${
-                    selectedTimer === 30 && timeLeft > 0
-                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                      : "border-white/10 bg-white/5 text-white/75"
-                  }`}
-                >
-                  {selectedTimer === 30 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span className="text-xs leading-none">
-                        {formatTime(timeLeft)}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span className="text-sm leading-none">30m</span>
-                    </span>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => startSleepTimer(60)}
-                  className={`rounded-xl border py-2.5 text-sm transition ${
-                    selectedTimer === 60 && timeLeft > 0
-                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                      : "border-white/10 bg-white/5 text-white/75"
-                  }`}
-                >
-                  {selectedTimer === 60 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span className="text-xs leading-none">
-                        {formatTime(timeLeft)}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span className="text-sm leading-none">60m</span>
-                    </span>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => startSleepTimer(120)}
-                  className={`rounded-xl border py-2.5 text-sm transition ${
-                    selectedTimer === 120 && timeLeft > 0
-                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                      : "border-white/10 bg-white/5 text-white/75"
-                  }`}
-                >
-                  {selectedTimer === 120 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span className="text-xs leading-none">
-                        {formatTime(timeLeft)}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span className="text-sm leading-none">2h</span>
-                    </span>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-2 grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => startSleepTimer(180)}
-                className={`rounded-xl border py-2.5 text-sm transition ${
-                  selectedTimer === 180 && timeLeft > 0
-                    ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                    : "border-white/10 bg-white/5 text-white/75"
-                }`}
-              >
-                {selectedTimer === 180 && timeLeft > 0 ? (
-                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                    <Square size={8} fill="currentColor" strokeWidth={0} />
-                    <span className="text-xs leading-none">
-                      {formatTime(timeLeft)}
-                    </span>
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                    <Play size={10} fill="currentColor" strokeWidth={0} />
-                    <span className="text-sm leading-none">3h</span>
-                  </span>
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => startSleepTimer(360)}
-                className={`rounded-xl border py-2.5 text-sm transition ${
-                  selectedTimer === 360 && timeLeft > 0
-                    ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                    : "border-white/10 bg-white/5 text-white/75"
-                }`}
-              >
-                {selectedTimer === 360 && timeLeft > 0 ? (
-                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                    <Square size={8} fill="currentColor" strokeWidth={0} />
-                    <span className="text-xs leading-none">
-                      {formatTime(timeLeft)}
-                    </span>
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                    <Play size={10} fill="currentColor" strokeWidth={0} />
-                    <span className="text-sm leading-none">6h</span>
-                  </span>
-                )}
-              </button>
-
-              <button
-                type="button"
-                onClick={() => startSleepTimer(480)}
-                className={`rounded-xl border py-2.5 text-sm transition ${
-                  selectedTimer === 480 && timeLeft > 0
-                    ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                    : "border-white/10 bg-white/5 text-white/75"
-                }`}
-              >
-                {selectedTimer === 480 && timeLeft > 0 ? (
-                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                    <Square size={8} fill="currentColor" strokeWidth={0} />
-                    <span className="text-xs leading-none">
-                      {formatTime(timeLeft)}
-                    </span>
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                    <Play size={10} fill="currentColor" strokeWidth={0} />
-                    <span className="text-sm leading-none">8h</span>
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {false && (
-              <div className="mt-6 space-y-4 border border-red-500 p-4">
-                <div>
-                  <div className="mb-2 flex justify-between text-sm text-white/75">
-                    <span>High Layer Level</span>
-                    <span className="text-white/40">
-                      {highLevel.toFixed(3)}
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="0.05"
-                    step="0.001"
-                    value={highLevel}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      setHighLevel(value);
-                      highLevelRef.current = value;
-                    }}
-                    className="w-full"
-                  />
+              <div className="mt-5">
+                <div className="pb-8 text-sm text-white/75 text-center ">
+                  Rest with this sound
                 </div>
 
-                <div>
-                  <div className="mb-2 flex justify-between text-sm text-white/75">
-                    <span>High Layer Frequency</span>
-                    <span className="text-white/40">{highFreq}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="400"
-                    max="5000"
-                    step="50"
-                    value={highFreq}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      setHighFreq(value);
-                      highFreqRef.current = value;
-                    }}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <div className="mb-2 flex justify-between text-sm text-white/75">
-                    <span>Splash Chance</span>
-                    <span className="text-white/40">
-                      {splashChance.toFixed(2)}
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={splashChance}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      setSplashChance(value);
-                      splashChanceRef.current = value;
-                    }}
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <div className="mb-2 flex justify-between text-sm text-white/75">
-                    <span>Splash Length</span>
-                    <span className="text-white/40">{splashLength}ms</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="5"
-                    max="100"
-                    step="1"
-                    value={splashLength}
-                    onChange={(e) => {
-                      const value = Number(e.target.value);
-                      setSplashLength(value);
-                      splashLengthRef.current = value;
-                    }}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            )}
-
-            {process.env.NODE_ENV === "development" && (
-              <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
-                <div className="mb-2 text-xs text-yellow-200">
-                  Debug Time: {debugTimeSec}s /{" "}
-                  {Math.floor(debugTimeSec / 3600)}:
-                  {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(
-                    2,
-                    "0",
-                  )}
-                  :{String(debugTimeSec % 60).padStart(2, "0")}
-                </div>
-
-                <input
-                  type="range"
-                  min={0}
-                  max={28800}
-                  step={1}
-                  value={debugTimeSec}
-                  onChange={(e) => {
-                    const sec = Number(e.target.value);
-                    setDebugTimeSec(sec);
-                    jumpWaveToTime(sec);
-                  }}
-                  className="w-full"
-                />
-
-                <div className="mt-3 flex gap-2">
-                  <input
-                    type="number"
-                    min={0}
-                    max={28800}
-                    value={debugInputSec}
-                    onChange={(e) => setDebugInputSec(e.target.value)}
-                    placeholder="Enter seconds"
-                    className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
-                  />
-
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => {
-                      const sec = Number(debugInputSec);
-                      if (Number.isNaN(sec)) return;
-
-                      setDebugTimeSec(sec);
-                      jumpWaveToTime(sec);
+                      startSleepTimer(30);
                     }}
-                    className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
+                    className={`rounded-xl border py-2.5 text-sm transition ${
+                      selectedTimer === 30 && timeLeft > 0
+                        ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                        : "border-white/10 bg-white/5 text-white/75"
+                    }`}
                   >
-                    Jump
+                    {selectedTimer === 30 && timeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span className="text-xs leading-none">
+                          {formatTime(timeLeft)}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span className="text-sm leading-none">30m</span>
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => startSleepTimer(60)}
+                    className={`rounded-xl border py-2.5 text-sm transition ${
+                      selectedTimer === 60 && timeLeft > 0
+                        ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                        : "border-white/10 bg-white/5 text-white/75"
+                    }`}
+                  >
+                    {selectedTimer === 60 && timeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span className="text-xs leading-none">
+                          {formatTime(timeLeft)}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span className="text-sm leading-none">60m</span>
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => startSleepTimer(120)}
+                    className={`rounded-xl border py-2.5 text-sm transition ${
+                      selectedTimer === 120 && timeLeft > 0
+                        ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                        : "border-white/10 bg-white/5 text-white/75"
+                    }`}
+                  >
+                    {selectedTimer === 120 && timeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span className="text-xs leading-none">
+                          {formatTime(timeLeft)}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span className="text-sm leading-none">2h</span>
+                      </span>
+                    )}
                   </button>
                 </div>
               </div>
-            )}
+
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => startSleepTimer(180)}
+                  className={`rounded-xl border py-2.5 text-sm transition ${
+                    selectedTimer === 180 && timeLeft > 0
+                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                      : "border-white/10 bg-white/5 text-white/75"
+                  }`}
+                >
+                  {selectedTimer === 180 && timeLeft > 0 ? (
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                      <Square size={8} fill="currentColor" strokeWidth={0} />
+                      <span className="text-xs leading-none">
+                        {formatTime(timeLeft)}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                      <Play size={10} fill="currentColor" strokeWidth={0} />
+                      <span className="text-sm leading-none">3h</span>
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => startSleepTimer(360)}
+                  className={`rounded-xl border py-2.5 text-sm transition ${
+                    selectedTimer === 360 && timeLeft > 0
+                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                      : "border-white/10 bg-white/5 text-white/75"
+                  }`}
+                >
+                  {selectedTimer === 360 && timeLeft > 0 ? (
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                      <Square size={8} fill="currentColor" strokeWidth={0} />
+                      <span className="text-xs leading-none">
+                        {formatTime(timeLeft)}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                      <Play size={10} fill="currentColor" strokeWidth={0} />
+                      <span className="text-sm leading-none">6h</span>
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => startSleepTimer(480)}
+                  className={`rounded-xl border py-2.5 text-sm transition ${
+                    selectedTimer === 480 && timeLeft > 0
+                      ? "border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                      : "border-white/10 bg-white/5 text-white/75"
+                  }`}
+                >
+                  {selectedTimer === 480 && timeLeft > 0 ? (
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                      <Square size={8} fill="currentColor" strokeWidth={0} />
+                      <span className="text-xs leading-none">
+                        {formatTime(timeLeft)}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                      <Play size={10} fill="currentColor" strokeWidth={0} />
+                      <span className="text-sm leading-none">8h</span>
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {false && (
+                <div className="mt-6 space-y-4 border border-red-500 p-4">
+                  <div>
+                    <div className="mb-2 flex justify-between text-sm text-white/75">
+                      <span>High Layer Level</span>
+                      <span className="text-white/40">
+                        {highLevel.toFixed(3)}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="0.05"
+                      step="0.001"
+                      value={highLevel}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        setHighLevel(value);
+                        highLevelRef.current = value;
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex justify-between text-sm text-white/75">
+                      <span>High Layer Frequency</span>
+                      <span className="text-white/40">{highFreq}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="400"
+                      max="5000"
+                      step="50"
+                      value={highFreq}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        setHighFreq(value);
+                        highFreqRef.current = value;
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex justify-between text-sm text-white/75">
+                      <span>Splash Chance</span>
+                      <span className="text-white/40">
+                        {splashChance.toFixed(2)}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.01"
+                      value={splashChance}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        setSplashChance(value);
+                        splashChanceRef.current = value;
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex justify-between text-sm text-white/75">
+                      <span>Splash Length</span>
+                      <span className="text-white/40">{splashLength}ms</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="5"
+                      max="100"
+                      step="1"
+                      value={splashLength}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        setSplashLength(value);
+                        splashLengthRef.current = value;
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {process.env.NODE_ENV === "development" && (
+                <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
+                  <div className="mb-2 text-xs text-yellow-200">
+                    Debug Time: {debugTimeSec}s /{" "}
+                    {Math.floor(debugTimeSec / 3600)}:
+                    {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(
+                      2,
+                      "0",
+                    )}
+                    :{String(debugTimeSec % 60).padStart(2, "0")}
+                  </div>
+
+                  <input
+                    type="range"
+                    min={0}
+                    max={28800}
+                    step={1}
+                    value={debugTimeSec}
+                    onChange={(e) => {
+                      const sec = Number(e.target.value);
+                      setDebugTimeSec(sec);
+                      jumpWaveToTime(sec);
+                    }}
+                    className="w-full"
+                  />
+
+                  <div className="mt-3 flex gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      max={28800}
+                      value={debugInputSec}
+                      onChange={(e) => setDebugInputSec(e.target.value)}
+                      placeholder="Enter seconds"
+                      className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const sec = Number(debugInputSec);
+                        if (Number.isNaN(sec)) return;
+
+                        setDebugTimeSec(sec);
+                        jumpWaveToTime(sec);
+                      }}
+                      className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
+                    >
+                      Jump
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
- }
+    );
+  }
 }
-
