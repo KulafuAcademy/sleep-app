@@ -1894,7 +1894,7 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 pb-6 pt-0 overflow-hidden">
+    <div className="relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 pb-0 pt-6 overflow-hidden">
       {selectedSound && (
         <>
           {/*
@@ -1908,7 +1908,7 @@ export default function Home() {
         </>
       )}
 
-      <div className="relative z-10 mt-[env(safe-area-inset-top)] w-full max-w-sm h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
+      <div className="relative z-10 mt-0 w-full max-w-sm h-[720px] rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden">
         <div className="px-6 pt-6">
           <button
             onClick={() => {
