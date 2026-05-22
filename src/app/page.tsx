@@ -1502,7 +1502,7 @@ export default function Home() {
 
   if (screen === "soundscape") {
     return (
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:items-start max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
+      <div className="min-h-screen max-md:portrait:min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:items-start max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
         <div className="relative w-full max-w-sm h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible">
           {/* 👇ここに追加（Backボタン） */}
           <div className="px-6 pt-6">
