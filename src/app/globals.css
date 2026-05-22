@@ -87,3 +87,22 @@ body {
   border-radius: 9999px;
   background: #f2f2f2;
 }
+
+@keyframes timerBreath {
+  0% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(0.85);
+  }
+
+  100% {
+    filter: brightness(1);
+  }
+}
+
+.timer-breath {
+  animation: timerBreath 2.5s ease-in-out infinite;
+}
+  
