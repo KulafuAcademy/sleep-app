@@ -1400,7 +1400,7 @@ export default function Home() {
         )}
         */}
 
-        <div className="fixed inset-0 bg-black/70 md:bg-black/45" />
+        <div className="fixed inset-0 bg-black/70 md:bg-transparent" />
         {/* 
         <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
