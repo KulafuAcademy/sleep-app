@@ -1619,8 +1619,8 @@ export default function Home() {
 
   if (screen === "soundscapeEdit") {
     return (
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden">
-        <div className="relative w-full max-w-sm h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0">
+      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center p-6 overflow-hidden landscape:items-start landscape:overflow-y-auto landscape:py-4">
+        <div className="relative w-full max-w-sm h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0 landscape:h-auto landscape:max-h-none landscape:translate-y-0 landscape:overflow-visible">
           <div className="px-6 pt-6">
             <button
               onClick={() => {
