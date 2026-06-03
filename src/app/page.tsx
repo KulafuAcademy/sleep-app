@@ -83,7 +83,7 @@ export default function Home() {
 
   const VOLUME_MAP_DESKTOP = {
     wave: { a1: 0.15, b1: 0.28, c1: 0.15, a2: 0.50, a3: 0.50 },
-    forest: { a1: 0.02, b1: 0.02, c1: 0.08, a2: 0.05, a3: 0.04 },
+    forest: { a1: 0.03, b1: 0.03, c1: 0.10, a2: 0.07, a3: 0.05 },
     rain: { a1: 0.35, b1: 0.18, c1: 0.11, a2: 0.19, a3: 0.10 },
     cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
     bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
