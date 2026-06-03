@@ -92,7 +92,7 @@ export default function Home() {
 
   const VOLUME_MAP_MOBILE = {
     wave: { a1: 0.14, b1: 0.26, c1: 0.14, a2: 0.46, a3: 0.46 },
-    forest: { a1: 0.05, b1: 0.05, c1: 0.18, a2: 0.13, a3: 0.09 },
+    forest: { a1: 0.05, b1: 0.05, c1: 0.17, a2: 0.12, a3: 0.09 },
     rain: { a1: 0.30, b1: 0.16, c1: 0.10, a2: 0.17, a3: 0.09 },
     cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
     bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
