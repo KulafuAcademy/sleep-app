@@ -15,12 +15,37 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "HIBIKI",
-  description: "ambient space for rest & focus",
+  description: "ambient space for rest",
+
+  metadataBase: new URL("https://hibiki.rest"),
 
   icons: {
-  icon: "/favicon.png",
-  apple: "/apple-icon.png",
-},
+    icon: "/favicon.png",
+    apple: "/apple-icon.png",
+  },
+
+  openGraph: {
+    title: "HIBIKI",
+    description: "ambient space for rest",
+    url: "https://hibiki.rest",
+    siteName: "HIBIKI",
+    images: [
+      {
+        url: "/ogp.png",
+        width: 1200,
+        height: 630,
+        alt: "HIBIKI - ambient space for rest",
+      },
+    ],
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "HIBIKI",
+    description: "ambient space for rest",
+    images: ["/ogp.png"],
+  },
 
   appleWebApp: {
     capable: true,
