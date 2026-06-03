@@ -87,7 +87,7 @@ export default function Home() {
     rain: { a1: 0.35, b1: 0.18, c1: 0.11, a2: 0.19, a3: 0.10 },
     cave: { a1: 0.01, b1: 0.25, c1: 0.2 },
     bonfire: { a1: 0.2, b1: 0.3, c1: 0.25 },
-    river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
+    river: { a1: 0.13, b1: 0.13, c1: 0.13, a2: 0.13, a3: 0.07 },
   };
 
   const VOLUME_MAP_MOBILE = {
