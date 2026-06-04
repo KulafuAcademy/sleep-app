@@ -82,9 +82,9 @@ export default function Home() {
   const LAYERS = ["a1", "b1", "c1"];
 
   const VOLUME_MAP_DESKTOP = {
-    wave: { a1: 0.15, b1: 0.28, c1: 0.15, a2: 0.50, a3: 0.50 },
-    forest: { a1: 0.06, b1: 0.06 , c1: 0.20, a2: 0.14, a3: 0.10 },
-    rain: { a1: 0.35, b1: 0.18, c1: 0.11, a2: 0.19, a3: 0.10 },
+    wave: { a1: 0.15, b1: 0.28, c1: 0.15, a2: 0.5, a3: 0.5 },
+    forest: { a1: 0.06, b1: 0.06, c1: 0.2, a2: 0.14, a3: 0.1 },
+    rain: { a1: 0.35, b1: 0.18, c1: 0.11, a2: 0.19, a3: 0.1 },
     cave: { a1: 0.01, b1: 0.28, c1: 0.22 },
     bonfire: { a1: 0.37, b1: 0.56, c1: 0.48 },
     river: { a1: 0.13, b1: 0.13, c1: 0.13, a2: 0.13, a3: 0.07 },
@@ -93,8 +93,8 @@ export default function Home() {
   const VOLUME_MAP_MOBILE = {
     wave: { a1: 0.14, b1: 0.26, c1: 0.14, a2: 0.46, a3: 0.46 },
     forest: { a1: 0.04, b1: 0.04, c1: 0.14, a2: 0.11, a3: 0.07 },
-    rain: { a1: 0.30, b1: 0.16, c1: 0.10, a2: 0.17, a3: 0.09 },
-    cave: { a1: 0.01, b1: 0.20, c1: 0.16 },
+    rain: { a1: 0.3, b1: 0.16, c1: 0.1, a2: 0.17, a3: 0.09 },
+    cave: { a1: 0.01, b1: 0.2, c1: 0.16 },
     bonfire: { a1: 0.37, b1: 0.56, c1: 0.48 },
     river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
   };
@@ -969,6 +969,46 @@ export default function Home() {
     >
   >({});
 
+  const getSoundscapeBaseVolume = (
+    sound: SoundName,
+    layerName: "a1" | "b1" | "c1" | "a2" | "a3",
+  ) => {
+    const folder = sound.toLowerCase();
+
+    const volMap =
+      ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+      ACTIVE_VOLUME_MAP.wave;
+
+    if (!(layerName in volMap)) return 0;
+
+    return volMap[layerName as keyof typeof volMap] ?? 0;
+  };
+
+  const applySoundscapeVolume = (sound: SoundName, value: number) => {
+    const safeValue = Math.min(Math.max(value, 0), 1);
+
+    mixHowlsRef.current[sound]?.forEach((entry) => {
+      if (entry.id === null) return;
+
+      const baseVolume = getSoundscapeBaseVolume(sound, entry.name);
+      const nextVolume = baseVolume * safeValue;
+
+      entry.sound.mute(false, entry.id);
+      entry.sound.volume(nextVolume, entry.id);
+    });
+  };
+
+  const updateMixVolume = (sound: SoundName, value: number) => {
+    const safeValue = Math.min(Math.max(value, 0), 1);
+
+    setMixVolumes((prev) => ({
+      ...prev,
+      [sound]: safeValue,
+    }));
+
+    applySoundscapeVolume(sound, safeValue);
+  };
+
   const startSoundscape = async () => {
     stopSoundscape();
 
@@ -1410,7 +1450,6 @@ export default function Home() {
               ← Back
             </button>
           </div>
-        
 
           <HibikiLogo />
 
@@ -1700,59 +1739,7 @@ export default function Home() {
                       step="0.01"
                       value={mixVolumes[sound]}
                       onChange={(e) => {
-                        const value = Number(e.target.value);
-                        console.log("🔥 RANGE HIT");
-
-                        console.log("🔥 THIS SLIDER ACTIVE");
-
-                        setMixVolumes({
-                          ...mixVolumes,
-                          [sound]: value,
-                        });
-
-                        // 👇ここに貼る
-                        mixHowlsRef.current[sound]?.forEach((entry, index) => {
-                          const folder = sound.toLowerCase();
-
-                          const volMap =
-                            ACTIVE_VOLUME_MAP[
-                              folder as keyof typeof ACTIVE_VOLUME_MAP
-                            ] ?? ACTIVE_VOLUME_MAP.wave;
-
-                          let baseVolume = 0;
-
-                          if (index === 0) baseVolume = volMap.a1;
-                          if (index === 1) baseVolume = volMap.b1;
-                          if (index === 2) baseVolume = volMap.c1;
-
-                          if (index === 3 && "a2" in volMap) {
-                            baseVolume = volMap.a2;
-                          }
-
-                          if (index === 4 && "a3" in volMap) {
-                            baseVolume = volMap.a3;
-                          }
-
-                          const nextVolume = baseVolume * value;
-
-                          if (entry.id !== null) {
-                            entry.sound.volume(nextVolume, entry.id);
-                            entry.sound.mute(value === 0, entry.id);
-                          }
-
-                          console.log("slider volume", nextVolume);
-                          console.log(
-                            "actual howl volume",
-                            entry.sound.volume(),
-                          );
-
-                          console.log("slider value", value);
-                          console.log("entry id", entry.id);
-                          console.log(
-                            "playing",
-                            entry.sound.playing(entry.id ?? undefined),
-                          );
-                        });
+                        updateMixVolume(sound, Number(e.target.value));
                       }}
                       className="hibiki-slider w-full"
                     />
@@ -1789,7 +1776,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(60)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ?  "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 60 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1809,7 +1796,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(120)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ?  "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]": "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 120 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1829,7 +1816,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(180)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ?  "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]": "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 180 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1849,7 +1836,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(360)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ?  "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]": "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 360 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1869,7 +1856,7 @@ export default function Home() {
 
                   <button
                     onClick={() => startSoundscapeTimer(480)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ?  "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                   >
                     {selectedSoundscapeTimer === 480 &&
                     soundscapeTimeLeft > 0 ? (
@@ -1905,8 +1892,8 @@ export default function Home() {
   {isSoundscapePlaying ? "Stop" : "Play Soundscape"}
 </button>*/}
           </div>
-          </div>
         </div>
+      </div>
     );
   }
 
@@ -1990,7 +1977,7 @@ export default function Home() {
                     }}
                     className={`rounded-xl border py-2.5 text-sm transition ${
                       selectedTimer === 30 && timeLeft > 0
-                        ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"  
+                        ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                         : "border-white/10 bg-white/5 text-white/75"
                     }`}
                   >
