@@ -16,7 +16,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "HIBIKI",
   description: "ambient space for rest",
-
   metadataBase: new URL("https://hibiki.rest"),
 
   icons: {
