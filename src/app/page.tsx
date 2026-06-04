@@ -1422,7 +1422,7 @@ export default function Home() {
 
   if (screen === "select") {
     return (
-      <div className="fixed inset-0 text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:items-start max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
+      <div className="text-white flex items-center justify-center">
         {/*
         {selectBackground === "wave-video" ? (
           <video
