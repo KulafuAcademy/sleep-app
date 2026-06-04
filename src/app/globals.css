@@ -105,10 +105,3 @@ body {
 .timer-breath {
   animation: timerBreath 2.5s ease-in-out infinite;
 }
-  
-@media (min-width: 1024px) and (max-height: 820px) {
-  .hibiki-desktop-fit {
-    transform: scale(0.9);
-    transform-origin: center;
-  }
-}
