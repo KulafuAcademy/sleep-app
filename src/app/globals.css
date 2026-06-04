@@ -108,7 +108,6 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   .hibiki-desktop-scale {
-    transform: scale(0.85);
-    transform-origin: center;
+    zoom: 0.85;
   }
 }
