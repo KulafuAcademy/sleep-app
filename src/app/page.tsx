@@ -1448,7 +1448,7 @@ export default function Home() {
         <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
         */}
-        <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden">
+        <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:items-start max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
