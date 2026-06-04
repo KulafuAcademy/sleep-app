@@ -1422,7 +1422,33 @@ export default function Home() {
 
   if (screen === "select") {
     return (
-        <div className="relative z-10 mt-0 w-[390px] h-[780px] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ">
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:items-start max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
+        {/*
+        {selectBackground === "wave-video" ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
+          >
+            <source src="/backgrounds/wave-small.mp4" type="video/mp4" />
+          </video>
+        ) : (
+          <img
+            src={`/backgrounds/${selectBackground}.jpg`}
+            alt=""
+            className="fixed left-0 right-0 top-0 h-[calc(100dvh+env(safe-area-inset-bottom))] w-screen object-cover object-center"
+          />
+        )}
+        */}
+
+        <div className="fixed inset-0 bg-black/70 md:bg-transparent" />
+        {/* 
+        <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
+        <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
+        */}
+        <div className="relative z-10 mt-0 w-full max-w-sm h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ">
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
@@ -1513,6 +1539,7 @@ export default function Home() {
             </button>
           </div>
         </div>
+      </div>
     );
   }
 

@@ -18,17 +18,12 @@ body {
   padding: 0;
   min-height: 100%;
   background: #05070d;
-
   overflow-x: hidden;
 }
 
 body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 @keyframes hibikiBreath {
