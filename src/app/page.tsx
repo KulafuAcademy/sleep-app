@@ -999,6 +999,8 @@ export default function Home() {
   };
 
   const updateMixVolume = (sound: SoundName, value: number) => {
+    console.log("UPDATE", sound, value);
+    
     const safeValue = Math.min(Math.max(value, 0), 1);
 
     setMixVolumes((prev) => ({
@@ -1011,6 +1013,8 @@ export default function Home() {
 
   const startSoundscape = async () => {
     stopSoundscape();
+
+    await unlockHowlerAudio();
 
     startSilentKeeper();
 
@@ -1031,7 +1035,7 @@ export default function Home() {
           src: [`/sound/${folder}/v1/${name}.wav`],
           loop: true,
           volume: 0,
-          html5: true,
+          html5: false,
           preload: true,
         });
 
