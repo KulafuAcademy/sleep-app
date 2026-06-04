@@ -1422,7 +1422,7 @@ export default function Home() {
 
   if (screen === "select") {
     return (
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:items-start max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden [@media_(orientation:landscape)_and_(hover:none)_and_(pointer:coarse)]:items-start [@media_(orientation:landscape)_and_(hover:none)_and_(pointer:coarse)]:overflow-y-auto [@media_(orientation:landscape)_and_(hover:none)_and_(pointer:coarse)]:py-4">
         {/*
         {selectBackground === "wave-video" ? (
           <video
@@ -1448,7 +1448,7 @@ export default function Home() {
         <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
         */}
-        <div className="relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ">
+        <div className="relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0 [@media_(orientation:landscape)_and_(hover:none)_and_(pointer:coarse)]:h-auto [@media_(orientation:landscape)_and_(hover:none)_and_(pointer:coarse)]:max-h-none [@media_(orientation:landscape)_and_(hover:none)_and_(pointer:coarse)]:translate-y-0 [@media_(orientation:landscape)_and_(hover:none)_and_(pointer:coarse)]:overflow-visible ">
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
