@@ -1108,7 +1108,7 @@ export default function Home() {
       case "Wave":
         return {
           title: "Wave",
-          subtitle: "Low and steady texture for calm rest.",
+          subtitle: "Gentle waves for relaxation.",
           frequency: 1200,
           gain: 0.3,
           controlLabel: "Wave",
@@ -1116,7 +1116,7 @@ export default function Home() {
       case "River":
         return {
           title: "River",
-          subtitle: "A brighter stream-like texture.",
+          subtitle: "Flowing river ambience for relaxation.",
           frequency: 3200,
           gain: 0.2,
           controlLabel: "River",
@@ -1124,7 +1124,7 @@ export default function Home() {
       case "Bonfire":
         return {
           title: "Bonfire",
-          subtitle: "Warm and soft ambience for deep relaxation.",
+          subtitle: "Warm bonfire ambience for relaxation.",
           frequency: 850,
           gain: 0.26,
           controlLabel: "Fire",
@@ -1132,7 +1132,7 @@ export default function Home() {
       case "Forest":
         return {
           title: "Forest",
-          subtitle: "Gentle natural ambience for relaxation.",
+          subtitle: "Natural forest ambience for relaxation.",
           frequency: 1900,
           gain: 0.18,
           controlLabel: "Forest",
@@ -1140,7 +1140,7 @@ export default function Home() {
       case "Cave":
         return {
           title: "Cave",
-          subtitle: "Low and immersive echoing ambience.",
+          subtitle: "Deep cave ambience for relaxation.",
           frequency: 2000,
           gain: 0.2,
           controlLabel: "Cave",
@@ -1148,7 +1148,7 @@ export default function Home() {
       default:
         return {
           title: "Rain",
-          subtitle: "Endless rain sound for deep sleep and calm focus.",
+          subtitle: "Endless rain sound for relaxation.",
           frequency: 2500,
           gain: 0.25,
           controlLabel: "Rain",
