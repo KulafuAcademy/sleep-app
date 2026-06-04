@@ -110,4 +110,13 @@ body {
   .hibiki-desktop-scale {
     zoom: 0.85;
   }
+
+  .hibiki-scroll-shell {
+    overflow-y: auto !important;
+  }
+
+  .hibiki-scroll-shell .hibiki-desktop-scale {
+    height: auto !important;
+    min-height: min(740px, calc(100dvh - 48px));
+  }
 }
