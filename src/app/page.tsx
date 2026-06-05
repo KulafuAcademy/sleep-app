@@ -73,6 +73,114 @@ export default function Home() {
   const caveHowlsRef = useRef<
     { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" }[]
   >([]);
+
+  type FadeJob = {
+    cancelled: boolean;
+    frameId: number | null;
+  };
+
+  const fadeJobsRef = useRef<Map<string, FadeJob>>(new Map());
+
+  const getFadeKey = (category: string, layer: string) =>
+    `${category}:${layer}`;
+
+  const cancelFade = (key: string) => {
+    const job = fadeJobsRef.current.get(key);
+    if (!job) return;
+
+    job.cancelled = true;
+
+    if (job.frameId !== null) {
+      cancelAnimationFrame(job.frameId);
+    }
+
+    fadeJobsRef.current.delete(key);
+  };
+
+  const fadeHowlVolume = ({
+    key,
+    sound,
+    id,
+    from,
+    to,
+    duration,
+    curve = 1,
+    onComplete,
+  }: {
+    key: string;
+    sound: Howl;
+    id: number;
+    from: number;
+    to: number;
+    duration: number;
+    curve?: number;
+    onComplete?: () => void;
+  }) => {
+    cancelFade(key);
+
+    const job: FadeJob = {
+      cancelled: false,
+      frameId: null,
+    };
+
+    fadeJobsRef.current.set(key, job);
+
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      if (job.cancelled) return;
+
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const shaped = Math.pow(progress, curve);
+
+      const nextVolume = from + (to - from) * shaped;
+
+      sound.volume(nextVolume, id);
+
+      if (progress < 1) {
+        job.frameId = requestAnimationFrame(tick);
+        return;
+      }
+
+      sound.volume(to, id);
+      fadeJobsRef.current.delete(key);
+      onComplete?.();
+    };
+
+    job.frameId = requestAnimationFrame(tick);
+  };
+
+  const stopHowlEntries = (
+    entries: { sound: Howl; id: number | null; name: string }[],
+    category: string,
+  ) => {
+    entries.forEach(({ sound, id, name }) => {
+      if (id === null) {
+        sound.stop();
+        sound.unload();
+        return;
+      }
+
+      const currentVolume = Number(sound.volume(id));
+      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
+
+      fadeHowlVolume({
+        key: getFadeKey(category, name),
+        sound,
+        id,
+        from: safeVolume,
+        to: 0,
+        duration: ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
+        curve: ACTIVE_FADE_CONFIG.curve,
+        onComplete: () => {
+          sound.stop(id);
+          sound.unload();
+        },
+      });
+    });
+  };
+
   const silentKeeperRef = useRef<Howl | null>(null);
 
   const fluctuationRef = useRef<number | null>(null);
@@ -106,15 +214,15 @@ export default function Home() {
   const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
   const FADE_CONFIG_DESKTOP = {
-    fadeInMs: 3000,
-    fadeOutMs: 4000,
-    curve: 1,
+    fadeInMs: 900,
+    fadeOutMs: 1800,
+    curve: 0.75,
   };
 
   const FADE_CONFIG_MOBILE = {
-    fadeInMs: 900,
-    fadeOutMs: 2500,
-    curve: 0.7,
+    fadeInMs: 500,
+    fadeOutMs: 1600,
+    curve: 0.75,
   };
 
   const ACTIVE_FADE_CONFIG = isMobile
@@ -138,146 +246,32 @@ export default function Home() {
     : AUDIO_STOP_CONFIG_DESKTOP;
 
   const stopForestHowls = () => {
-    forestHowlsRef.current.forEach(({ sound, id }) => {
-      const currentVolume =
-        id !== null ? Number(sound.volume(id)) : Number(sound.volume());
-
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      if (id !== null) {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration, id);
-      } else {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-      }
-
-      setTimeout(() => {
-        if (id !== null) sound.stop(id);
-        else sound.stop();
-
-        sound.unload();
-      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-    });
-
+    stopHowlEntries(forestHowlsRef.current, "forest");
     forestHowlsRef.current = [];
   };
 
   const stopWaveHowls = () => {
-    waveHowlsRef.current.forEach(({ sound, id }) => {
-      const currentVolume =
-        id !== null ? Number(sound.volume(id)) : Number(sound.volume());
-
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      if (id !== null) {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration, id);
-      } else {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-      }
-
-      setTimeout(() => {
-        if (id !== null) sound.stop(id);
-        else sound.stop();
-
-        sound.unload();
-      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-    });
-
+    stopHowlEntries(waveHowlsRef.current, "wave");
     waveHowlsRef.current = [];
   };
 
   const stopRiverHowls = () => {
-    riverHowlsRef.current.forEach(({ sound, id }) => {
-      const currentVolume =
-        id !== null ? Number(sound.volume(id)) : Number(sound.volume());
-
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      if (id !== null) {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration, id);
-      } else {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-      }
-
-      setTimeout(() => {
-        if (id !== null) sound.stop(id);
-        else sound.stop();
-
-        sound.unload();
-      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-    });
-
+    stopHowlEntries(riverHowlsRef.current, "river");
     riverHowlsRef.current = [];
   };
 
   const stopRainHowls = () => {
-    rainHowlsRef.current.forEach(({ sound, id }) => {
-      const currentVolume =
-        id !== null ? Number(sound.volume(id)) : Number(sound.volume());
-
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      if (id !== null) {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration, id);
-      } else {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-      }
-
-      setTimeout(() => {
-        if (id !== null) sound.stop(id);
-        else sound.stop();
-
-        sound.unload();
-      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-    });
-
+    stopHowlEntries(rainHowlsRef.current, "rain");
     rainHowlsRef.current = [];
   };
 
   const stopBonfireHowls = () => {
-    bonfireHowlsRef.current.forEach(({ sound, id }) => {
-      const currentVolume =
-        id !== null ? Number(sound.volume(id)) : Number(sound.volume());
-
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      if (id !== null) {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration, id);
-      } else {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-      }
-
-      setTimeout(() => {
-        if (id !== null) sound.stop(id);
-        else sound.stop();
-
-        sound.unload();
-      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-    });
-
+    stopHowlEntries(bonfireHowlsRef.current, "bonfire");
     bonfireHowlsRef.current = [];
   };
 
   const stopCaveHowls = () => {
-    caveHowlsRef.current.forEach(({ sound, id }) => {
-      const currentVolume =
-        id !== null ? Number(sound.volume(id)) : Number(sound.volume());
-
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      if (id !== null) {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration, id);
-      } else {
-        sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-      }
-
-      setTimeout(() => {
-        if (id !== null) sound.stop(id);
-        else sound.stop();
-
-        sound.unload();
-      }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-    });
-
+    stopHowlEntries(caveHowlsRef.current, "cave");
     caveHowlsRef.current = [];
   };
 
@@ -478,7 +472,17 @@ export default function Home() {
 
         const targetVolume = forestVolMap[entry.name] ?? 0;
 
-        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+        const key = getFadeKey("forest", entry.name);
+
+        fadeHowlVolume({
+          key,
+          sound: entry.sound,
+          id,
+          from: 0,
+          to: targetVolume,
+          duration: ACTIVE_FADE_CONFIG.fadeInMs,
+          curve: ACTIVE_FADE_CONFIG.curve,
+        });
       });
 
       return;
@@ -499,7 +503,17 @@ export default function Home() {
 
         const targetVolume = waveVolMap[entry.name] ?? 0;
 
-        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+        const key = getFadeKey("wave", entry.name);
+
+        fadeHowlVolume({
+          key,
+          sound: entry.sound,
+          id,
+          from: 0,
+          to: targetVolume,
+          duration: ACTIVE_FADE_CONFIG.fadeInMs,
+          curve: ACTIVE_FADE_CONFIG.curve,
+        });
       });
 
       return;
@@ -520,7 +534,17 @@ export default function Home() {
 
         const targetVolume = riverVolMap[entry.name] ?? 0;
 
-        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+        const key = getFadeKey("river", entry.name);
+
+        fadeHowlVolume({
+          key,
+          sound: entry.sound,
+          id,
+          from: 0,
+          to: targetVolume,
+          duration: ACTIVE_FADE_CONFIG.fadeInMs,
+          curve: ACTIVE_FADE_CONFIG.curve,
+        });
       });
 
       return;
@@ -541,7 +565,17 @@ export default function Home() {
 
         const targetVolume = rainVolMap[entry.name] ?? 0;
 
-        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+        const key = getFadeKey("rain", entry.name);
+
+        fadeHowlVolume({
+          key,
+          sound: entry.sound,
+          id,
+          from: 0,
+          to: targetVolume,
+          duration: ACTIVE_FADE_CONFIG.fadeInMs,
+          curve: ACTIVE_FADE_CONFIG.curve,
+        });
       });
 
       return;
@@ -562,7 +596,17 @@ export default function Home() {
 
         const targetVolume = bonfireVolMap[entry.name] ?? 0;
 
-        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+        const key = getFadeKey("bonfire", entry.name);
+
+        fadeHowlVolume({
+          key,
+          sound: entry.sound,
+          id,
+          from: 0,
+          to: targetVolume,
+          duration: ACTIVE_FADE_CONFIG.fadeInMs,
+          curve: ACTIVE_FADE_CONFIG.curve,
+        });
       });
 
       return;
@@ -583,7 +627,17 @@ export default function Home() {
 
         const targetVolume = caveVolMap[entry.name] ?? 0;
 
-        entry.sound.fade(0, targetVolume, ACTIVE_FADE_CONFIG.fadeInMs, id);
+        const key = getFadeKey("cave", entry.name);
+
+        fadeHowlVolume({
+          key,
+          sound: entry.sound,
+          id,
+          from: 0,
+          to: targetVolume,
+          duration: ACTIVE_FADE_CONFIG.fadeInMs,
+          curve: ACTIVE_FADE_CONFIG.curve,
+        });
       });
 
       return;
@@ -1000,7 +1054,7 @@ export default function Home() {
 
   const updateMixVolume = (sound: SoundName, value: number) => {
     console.log("UPDATE", sound, value);
-    
+
     const safeValue = Math.min(Math.max(value, 0), 1);
 
     setMixVolumes((prev) => ({
@@ -1057,7 +1111,19 @@ export default function Home() {
 
         const targetVolume = baseVolume * mixVolumes[sound];
 
-        entry.sound.volume(targetVolume, id);
+        entry.sound.volume(0, id);
+
+        const key = getFadeKey(folder, entry.name);
+
+        fadeHowlVolume({
+          key,
+          sound: entry.sound,
+          id,
+          from: 0,
+          to: targetVolume,
+          duration: ACTIVE_FADE_CONFIG.fadeInMs,
+          curve: ACTIVE_FADE_CONFIG.curve,
+        });
       });
     }
   };
@@ -1065,38 +1131,10 @@ export default function Home() {
   const stopSoundscape = () => {
     stopSilentKeeper();
 
-    Object.values(mixHowlsRef.current).forEach((entries) => {
+    Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
       if (!entries) return;
 
-      entries.forEach((entry) => {
-        const { sound, id } = entry;
-
-        const currentVolume =
-          id !== null ? Number(sound.volume(id)) : Number(sound.volume());
-
-        const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-        if (id !== null) {
-          sound.fade(
-            safeVolume,
-            0,
-            ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
-            id,
-          );
-        } else {
-          sound.fade(safeVolume, 0, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration);
-        }
-
-        setTimeout(() => {
-          if (id !== null) {
-            sound.stop(id);
-          } else {
-            sound.stop();
-          }
-
-          sound.unload();
-        }, ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration + 100);
-      });
+      stopHowlEntries(entries, soundName.toLowerCase());
     });
 
     mixHowlsRef.current = {};
