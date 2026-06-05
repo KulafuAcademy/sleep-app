@@ -108,7 +108,7 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   .hibiki-desktop-scale {
-    zoom: 0.85;
+    zoom: 1;
   }
 
   .hibiki-scroll-shell {
