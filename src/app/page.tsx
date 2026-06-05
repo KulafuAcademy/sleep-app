@@ -189,6 +189,17 @@ export default function Home() {
 
   const LAYERS = ["a1", "b1", "c1"];
 
+// =====================================================
+// Desktop Layer Volume Map
+//
+// PC / Mac 用音量バランス
+//
+// Wave / Rain / River / Forest / Bonfire / Cave
+// ごとに独立調整可能。
+//
+// Desktop実機テスト時はここを調整する。
+// =====================================================
+ 
   const VOLUME_MAP_DESKTOP = {
     wave: { a1: 0.15, b1: 0.28, c1: 0.15, a2: 0.5, a3: 0.5 },
     forest: { a1: 0.06, b1: 0.06, c1: 0.2, a2: 0.14, a3: 0.1 },
@@ -197,6 +208,17 @@ export default function Home() {
     bonfire: { a1: 0.37, b1: 0.56, c1: 0.48 },
     river: { a1: 0.13, b1: 0.13, c1: 0.13, a2: 0.13, a3: 0.07 },
   };
+
+// =====================================================
+// Mobile Layer Volume Map
+//
+// iPhone / Android / iPad 用音量バランス
+//
+// Wave / Rain / River / Forest / Bonfire / Cave
+// ごとに独立調整可能。
+//
+// Mobile実機テスト時はここを調整する。
+// =====================================================
 
   const VOLUME_MAP_MOBILE = {
     wave: { a1: 0.14, b1: 0.26, c1: 0.14, a2: 0.46, a3: 0.46 },
@@ -1531,7 +1553,7 @@ export default function Home() {
 
   if (screen === "select") {
     return (
-      <div className="hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:items-start max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
+      <div className="hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
         {/*
         {selectBackground === "wave-video" ? (
           <video
