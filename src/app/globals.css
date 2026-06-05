@@ -113,10 +113,12 @@ body {
 
   .hibiki-scroll-shell {
     overflow-y: auto !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .hibiki-scroll-shell .hibiki-desktop-scale {
-    height: auto !important;
-    min-height: min(740px, calc(100dvh - 48px));
+    height: min(740px, calc(100dvh - 48px)) !important;
+    min-height: 0 !important;
   }
 }
