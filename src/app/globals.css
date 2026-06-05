@@ -120,18 +120,3 @@ body {
     min-height: min(740px, calc(100dvh - 48px));
   }
 }
-
-@media (hover: hover) and (pointer: fine) and (max-height: 820px) {
-  .hibiki-scroll-shell {
-    align-items: flex-start !important;
-    justify-content: center !important;
-    padding-top: 24px !important;
-    padding-bottom: 24px !important;
-    overflow-y: auto !important;
-  }
-
-  .hibiki-scroll-shell .hibiki-desktop-scale {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-  }
-}
