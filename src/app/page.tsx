@@ -214,15 +214,15 @@ export default function Home() {
   const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
   const FADE_CONFIG_DESKTOP = {
-    fadeInMs: 900,
+    fadeInMs: 450,
     fadeOutMs: 1800,
     curve: 0.75,
   };
 
   const FADE_CONFIG_MOBILE = {
-    fadeInMs: 500,
-    fadeOutMs: 1600,
-    curve: 0.75,
+    fadeInMs: 450,
+    fadeOutMs: 2600,
+    curve: 0.45,
   };
 
   const ACTIVE_FADE_CONFIG = isMobile
@@ -236,7 +236,7 @@ export default function Home() {
   };
 
   const AUDIO_STOP_CONFIG_MOBILE = {
-    fadeOutDuration: 2200,
+    fadeOutDuration: 2600,
     pauseDelay: 900,
     resetDelay: 300,
   };
