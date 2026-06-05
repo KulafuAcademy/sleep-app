@@ -108,17 +108,15 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   .hibiki-desktop-scale {
-    zoom: 1;
+    zoom: 0.85;
   }
 
   .hibiki-scroll-shell {
     overflow-y: auto !important;
-    align-items: center !important;
-    justify-content: center !important;
   }
 
   .hibiki-scroll-shell .hibiki-desktop-scale {
-    height: min(740px, calc(100dvh - 48px)) !important;
-    min-height: 0 !important;
+    height: auto !important;
+    min-height: min(740px, calc(100dvh - 48px));
   }
 }
