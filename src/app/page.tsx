@@ -213,6 +213,20 @@ export default function Home() {
 
   const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
+  // =====================================================
+  // Fade Tuning
+  // Desktop / Mobile fade behavior
+  //
+  // fadeInMs   : 音が立ち上がる時間
+  // fadeOutMs  : 音が消える時間(現在未使用・将来用)
+  // curve
+  //   1.0  = linear
+  //   <1.0 = 早めに立ち上がる
+  //   >1.0 = ゆっくり立ち上がる
+  //
+  // 実機テストで調整する主要パラメータ
+  // =====================================================
+
   const FADE_CONFIG_DESKTOP = {
     fadeInMs: 450,
     fadeOutMs: 1800,
@@ -225,9 +239,66 @@ export default function Home() {
     curve: 0.45,
   };
 
+  // =====================================================
+  // Mobile Per-Preset Fade Tuning
+  //
+  // Wave / Rain / River / Forest / Bonfire / Cave
+  // 個別フェード調整用（まだ反映はされない）
+  // ACTIVE_FADE_CONFIG から切り替えた後に有効化
+  // =====================================================
+
+  const FADE_CONFIG_MOBILE_BY_SOUND = {
+    wave: {
+      fadeInMs: 450,
+      fadeOutMs: 2600,
+      curve: 0.45,
+    },
+
+    rain: {
+      fadeInMs: 450,
+      fadeOutMs: 2600,
+      curve: 0.45,
+    },
+
+    river: {
+      fadeInMs: 450,
+      fadeOutMs: 2600,
+      curve: 0.45,
+    },
+
+    forest: {
+      fadeInMs: 450,
+      fadeOutMs: 2600,
+      curve: 0.45,
+    },
+
+    bonfire: {
+      fadeInMs: 450,
+      fadeOutMs: 2600,
+      curve: 0.45,
+    },
+
+    cave: {
+      fadeInMs: 450,
+      fadeOutMs: 2600,
+      curve: 0.45,
+    },
+  };
+
   const ACTIVE_FADE_CONFIG = isMobile
     ? FADE_CONFIG_MOBILE
     : FADE_CONFIG_DESKTOP;
+
+  // =====================================================
+  // Fade Out Stop Timing
+  //
+  // fadeOutDuration : 実際のフェードアウト時間
+  // pauseDelay      : 将来pauseを使う場合の待機時間
+  // resetDelay      : 将来seek(0)等を行う場合の待機時間
+  //
+  // フェードアウトがぶつ切りに聞こえる場合は
+  // fadeOutDuration を調整
+  // =====================================================
 
   const AUDIO_STOP_CONFIG_DESKTOP = {
     fadeOutDuration: 2600,
