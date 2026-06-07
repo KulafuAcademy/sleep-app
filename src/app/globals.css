@@ -129,14 +129,15 @@ body {
       padding-top: 0 !important;
       padding-bottom: 120px !important;
     }
-  
+     
     .hibiki-safari-browser-card {
-      transform: translateY(0) !important;
+      transform: translateY(0) scale(0.92) !important;
+      transform-origin: top center !important;
       height: auto !important;
       min-height: auto !important;
       max-height: none !important;
       overflow: visible !important;
-    }   
+    } 
   }
 }
   
