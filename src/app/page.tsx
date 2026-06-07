@@ -2041,7 +2041,7 @@ export default function Home() {
           </>
         )}
 
-        <div className="relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible">
+        <div className="relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0 max-md:portrait:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible">
           <div className="px-6 pt-6">
             <button
               onClick={() => {
