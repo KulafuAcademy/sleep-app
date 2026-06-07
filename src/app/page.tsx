@@ -165,12 +165,6 @@ export default function Home() {
       const currentVolume = Number(sound.volume(id));
       const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
 
-      console.log("[fadeOut]", {
-        category,
-        name,
-        volume: safeVolume,
-      });
-
       fadeHowlVolume({
         key: getFadeKey(category, name),
         sound,
@@ -776,38 +770,11 @@ export default function Home() {
       if (a3) a3.currentTime = 113;
     }
 
-    // 👇フェードイン
-    const duration = ACTIVE_FADE_CONFIG.fadeInMs;
-    const startTime = performance.now();
-
-    const fadeIn = () => {
-      const elapsed = performance.now() - startTime;
-      const rawProgress = Math.min(elapsed / duration, 1);
-      const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
-
-      const volMap =
-        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-        ACTIVE_VOLUME_MAP.wave;
-
-      a1.volume = volMap.a1 * progress;
-      b1.volume = volMap.b1 * progress;
-      c1.volume = volMap.c1 * progress;
-
-      if (a2) a2.volume = ("a2" in volMap ? volMap.a2 : 0) * progress;
-      if (a3) a3.volume = ("a3" in volMap ? volMap.a3 : 0) * progress;
-
-      if (progress < 1) {
-        requestAnimationFrame(fadeIn);
-      }
-    };
-
     const startAudios = async () => {
       for (const audio of audios) {
         audio.volume = 0;
         await audio.play();
       }
-
-      fadeIn();
     };
 
     startAudios();
@@ -833,33 +800,13 @@ export default function Home() {
     const audios = [...waveAudioRef.current];
 
     audios.forEach((audio) => {
-      const startVolume = audio.volume;
-      const duration = ACTIVE_FADE_CONFIG.fadeOutMs;
-      const startTime = performance.now();
+      audio.volume = 0;
+      audio.pause();
+      audio.currentTime = 0;
 
-      const fadeOut = () => {
-        const elapsed = performance.now() - startTime;
-
-        const rawProgress = Math.min(elapsed / duration, 1);
-
-        const progress = Math.pow(rawProgress, ACTIVE_FADE_CONFIG.curve);
-
-        audio.volume = startVolume * (1 - progress);
-
-        if (progress < 1) {
-          requestAnimationFrame(fadeOut);
-        } else {
-          audio.volume = 0;
-          audio.pause();
-          audio.currentTime = 0;
-
-          waveAudioRef.current = waveAudioRef.current.filter(
-            (item) => item !== audio,
-          );
-        }
-      };
-
-      fadeOut();
+      waveAudioRef.current = waveAudioRef.current.filter(
+        (item) => item !== audio,
+      );
     });
   };
 
@@ -1241,14 +1188,11 @@ export default function Home() {
   };
 
   const stopSoundscape = () => {
-    console.log("[stopSoundscape] called", mixHowlsRef.current);
 
     stopSilentKeeper();
 
     Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
       if (!entries) return;
-
-      console.log("[stopSoundscape] fade out", soundName, entries.length);
 
       stopHowlEntries(entries, soundName.toLowerCase());
     });
