@@ -107,7 +107,6 @@ export default function Home() {
     curve = 1,
     onComplete,
   }: {
-    
     key: string;
     sound: Howl;
     id: number;
@@ -165,6 +164,12 @@ export default function Home() {
 
       const currentVolume = Number(sound.volume(id));
       const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
+
+      console.log("[fadeOut]", {
+        category,
+        name,
+        volume: safeVolume,
+      });
 
       fadeHowlVolume({
         key: getFadeKey(category, name),
@@ -1236,20 +1241,20 @@ export default function Home() {
   };
 
   const stopSoundscape = () => {
-  console.log("[stopSoundscape] called", mixHowlsRef.current);
+    console.log("[stopSoundscape] called", mixHowlsRef.current);
 
-  stopSilentKeeper();
+    stopSilentKeeper();
 
-  Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
-    if (!entries) return;
+    Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
+      if (!entries) return;
 
-    console.log("[stopSoundscape] fade out", soundName, entries.length);
+      console.log("[stopSoundscape] fade out", soundName, entries.length);
 
-    stopHowlEntries(entries, soundName.toLowerCase());
-  });
+      stopHowlEntries(entries, soundName.toLowerCase());
+    });
 
-  mixHowlsRef.current = {};
-};
+    mixHowlsRef.current = {};
+  };
 
   const [highLevel, setHighLevel] = useState(0.015);
   const [highFreq, setHighFreq] = useState(1800);
@@ -1828,20 +1833,20 @@ export default function Home() {
       </div>
     );
   }
-  
+
   if (screen === "soundscapeEdit") {
-  return (
-    <div
-      className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4 ${
-        isSafariBrowser ? "hibiki-safari-browser-shell" : ""
-      }`}
-    >
+    return (
       <div
-        className={`relative w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ${
-          isSafariBrowser ? "hibiki-safari-browser-card-player" : ""
+        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4 ${
+          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
-        <div className="px-6 pt-6">
+        <div
+          className={`relative w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ${
+            isSafariBrowser ? "hibiki-safari-browser-card-player" : ""
+          }`}
+        >
+          <div className="px-6 pt-6">
             <button
               onClick={() => {
                 pauseWaveLayerTestImmediately();
