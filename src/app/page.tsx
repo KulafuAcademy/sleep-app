@@ -164,23 +164,24 @@ export default function Home() {
 
       const currentVolume = Number(sound.volume(id));
       const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
+     
       fadeHowlVolume({
-        key: getFadeKey(category, name),
+        key: getFadeKey(category, name), 
         sound,
         id,
         from: safeVolume,
         to: 0,
-        duration: ACTIVE_AUDIO_STOP_CONFIG.fadeOutDuration,
+        duration: ACTIVE_FADE_CONFIG.fadeOutMs,
         curve: ACTIVE_FADE_CONFIG.curve,
         onComplete: () => {
           sound.stop(id);
           sound.unload();
         },
-      });
-    });
+     });  
+    });  
   };
-
+    
+  
   const silentKeeperRef = useRef<Howl | null>(null);
 
   const fluctuationRef = useRef<number | null>(null);
