@@ -121,3 +121,8 @@ body {
     min-height: min(740px, calc(100dvh - 48px));
   }
 }
+@supports (-webkit-touch-callout: none) {
+  .hibiki-safari-safe {
+    padding-bottom: 88px;
+  }
+}
