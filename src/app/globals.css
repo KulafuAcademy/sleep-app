@@ -129,7 +129,7 @@ body {
 }
 
 .hibiki-safari-browser-card-select {
-  transform: translateY(20px) scale(0.88) !important;
+  transform: translateY(24px) scale(0.88) !important;
   transform-origin: top center !important;
   min-height: min(840px, calc(100dvh + 24px)) !important;
 }
