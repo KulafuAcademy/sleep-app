@@ -122,7 +122,20 @@ body {
   }
 }
 @supports (-webkit-touch-callout: none) {
-  .hibiki-safari-safe {
-    padding-bottom: 88px;
+  @media not all and (display-mode: standalone) {
+    .hibiki-safari-browser-shell {
+      align-items: flex-start !important;
+      overflow-y: auto !important;
+      padding-top: 24px !important;
+      padding-bottom: 120px !important;
+    }
+
+    .hibiki-safari-browser-card {
+      transform: translateY(0) !important;
+      height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+    }
   }
 }
