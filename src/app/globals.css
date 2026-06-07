@@ -132,10 +132,11 @@ body {
 
     .hibiki-safari-browser-card {
       transform: translateY(0) !important;
-      height: auto !important;
-      min-height: auto !important;
-      max-height: none !important;
-      overflow: visible !important;
-    }
+      height: calc(100svh - 160px) !important;
+      min-height: 0 !important;
+      max-height: calc(100svh - 160px) !important;
+      overflow: hidden !important;
+    } 
   }
 }
+  
