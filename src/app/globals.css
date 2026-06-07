@@ -128,7 +128,12 @@ body {
   padding-bottom: 120px !important;
 }
 
-.hibiki-safari-browser-card {
-  transform: translateY(0) scale(0.90) !important;
+.hibiki-safari-browser-card-select {
+  transform: translateY(0) scale(0.86) !important;
+  transform-origin: top center !important;
+}
+
+.hibiki-safari-browser-card-player {
+  transform: translateY(0) scale(0.96) !important;
   transform-origin: top center !important;
 }
