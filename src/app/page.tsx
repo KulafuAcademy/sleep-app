@@ -189,17 +189,17 @@ export default function Home() {
 
   const LAYERS = ["a1", "b1", "c1"];
 
-// =====================================================
-// Desktop Layer Volume Map
-//
-// PC / Mac 用音量バランス
-//
-// Wave / Rain / River / Forest / Bonfire / Cave
-// ごとに独立調整可能。
-//
-// Desktop実機テスト時はここを調整する。
-// =====================================================
- 
+  // =====================================================
+  // Desktop Layer Volume Map
+  //
+  // PC / Mac 用音量バランス
+  //
+  // Wave / Rain / River / Forest / Bonfire / Cave
+  // ごとに独立調整可能。
+  //
+  // Desktop実機テスト時はここを調整する。
+  // =====================================================
+
   const VOLUME_MAP_DESKTOP = {
     wave: { a1: 0.15, b1: 0.28, c1: 0.15, a2: 0.5, a3: 0.5 },
     forest: { a1: 0.06, b1: 0.06, c1: 0.2, a2: 0.14, a3: 0.1 },
@@ -209,16 +209,16 @@ export default function Home() {
     river: { a1: 0.13, b1: 0.13, c1: 0.13, a2: 0.13, a3: 0.07 },
   };
 
-// =====================================================
-// Mobile Layer Volume Map
-//
-// iPhone / Android / iPad 用音量バランス
-//
-// Wave / Rain / River / Forest / Bonfire / Cave
-// ごとに独立調整可能。
-//
-// Mobile実機テスト時はここを調整する。
-// =====================================================
+  // =====================================================
+  // Mobile Layer Volume Map
+  //
+  // iPhone / Android / iPad 用音量バランス
+  //
+  // Wave / Rain / River / Forest / Bonfire / Cave
+  // ごとに独立調整可能。
+  //
+  // Mobile実機テスト時はここを調整する。
+  // =====================================================
 
   const VOLUME_MAP_MOBILE = {
     wave: { a1: 0.14, b1: 0.26, c1: 0.14, a2: 0.46, a3: 0.46 },
@@ -1010,6 +1010,19 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
+  const [isSafariBrowser, setIsSafariBrowser] = useState(false);
+
+  useEffect(() => {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      // @ts-expect-error iOS Safari standalone
+      window.navigator.standalone === true;
+
+    setIsSafariBrowser(isSafari && !isStandalone);
+  }, []);
+
   const backgroundNames = [
     "rain",
     "wave",
@@ -1553,7 +1566,11 @@ export default function Home() {
 
   if (screen === "select") {
     return (
-    <div className="hibiki-scroll-shell  fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
+      <div
+        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4 ${
+          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+        }`}
+      >
         {/*
         {selectBackground === "wave-video" ? (
           <video
@@ -1573,13 +1590,17 @@ export default function Home() {
           />
         )}
         */}
-
         <div className="fixed inset-0 bg-black/70 md:bg-transparent" />
         {/* 
         <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
         */}
-        <div className="relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ">
+        　
+        <div
+          className={`relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ${
+            isSafariBrowser ? "hibiki-safari-browser-card" : ""
+          }`}
+        >
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
@@ -2032,16 +2053,16 @@ export default function Home() {
     );
   }
 
-if (screen === "player") {
-  return (
-    <div className="hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
-      {selectedSound && (
-        <>
-          <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
-        </>
-      )}
+  if (screen === "player") {
+    return (
+      <div className="hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
+        {selectedSound && (
+          <>
+            <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
+          </>
+        )}
 
-      <div className="relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible">
+        <div className="relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible">
           <div className="px-6 pt-6">
             <button
               onClick={() => {
