@@ -69,7 +69,7 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 9999px;
-  background: #f2f2f2;
+  background: #e0e0e0;
   border: none;
   margin-top: -11px;
 }
@@ -85,7 +85,7 @@ body {
   height: 28px;
   border: none;
   border-radius: 9999px;
-  background: #f2f2f2;
+  background: #e0e0e0;
 }
 
 @keyframes timerBreath {
