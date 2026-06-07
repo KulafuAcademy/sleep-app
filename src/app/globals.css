@@ -131,9 +131,11 @@ body {
 .hibiki-safari-browser-card-select {
   transform: translateY(0) scale(0.88) !important;
   transform-origin: top center !important;
+  min-height: min(760px, calc(100dvh - 24px)) !important;
 }
 
 .hibiki-safari-browser-card-player {
   transform: translateY(0) scale(0.88) !important;
   transform-origin: top center !important;
+  min-height: min(760px, calc(100dvh - 24px)) !important;
 }
