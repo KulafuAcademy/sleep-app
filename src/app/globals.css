@@ -126,7 +126,7 @@ body {
     .hibiki-safari-browser-shell {
       align-items: flex-start !important;
       overflow-y: auto !important;
-      padding-top: 24px !important;
+      padding-top: 0 !important;
       padding-bottom: 120px !important;
     }
   
