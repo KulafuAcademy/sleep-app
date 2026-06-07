@@ -107,6 +107,7 @@ export default function Home() {
     curve = 1,
     onComplete,
   }: {
+    
     key: string;
     sound: Howl;
     id: number;
@@ -1235,16 +1236,20 @@ export default function Home() {
   };
 
   const stopSoundscape = () => {
-    stopSilentKeeper();
+  console.log("[stopSoundscape] called", mixHowlsRef.current);
 
-    Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
-      if (!entries) return;
+  stopSilentKeeper();
 
-      stopHowlEntries(entries, soundName.toLowerCase());
-    });
+  Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
+    if (!entries) return;
 
-    mixHowlsRef.current = {};
-  };
+    console.log("[stopSoundscape] fade out", soundName, entries.length);
+
+    stopHowlEntries(entries, soundName.toLowerCase());
+  });
+
+  mixHowlsRef.current = {};
+};
 
   const [highLevel, setHighLevel] = useState(0.015);
   const [highFreq, setHighFreq] = useState(1800);
