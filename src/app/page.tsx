@@ -2034,7 +2034,7 @@ export default function Home() {
 
   if (screen === "player") {
     return (
-      <div className="hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
+      <div className="hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-md:portrait:overflow-y-auto max-lg:landscape:overflow-y-auto max-lg:landscape:py-4">
         {selectedSound && (
           <>
             <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
