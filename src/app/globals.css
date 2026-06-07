@@ -121,8 +121,8 @@ body {
     min-height: min(740px, calc(100dvh - 48px));
   }
 }
- .hibiki-safari-browser-shell {
-  align-items: flex-start !important;
+.hibiki-safari-browser-shell {
+  align-items: center !important;
   overflow-y: auto !important;
   padding-top: 0 !important;
   padding-bottom: 40px !important;
