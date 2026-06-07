@@ -121,23 +121,4 @@ body {
     min-height: min(740px, calc(100dvh - 48px));
   }
 }
-@supports (-webkit-touch-callout: none) {
-  @media not all and (display-mode: standalone) {
-    .hibiki-safari-browser-shell {
-      align-items: flex-start !important;
-      overflow-y: auto !important;
-      padding-top: 0 !important;
-      padding-bottom: 120px !important;
-    }
-     
-    .hibiki-safari-browser-card {
-      transform: translateY(0) scale(0.85) !important;
-      transform-origin: top center !important;
-      height: auto !important;
-      min-height: auto !important;
-      max-height: none !important;
-      overflow: visible !important;
-    } 
-  }
-}
   
