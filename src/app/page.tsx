@@ -164,24 +164,25 @@ export default function Home() {
 
       const currentVolume = Number(sound.volume(id));
       const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-     
+
+      const fadeConfig = getActiveFadeConfig(category);
+
       fadeHowlVolume({
-        key: getFadeKey(category, name), 
+        key: getFadeKey(category, name),
         sound,
         id,
         from: safeVolume,
         to: 0,
-        duration: ACTIVE_FADE_CONFIG.fadeOutMs,
-        curve: ACTIVE_FADE_CONFIG.curve,
+        duration: fadeConfig.fadeOutMs,
+        curve: fadeConfig.curve,
         onComplete: () => {
           sound.stop(id);
           sound.unload();
         },
-     });  
-    });  
+      });
+    });
   };
-    
-  
+
   const silentKeeperRef = useRef<Howl | null>(null);
 
   const fluctuationRef = useRef<number | null>(null);
@@ -250,6 +251,12 @@ export default function Home() {
   // 実機テストで調整する主要パラメータ
   // =====================================================
 
+  type FadeConfig = {
+    fadeInMs: number;
+    fadeOutMs: number;
+    curve: number;
+  };
+
   const FADE_CONFIG_DESKTOP = {
     fadeInMs: 450,
     fadeOutMs: 1800,
@@ -306,6 +313,16 @@ export default function Home() {
       fadeOutMs: 2600,
       curve: 0.45,
     },
+  };
+
+  const getActiveFadeConfig = (folder: string): FadeConfig => {
+    if (!isMobile) return FADE_CONFIG_DESKTOP;
+
+    return (
+      FADE_CONFIG_MOBILE_BY_SOUND[
+        folder as keyof typeof FADE_CONFIG_MOBILE_BY_SOUND
+      ] ?? FADE_CONFIG_MOBILE
+    );
   };
 
   const ACTIVE_FADE_CONFIG = isMobile
@@ -1171,6 +1188,8 @@ export default function Home() {
 
         const targetVolume = baseVolume * mixVolumes[sound];
 
+        const fadeConfig = getActiveFadeConfig(folder);
+
         entry.sound.volume(0, id);
 
         const key = getFadeKey(folder, entry.name);
@@ -1181,15 +1200,14 @@ export default function Home() {
           id,
           from: 0,
           to: targetVolume,
-          duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.curve,
+          duration: fadeConfig.fadeInMs,
+          curve: fadeConfig.curve,
         });
       });
     }
   };
 
   const stopSoundscape = () => {
-
     stopSilentKeeper();
 
     Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
