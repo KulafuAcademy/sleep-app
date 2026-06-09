@@ -419,6 +419,14 @@ export default function Home() {
         volume: 0,
         html5: true,
         preload: true,
+
+        onload: () => {
+          console.log("[forest loaded]", name);
+        },
+
+        onloaderror: (_, error) => {
+          console.log("[forest load error]", name, error);
+        },
       }),
       id: null as number | null,
       name,
@@ -437,6 +445,14 @@ export default function Home() {
         volume: 0,
         html5: true,
         preload: true,
+
+        onload: () => {
+          console.log("[wave loaded]", name);
+        },
+
+        onloaderror: (_, error) => {
+          console.log("[wave load error]", name, error);
+        },
       }),
       id: null as number | null,
       name,
@@ -455,6 +471,14 @@ export default function Home() {
         volume: 0,
         html5: true,
         preload: true,
+
+        onload: () => {
+          console.log("[river loaded]", name);
+        },
+
+        onloaderror: (_, error) => {
+          console.log("[river load error]", name, error);
+        },
       }),
       id: null as number | null,
       name,
@@ -473,6 +497,14 @@ export default function Home() {
         volume: 0,
         html5: true,
         preload: true,
+
+        onload: () => {
+          console.log("[rain loaded]", name);
+        },
+
+        onloaderror: (_, error) => {
+          console.log("[rain load error]", name, error);
+        },
       }),
       id: null as number | null,
       name,
@@ -491,6 +523,14 @@ export default function Home() {
         volume: 0,
         html5: true,
         preload: true,
+
+        onload: () => {
+          console.log("[bonfire loaded]", name);
+        },
+
+        onloaderror: (_, error) => {
+          console.log("[bonfire load error]", name, error);
+        },
       }),
       id: null as number | null,
       name,
@@ -509,6 +549,14 @@ export default function Home() {
         volume: 0,
         html5: true,
         preload: true,
+
+        onload: () => {
+          console.log("[cave loaded]", name);
+        },
+
+        onloaderror: (_, error) => {
+          console.log("[cave load error]", name, error);
+        },
       }),
       id: null as number | null,
       name,
@@ -571,24 +619,24 @@ export default function Home() {
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
-    
+
     if (folder === "forest") {
       a1.addEventListener("loadedmetadata", () => {
         a1.currentTime = 23;
       });
-    
+
       b1.addEventListener("loadedmetadata", () => {
         b1.currentTime = 71;
       });
-    
+
       c1.addEventListener("loadedmetadata", () => {
         c1.currentTime = 41;
       });
     }
-    
+
     let a2: HTMLAudioElement | null = null;
     let a3: HTMLAudioElement | null = null;
-    
+
     const audios: HTMLAudioElement[] = [a1, b1, c1];
 
     if (folder === "forest") {
@@ -901,7 +949,7 @@ export default function Home() {
 
     if (isPlaying) {
       pauseWaveLayerTestImmediately();
-     }
+    }
 
     playWaveLayerTest();
     setIsPlaying(true);
