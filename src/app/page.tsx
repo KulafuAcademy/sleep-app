@@ -118,6 +118,12 @@ export default function Home() {
   }) => {
     cancelFade(key);
 
+    if (duration <= 0) {
+      sound.volume(to, id);
+      onComplete?.();
+      return;
+    }
+
     const job: FadeJob = {
       cancelled: false,
       frameId: null,
@@ -274,10 +280,10 @@ export default function Home() {
   };
 
   const FADE_CONFIG_MOBILE = {
-    fadeInMs: 450,
-    fadeOutMs: 2600,
-    fadeInCurve: 0.45,
-    fadeOutCurve: 0.45,
+    fadeInMs: 0,
+    fadeOutMs: 0,
+    fadeInCurve: 1,
+    fadeOutCurve: 1,
   };
 
   // =====================================================
@@ -290,45 +296,45 @@ export default function Home() {
 
   const FADE_CONFIG_MOBILE_BY_SOUND = {
     wave: {
-      fadeInMs: 450,
-      fadeOutMs: 2600,
-      fadeInCurve: 0.45,
-      fadeOutCurve: 0.45,
+      fadeInMs: 0,
+      fadeOutMs: 0,
+      fadeInCurve: 1,
+      fadeOutCurve: 1,
     },
 
     rain: {
-      fadeInMs: 20,
-      fadeOutMs: 120,
-      fadeInCurve: 0.12,
-      fadeOutCurve: 0.25,
+      fadeInMs: 0,
+      fadeOutMs: 0,
+      fadeInCurve: 1,
+      fadeOutCurve: 1,
     },
 
     river: {
-      fadeInMs: 450,
-      fadeOutMs: 2600,
-      fadeInCurve: 0.45,
-      fadeOutCurve: 0.45,
+      fadeInMs: 0,
+      fadeOutMs: 0,
+      fadeInCurve: 1,
+      fadeOutCurve: 1,
     },
 
     forest: {
-      fadeInMs: 450,
-      fadeOutMs: 2600,
-      fadeInCurve: 0.45,
-      fadeOutCurve: 0.45,
+      fadeInMs: 0,
+      fadeOutMs: 0,
+      fadeInCurve: 1,
+      fadeOutCurve: 1,
     },
 
     bonfire: {
-      fadeInMs: 450,
-      fadeOutMs: 2600,
-      fadeInCurve: 0.45,
-      fadeOutCurve: 0.45,
+      fadeInMs: 0,
+      fadeOutMs: 0,
+      fadeInCurve: 1,
+      fadeOutCurve: 1,
     },
 
     cave: {
-      fadeInMs: 450,
-      fadeOutMs: 2600,
-      fadeInCurve: 0.45,
-      fadeOutCurve: 0.45,
+      fadeInMs: 0,
+      fadeOutMs: 0,
+      fadeInCurve: 1,
+      fadeOutCurve: 1,
     },
   };
 
