@@ -169,19 +169,16 @@ export default function Home() {
     entries: { sound: Howl; id: number | null; name: string }[],
     category: string,
   ) => {
-    entries.forEach(({ sound, id, name }) => {
+    entries.forEach((entry) => {
+      const { sound, id, name } = entry;
+
       if (id === null) {
         sound.stop();
         return;
       }
 
-      const volMap =
-        ACTIVE_VOLUME_MAP[category as keyof typeof ACTIVE_VOLUME_MAP];
-
-      const baseVolume =
-        volMap && name in volMap ? volMap[name as keyof typeof volMap] : 0;
-
-      const safeVolume = Number(baseVolume);
+      const currentVolume = Number(sound.volume(id));
+      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
 
       const fadeConfig = getActiveFadeConfig(category);
 
@@ -195,6 +192,7 @@ export default function Home() {
         curve: fadeConfig.fadeOutCurve,
         onComplete: () => {
           sound.stop(id);
+          entry.id = null;
         },
       });
     });
