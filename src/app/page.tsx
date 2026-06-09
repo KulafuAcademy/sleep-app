@@ -185,7 +185,7 @@ export default function Home() {
         sound,
         id,
         from: safeVolume,
-        to: 0.3,
+        to: 1,
         duration: fadeConfig.fadeOutMs,
         curve: fadeConfig.fadeOutCurve,
         onComplete: () => {
