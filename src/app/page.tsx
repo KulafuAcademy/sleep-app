@@ -279,9 +279,9 @@ export default function Home() {
 
   const FADE_CONFIG_MOBILE = {
     fadeInMs: 300,
-    fadeOutMs: 600,
+    fadeOutMs: 1800,
     fadeInCurve: 0.35,
-    fadeOutCurve: 0.45,
+    fadeOutCurve: 0.25,
   };
 
   // =====================================================
@@ -295,44 +295,44 @@ export default function Home() {
   const FADE_CONFIG_MOBILE_BY_SOUND = {
     wave: {
   fadeInMs: 300,
-  fadeOutMs: 600,
+  fadeOutMs: 1800,
   fadeInCurve: 0.35,
-  fadeOutCurve: 0.45,
+  fadeOutCurve: 0.25,
     },
 
     rain: {
   fadeInMs: 300,
-  fadeOutMs: 600,
+  fadeOutMs: 1800,
   fadeInCurve: 0.35,
-  fadeOutCurve: 0.45,
+  fadeOutCurve: 0.25,
     },
 
     river: {
   fadeInMs: 300,
-  fadeOutMs: 600,
+  fadeOutMs: 1800,
   fadeInCurve: 0.35,
-  fadeOutCurve: 0.45,
+  fadeOutCurve: 0.25,
     },
 
     forest: {
   fadeInMs: 300,
-  fadeOutMs: 600,
+  fadeOutMs: 1800,
   fadeInCurve: 0.35,
-  fadeOutCurve: 0.45,
+  fadeOutCurve: 0.25,
     },
 
     bonfire: {
   fadeInMs: 300,
-  fadeOutMs: 600,
+  fadeOutMs: 1800,
   fadeInCurve: 0.35,
-  fadeOutCurve: 0.45,
+  fadeOutCurve: 0.25,
     },
 
     cave: {
   fadeInMs: 300,
-  fadeOutMs: 600,
+  fadeOutMs: 1800,
   fadeInCurve: 0.35,
-  fadeOutCurve: 0.45,
+  fadeOutCurve: 0.25,
     },
   };
 
