@@ -620,28 +620,7 @@ export default function Home() {
 
     const folder = selectedSound.toLowerCase();
 
-    const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
-    const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
-    const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
 
-    if (folder === "forest") {
-      a1.addEventListener("loadedmetadata", () => {
-        a1.currentTime = 23;
-      });
-
-      b1.addEventListener("loadedmetadata", () => {
-        b1.currentTime = 71;
-      });
-
-      c1.addEventListener("loadedmetadata", () => {
-        c1.currentTime = 41;
-      });
-    }
-
-    let a2: HTMLAudioElement | null = null;
-    let a3: HTMLAudioElement | null = null;
-
-    const audios: HTMLAudioElement[] = [a1, b1, c1];
 
     if (folder === "forest") {
       if (forestHowlsRef.current.length === 0) {
@@ -840,49 +819,6 @@ export default function Home() {
 
       return;
     }
-
-    if (folder !== "bonfire" && folder !== "cave") {
-      a2 = new Audio(`/sound/${folder}/v1/a2.wav`);
-      a3 = new Audio(`/sound/${folder}/v1/a3.wav`);
-
-      audios.push(a2, a3);
-    }
-
-    waveAudioRef.current = audios;
-
-    a1.loop = true;
-    b1.loop = true;
-    c1.loop = true;
-
-    if (a2) a2.loop = true;
-    if (a3) a3.loop = true;
-
-    // 無音スタート
-    a1.volume = 0;
-    b1.volume = 0;
-    c1.volume = 0;
-
-    if (a2) a2.volume = 0;
-    if (a3) a3.volume = 0;
-
-    // rainだけ開始位置をズラす
-    if (folder === "rain") {
-      a1.currentTime = 37;
-      b1.currentTime = 0;
-      c1.currentTime = 11;
-
-      if (a2) a2.currentTime = 59;
-      if (a3) a3.currentTime = 113;
-    }
-
-    const startAudios = async () => {
-      for (const audio of audios) {
-        audio.volume = 0;
-        await audio.play();
-      }
-    };
-
-    startAudios();
   };
 
   // 👇開発用時間スライダー
