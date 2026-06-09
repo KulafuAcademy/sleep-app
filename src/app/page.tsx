@@ -285,9 +285,9 @@ export default function Home() {
     },
 
     rain: {
-      fadeInMs: 300,
-      fadeOutMs: 2600,
-      curve: 0.9,
+      fadeInMs: 150,
+      fadeOutMs: 1000,
+      curve: 0.45,
     },
 
     river: {
