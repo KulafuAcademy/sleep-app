@@ -273,8 +273,8 @@ export default function Home() {
   // Mobile Per-Preset Fade Tuning
   //
   // Wave / Rain / River / Forest / Bonfire / Cave
-  // 個別フェード調整用（まだ反映はされない）
-  // ACTIVE_FADE_CONFIG から切り替えた後に有効化
+  // 個別フェード調整用
+  // ACTIVE_FADE_CONFIG から切り替え有効化済み
   // =====================================================
 
   const FADE_CONFIG_MOBILE_BY_SOUND = {
@@ -285,9 +285,9 @@ export default function Home() {
     },
 
     rain: {
-      fadeInMs: 450,
-      fadeOutMs: 2600,
-      curve: 0.45,
+      fadeInMs: 250,
+      fadeOutMs: 1200,
+      curve: 0.35,
     },
 
     river: {
