@@ -169,9 +169,7 @@ export default function Home() {
     entries: { sound: Howl; id: number | null; name: string }[],
     category: string,
   ) => {
-    entries.forEach((entry) => {
-      const { sound, id, name } = entry;
-
+    entries.forEach(({ sound, id, name }) => {
       if (id === null) {
         sound.stop();
         return;
@@ -192,7 +190,6 @@ export default function Home() {
         curve: fadeConfig.fadeOutCurve,
         onComplete: () => {
           sound.stop(id);
-          entry.id = null;
         },
       });
     });
