@@ -410,6 +410,8 @@ export default function Home() {
   };
 
   const prepareForestHowls = () => {
+    if (forestHowlsRef.current.length > 0) return;
+
     const forestLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
     const sounds = forestLayers.map((name) => ({
@@ -436,6 +438,8 @@ export default function Home() {
   };
 
   const prepareWaveHowls = () => {
+    if (waveHowlsRef.current.length > 0) return;
+
     const waveLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
     const sounds = waveLayers.map((name) => ({
@@ -462,6 +466,8 @@ export default function Home() {
   };
 
   const prepareRiverHowls = () => {
+    if (riverHowlsRef.current.length > 0) return;
+
     const riverLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
     const sounds = riverLayers.map((name) => ({
@@ -488,6 +494,8 @@ export default function Home() {
   };
 
   const prepareRainHowls = () => {
+    if (rainHowlsRef.current.length > 0) return;
+
     const rainLayers = ["a1", "b1", "c1", "a2", "a3"] as const;
 
     const sounds = rainLayers.map((name) => ({
@@ -514,6 +522,8 @@ export default function Home() {
   };
 
   const prepareBonfireHowls = () => {
+    if (bonfireHowlsRef.current.length > 0) return;
+
     const bonfireLayers = ["a1", "b1", "c1"] as const;
 
     const sounds = bonfireLayers.map((name) => ({
@@ -540,6 +550,8 @@ export default function Home() {
   };
 
   const prepareCaveHowls = () => {
+    if (caveHowlsRef.current.length > 0) return;
+
     const caveLayers = ["a1", "b1", "c1"] as const;
 
     const sounds = caveLayers.map((name) => ({
@@ -1067,7 +1079,6 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
-  const [isPreparing, setIsPreparing] = useState(false);
   const [isSafariBrowser, setIsSafariBrowser] = useState(false);
 
   useEffect(() => {
@@ -1547,69 +1558,47 @@ export default function Home() {
     }
   };
 
-  const waitForHowlsLoaded = (entries: { sound: Howl }[]) => {
-    return Promise.all(
-      entries.map(
-        (entry) =>
-          new Promise<void>((resolve) => {
-            if (entry.sound.state() === "loaded") {
-              resolve();
-              return;
-            }
-
-            entry.sound.once("load", () => {
-              resolve();
-            });
-
-            entry.sound.once("loaderror", () => {
-              resolve();
-            });
-          }),
-      ),
-    );
-  };
-
-  const handleSelectSound = async (sound: SoundName) => {
+  const handleSelectSound = (sound: SoundName) => {
     if (isPlaying) {
       stopRain();
       setIsPlaying(false);
     }
 
     setSelectedSound(sound);
-    setIsPreparing(true);
 
     if (sound === "Forest") {
       prepareForestHowls();
-      await waitForHowlsLoaded(forestHowlsRef.current);
     }
 
     if (sound === "Wave") {
       prepareWaveHowls();
-      await waitForHowlsLoaded(waveHowlsRef.current);
     }
 
     if (sound === "River") {
       prepareRiverHowls();
-      await waitForHowlsLoaded(riverHowlsRef.current);
     }
 
     if (sound === "Rain") {
       prepareRainHowls();
-      await waitForHowlsLoaded(rainHowlsRef.current);
     }
 
     if (sound === "Bonfire") {
       prepareBonfireHowls();
-      await waitForHowlsLoaded(bonfireHowlsRef.current);
     }
 
     if (sound === "Cave") {
       prepareCaveHowls();
-      await waitForHowlsLoaded(caveHowlsRef.current);
     }
-
-    setIsPreparing(false);
   };
+
+  useEffect(() => {
+    prepareRainHowls();
+    prepareWaveHowls();
+    prepareRiverHowls();
+    prepareForestHowls();
+    prepareBonfireHowls();
+    prepareCaveHowls();
+  }, []);
 
   useEffect(() => {
     if (!("mediaSession" in navigator)) return;
@@ -1752,23 +1741,21 @@ export default function Home() {
                 })}
               </div>
             </div>
-                 
+
             <button
               onClick={() => {
-              if (!selectedSound || isPreparing) return;
-              setScreen("player");
+                if (!selectedSound) return;
+                setScreen("player");
               }}
-               className={`mt-6 w-full rounded-2xl border border-white/10 ${
+              className={`mt-6 w-full rounded-2xl border border-white/10 ${
                 selectedSound ? "bg-white/5" : "bg-white/5"
               } backdrop-blur-md py-4 text-base font-medium text-white/60 transition-all duration-200 hover:bg-white/8 hover:scale-[1.03] active:bg-white/8 active:scale-[0.98]`}
-             >
-             {isPreparing
-               ? `Preparing...`
-               : selectedSound
+            >
+              {selectedSound
                 ? `Continue with ${selectedSound}`
                 : "Choose a sound"}
             </button>
-               
+
             <button
               onClick={() => setScreen("soundscape")}
               className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center transition hover:bg-white/10"
