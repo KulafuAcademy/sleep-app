@@ -172,7 +172,6 @@ export default function Home() {
     entries.forEach(({ sound, id, name }) => {
       if (id === null) {
         sound.stop();
-        sound.unload();
         return;
       }
 
@@ -191,7 +190,6 @@ export default function Home() {
         curve: fadeConfig.fadeOutCurve,
         onComplete: () => {
           sound.stop(id);
-          sound.unload();
         },
       });
     });
@@ -381,32 +379,26 @@ export default function Home() {
 
   const stopForestHowls = () => {
     stopHowlEntries(forestHowlsRef.current, "forest");
-    forestHowlsRef.current = [];
   };
 
   const stopWaveHowls = () => {
     stopHowlEntries(waveHowlsRef.current, "wave");
-    waveHowlsRef.current = [];
   };
 
   const stopRiverHowls = () => {
     stopHowlEntries(riverHowlsRef.current, "river");
-    riverHowlsRef.current = [];
   };
 
   const stopRainHowls = () => {
     stopHowlEntries(rainHowlsRef.current, "rain");
-    rainHowlsRef.current = [];
   };
 
   const stopBonfireHowls = () => {
     stopHowlEntries(bonfireHowlsRef.current, "bonfire");
-    bonfireHowlsRef.current = [];
   };
 
   const stopCaveHowls = () => {
     stopHowlEntries(caveHowlsRef.current, "cave");
-    caveHowlsRef.current = [];
   };
 
   const prepareForestHowls = () => {
