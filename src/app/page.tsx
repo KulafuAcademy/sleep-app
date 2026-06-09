@@ -281,7 +281,7 @@ export default function Home() {
     fadeInMs: 300,
     fadeOutMs: 1800,
     fadeInCurve: 0.35,
-    fadeOutCurve: 0.25,
+    fadeOutCurve: 1,
   };
 
   // =====================================================
@@ -297,42 +297,42 @@ export default function Home() {
       fadeInMs: 300,
       fadeOutMs: 1800,
       fadeInCurve: 0.35,
-      fadeOutCurve: 0.25,
+      fadeOutCurve: 1,
     },
 
     rain: {
       fadeInMs: 300,
       fadeOutMs: 1800,
       fadeInCurve: 0.35,
-      fadeOutCurve: 0.25,
+      fadeOutCurve: 1,
     },
 
     river: {
       fadeInMs: 300,
       fadeOutMs: 1800,
       fadeInCurve: 0.35,
-      fadeOutCurve: 0.25,
+      fadeOutCurve: 1,
     },
 
     forest: {
       fadeInMs: 300,
       fadeOutMs: 1800,
       fadeInCurve: 0.35,
-      fadeOutCurve: 0.25,
+      fadeOutCurve: 1,
     },
 
     bonfire: {
       fadeInMs: 300,
       fadeOutMs: 1800,
       fadeInCurve: 0.35,
-      fadeOutCurve: 0.25,
+      fadeOutCurve: 1,
     },
 
     cave: {
       fadeInMs: 300,
       fadeOutMs: 1800,
       fadeInCurve: 0.35,
-      fadeOutCurve: 0.25,
+      fadeOutCurve: 1,
     },
   };
 
