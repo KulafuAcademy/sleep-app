@@ -592,6 +592,8 @@ export default function Home() {
 
         const targetVolume = forestVolMap[entry.name] ?? 0;
 
+        const fadeConfig = getActiveFadeConfig("forest");
+
         const key = getFadeKey("forest", entry.name);
 
         fadeHowlVolume({
@@ -600,8 +602,8 @@ export default function Home() {
           id,
           from: 0,
           to: targetVolume,
-          duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
+          duration: fadeConfig.fadeInMs,
+          curve: fadeConfig.fadeInCurve,
         });
       });
 
@@ -623,6 +625,8 @@ export default function Home() {
 
         const targetVolume = waveVolMap[entry.name] ?? 0;
 
+        const fadeConfig = getActiveFadeConfig("wave");
+
         const key = getFadeKey("wave", entry.name);
 
         fadeHowlVolume({
@@ -631,8 +635,8 @@ export default function Home() {
           id,
           from: 0,
           to: targetVolume,
-          duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
+          duration: fadeConfig.fadeInMs,
+          curve: fadeConfig.fadeInCurve,
         });
       });
 
@@ -654,6 +658,8 @@ export default function Home() {
 
         const targetVolume = riverVolMap[entry.name] ?? 0;
 
+        const fadeConfig = getActiveFadeConfig("river");
+
         const key = getFadeKey("river", entry.name);
 
         fadeHowlVolume({
@@ -662,8 +668,8 @@ export default function Home() {
           id,
           from: 0,
           to: targetVolume,
-          duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
+          duration: fadeConfig.fadeInMs,
+          curve: fadeConfig.fadeInCurve,
         });
       });
 
@@ -685,6 +691,8 @@ export default function Home() {
 
         const targetVolume = rainVolMap[entry.name] ?? 0;
 
+        const fadeConfig = getActiveFadeConfig("rain");
+
         const key = getFadeKey("rain", entry.name);
 
         fadeHowlVolume({
@@ -693,8 +701,8 @@ export default function Home() {
           id,
           from: 0,
           to: targetVolume,
-          duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
+          duration: fadeConfig.fadeInMs,
+          curve: fadeConfig.fadeInCurve,
         });
       });
 
@@ -716,6 +724,8 @@ export default function Home() {
 
         const targetVolume = bonfireVolMap[entry.name] ?? 0;
 
+        const fadeConfig = getActiveFadeConfig("bonfire");
+
         const key = getFadeKey("bonfire", entry.name);
 
         fadeHowlVolume({
@@ -724,8 +734,8 @@ export default function Home() {
           id,
           from: 0,
           to: targetVolume,
-          duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
+          duration: fadeConfig.fadeInMs,
+          curve: fadeConfig.fadeInCurve,
         });
       });
 
@@ -747,6 +757,8 @@ export default function Home() {
 
         const targetVolume = caveVolMap[entry.name] ?? 0;
 
+        const fadeConfig = getActiveFadeConfig("cave");
+
         const key = getFadeKey("cave", entry.name);
 
         fadeHowlVolume({
@@ -755,8 +767,8 @@ export default function Home() {
           id,
           from: 0,
           to: targetVolume,
-          duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
+          duration: fadeConfig.fadeInMs,
+          curve: fadeConfig.fadeInCurve,
         });
       });
 
