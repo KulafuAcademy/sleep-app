@@ -174,7 +174,7 @@ export default function Home() {
         from: safeVolume,
         to: 0,
         duration: fadeConfig.fadeOutMs,
-        curve: fadeConfig.curve,
+        curve: fadeConfig.fadeOutCurve,
         onComplete: () => {
           sound.stop(id);
           sound.unload();
@@ -254,19 +254,22 @@ export default function Home() {
   type FadeConfig = {
     fadeInMs: number;
     fadeOutMs: number;
-    curve: number;
+    fadeInCurve: number;
+    fadeOutCurve: number;
   };
 
   const FADE_CONFIG_DESKTOP = {
     fadeInMs: 450,
     fadeOutMs: 1800,
-    curve: 0.75,
+    fadeInCurve: 0.75,
+    fadeOutCurve: 0.75,
   };
 
   const FADE_CONFIG_MOBILE = {
     fadeInMs: 450,
     fadeOutMs: 2600,
-    curve: 0.45,
+    fadeInCurve: 0.45,
+    fadeOutCurve: 0.45,
   };
 
   // =====================================================
@@ -281,7 +284,8 @@ export default function Home() {
     wave: {
       fadeInMs: 450,
       fadeOutMs: 2600,
-      curve: 0.45,
+      fadeInCurve: 0.45,
+      fadeOutCurve: 0.45,
     },
 
     rain: {
@@ -294,25 +298,29 @@ export default function Home() {
     river: {
       fadeInMs: 450,
       fadeOutMs: 2600,
-      curve: 0.45,
+      fadeInCurve: 0.45,
+      fadeOutCurve: 0.45,
     },
 
     forest: {
       fadeInMs: 450,
       fadeOutMs: 2600,
-      curve: 0.45,
+      fadeInCurve: 0.45,
+      fadeOutCurve: 0.45,
     },
 
     bonfire: {
       fadeInMs: 450,
       fadeOutMs: 2600,
-      curve: 0.45,
+      fadeInCurve: 0.45,
+      fadeOutCurve: 0.45,
     },
 
     cave: {
       fadeInMs: 450,
       fadeOutMs: 2600,
-      curve: 0.45,
+      fadeInCurve: 0.45,
+      fadeOutCurve: 0.45,
     },
   };
 
@@ -593,7 +601,7 @@ export default function Home() {
           from: 0,
           to: targetVolume,
           duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.curve,
+          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
         });
       });
 
@@ -624,7 +632,7 @@ export default function Home() {
           from: 0,
           to: targetVolume,
           duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.curve,
+          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
         });
       });
 
@@ -655,7 +663,7 @@ export default function Home() {
           from: 0,
           to: targetVolume,
           duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.curve,
+          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
         });
       });
 
@@ -686,7 +694,7 @@ export default function Home() {
           from: 0,
           to: targetVolume,
           duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.curve,
+          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
         });
       });
 
@@ -717,7 +725,7 @@ export default function Home() {
           from: 0,
           to: targetVolume,
           duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.curve,
+          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
         });
       });
 
@@ -748,7 +756,7 @@ export default function Home() {
           from: 0,
           to: targetVolume,
           duration: ACTIVE_FADE_CONFIG.fadeInMs,
-          curve: ACTIVE_FADE_CONFIG.curve,
+          curve: ACTIVE_FADE_CONFIG.fadeInCurve,
         });
       });
 
@@ -1202,7 +1210,7 @@ export default function Home() {
           from: 0,
           to: targetVolume,
           duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.curve,
+          curve: fadeConfig.fadeInCurve,
         });
       });
     }
