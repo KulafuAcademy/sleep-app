@@ -286,8 +286,9 @@ export default function Home() {
 
     rain: {
       fadeInMs: 80,
-      fadeOutMs: 300,
-      curve: 0.2,
+      fadeOutMs: 1200,
+      fadeInCurve: 0.15,
+      fadeOutCurve: 1.4,
     },
 
     river: {
