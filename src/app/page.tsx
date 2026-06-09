@@ -571,24 +571,24 @@ export default function Home() {
     const a1 = new Audio(`/sound/${folder}/v1/a1.wav`);
     const b1 = new Audio(`/sound/${folder}/v1/b1.wav`);
     const c1 = new Audio(`/sound/${folder}/v1/c1.wav`);
-
+    
     if (folder === "forest") {
       a1.addEventListener("loadedmetadata", () => {
         a1.currentTime = 23;
       });
-
+    
       b1.addEventListener("loadedmetadata", () => {
         b1.currentTime = 71;
       });
-
+    
       c1.addEventListener("loadedmetadata", () => {
         c1.currentTime = 41;
       });
     }
-
+    
     let a2: HTMLAudioElement | null = null;
     let a3: HTMLAudioElement | null = null;
-
+    
     const audios: HTMLAudioElement[] = [a1, b1, c1];
 
     if (folder === "forest") {
@@ -900,7 +900,7 @@ export default function Home() {
     setIsTimerRunning(true);
 
     if (isPlaying) {
-  pauseWaveLayerTestImmediately();
+      pauseWaveLayerTestImmediately();
      }
 
     playWaveLayerTest();
