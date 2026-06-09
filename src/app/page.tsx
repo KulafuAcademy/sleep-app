@@ -138,6 +138,14 @@ export default function Home() {
 
       sound.volume(nextVolume, id);
 
+      if (to === 0 && key.startsWith("rain:")) {
+        console.log("[rain fadeOut]", {
+          key,
+          progress,
+          nextVolume,
+        });
+      }
+
       if (progress < 1) {
         job.frameId = requestAnimationFrame(tick);
         return;
