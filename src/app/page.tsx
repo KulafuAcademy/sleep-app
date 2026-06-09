@@ -175,8 +175,13 @@ export default function Home() {
         return;
       }
 
-      const currentVolume = Number(sound.volume(id));
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
+      const volMap =
+        ACTIVE_VOLUME_MAP[category as keyof typeof ACTIVE_VOLUME_MAP];
+
+      const baseVolume =
+        volMap && name in volMap ? volMap[name as keyof typeof volMap] : 0;
+
+      const safeVolume = Number(baseVolume);
 
       const fadeConfig = getActiveFadeConfig(category);
 
@@ -185,7 +190,7 @@ export default function Home() {
         sound,
         id,
         from: safeVolume,
-        to: 1,
+        to: 0,
         duration: fadeConfig.fadeOutMs,
         curve: fadeConfig.fadeOutCurve,
         onComplete: () => {
@@ -294,45 +299,45 @@ export default function Home() {
 
   const FADE_CONFIG_MOBILE_BY_SOUND = {
     wave: {
-  fadeInMs: 300,
-  fadeOutMs: 1800,
-  fadeInCurve: 0.35,
-  fadeOutCurve: 0.25,
+      fadeInMs: 300,
+      fadeOutMs: 1800,
+      fadeInCurve: 0.35,
+      fadeOutCurve: 0.25,
     },
 
     rain: {
-  fadeInMs: 300,
-  fadeOutMs: 1800,
-  fadeInCurve: 0.35,
-  fadeOutCurve: 0.25,
+      fadeInMs: 300,
+      fadeOutMs: 1800,
+      fadeInCurve: 0.35,
+      fadeOutCurve: 0.25,
     },
 
     river: {
-  fadeInMs: 300,
-  fadeOutMs: 1800,
-  fadeInCurve: 0.35,
-  fadeOutCurve: 0.25,
+      fadeInMs: 300,
+      fadeOutMs: 1800,
+      fadeInCurve: 0.35,
+      fadeOutCurve: 0.25,
     },
 
     forest: {
-  fadeInMs: 300,
-  fadeOutMs: 1800,
-  fadeInCurve: 0.35,
-  fadeOutCurve: 0.25,
+      fadeInMs: 300,
+      fadeOutMs: 1800,
+      fadeInCurve: 0.35,
+      fadeOutCurve: 0.25,
     },
 
     bonfire: {
-  fadeInMs: 300,
-  fadeOutMs: 1800,
-  fadeInCurve: 0.35,
-  fadeOutCurve: 0.25,
+      fadeInMs: 300,
+      fadeOutMs: 1800,
+      fadeInCurve: 0.35,
+      fadeOutCurve: 0.25,
     },
 
     cave: {
-  fadeInMs: 300,
-  fadeOutMs: 1800,
-  fadeInCurve: 0.35,
-  fadeOutCurve: 0.25,
+      fadeInMs: 300,
+      fadeOutMs: 1800,
+      fadeInCurve: 0.35,
+      fadeOutCurve: 0.25,
     },
   };
 
