@@ -289,10 +289,10 @@ export default function Home() {
     },
 
     rain: {
-      fadeInMs: 0,
-      fadeOutMs: 2500,
-      fadeInCurve: 0.01,
-      fadeOutCurve: 2.0,
+      fadeInMs: 40,
+      fadeOutMs: 1200,
+      fadeInCurve: 0.05,
+      fadeOutCurve: 0.45,
     },
 
     river: {
