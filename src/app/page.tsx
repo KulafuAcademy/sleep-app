@@ -899,7 +899,7 @@ export default function Home() {
     setTimeLeft(minutes * 60 - 1);
     setIsTimerRunning(true);
 
-    pauseWaveLayerTestImmediately();
+    //pauseWaveLayerTestImmediately();
     playWaveLayerTest();
     setIsPlaying(true);
   };
