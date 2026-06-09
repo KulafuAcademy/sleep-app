@@ -278,10 +278,10 @@ export default function Home() {
   };
 
   const FADE_CONFIG_MOBILE = {
-    fadeInMs: 0,
-    fadeOutMs: 0,
-    fadeInCurve: 1,
-    fadeOutCurve: 1,
+    fadeInMs: 300,
+    fadeOutMs: 600,
+    fadeInCurve: 0.35,
+    fadeOutCurve: 0.45,
   };
 
   // =====================================================
@@ -294,45 +294,45 @@ export default function Home() {
 
   const FADE_CONFIG_MOBILE_BY_SOUND = {
     wave: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
+  fadeInMs: 300,
+  fadeOutMs: 600,
+  fadeInCurve: 0.35,
+  fadeOutCurve: 0.45,
     },
 
     rain: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
+  fadeInMs: 300,
+  fadeOutMs: 600,
+  fadeInCurve: 0.35,
+  fadeOutCurve: 0.45,
     },
 
     river: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
+  fadeInMs: 300,
+  fadeOutMs: 600,
+  fadeInCurve: 0.35,
+  fadeOutCurve: 0.45,
     },
 
     forest: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
+  fadeInMs: 300,
+  fadeOutMs: 600,
+  fadeInCurve: 0.35,
+  fadeOutCurve: 0.45,
     },
 
     bonfire: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
+  fadeInMs: 300,
+  fadeOutMs: 600,
+  fadeInCurve: 0.35,
+  fadeOutCurve: 0.45,
     },
 
     cave: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
+  fadeInMs: 300,
+  fadeOutMs: 600,
+  fadeInCurve: 0.35,
+  fadeOutCurve: 0.45,
     },
   };
 
@@ -619,8 +619,6 @@ export default function Home() {
     if (!selectedSound) return;
 
     const folder = selectedSound.toLowerCase();
-
-
 
     if (folder === "forest") {
       if (forestHowlsRef.current.length === 0) {
