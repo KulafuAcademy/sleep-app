@@ -2149,6 +2149,28 @@ export default function Home() {
     );
   }
 
+  if (screen === "info") {
+    return (
+      <div
+        style={hibikiShellStyle}
+        className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
+          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
+      >
+        <div className="text-center">
+          <button
+            onClick={() => setScreen("select")}
+            className="mb-8 text-sm text-white/60"
+          >
+            ← Back
+          </button>
+
+          <h1 className="text-3xl font-semibold">INFO PAGE</h1>
+        </div>
+      </div>
+    );
+  }
+
   if (screen === "player") {
     return (
       <div
