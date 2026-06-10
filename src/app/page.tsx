@@ -1764,7 +1764,7 @@ export default function Home() {
         <div className="relative hibiki-card-stage">
           <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
             {/* 👇ここに追加（Backボタン） */}
-            <div className="px-6 pt-6">
+            <div className="flex justify-between px-6 pt-6">
               <button
                 onClick={() => {
                   pauseWaveLayerTestImmediately();
@@ -1790,6 +1790,13 @@ export default function Home() {
                 className="text-sm text-white/60"
               >
                 ← Back
+              </button>
+
+              <button
+                onClick={() => setScreen("info")}
+                className="text-sm text-white/45 transition hover:text-white/70"
+              >
+                Info →
               </button>
             </div>
 
@@ -1891,7 +1898,7 @@ export default function Home() {
       >
         <div className="relative hibiki-card-stage">
           <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
-            <div className="px-6 pt-6">
+            <div className="flex justify-between px-6 pt-6">
               <button
                 onClick={() => {
                   pauseWaveLayerTestImmediately();
@@ -1922,6 +1929,13 @@ export default function Home() {
                 className="text-sm text-white/60"
               >
                 ← Back
+              </button>
+
+              <button
+                onClick={() => setScreen("info")}
+                className="text-sm text-white/45 transition hover:text-white/70"
+              >
+                Info →
               </button>
             </div>
 
@@ -2187,7 +2201,7 @@ export default function Home() {
 
         <div className="relative z-10 mt-0 hibiki-card-stage">
           <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
-            <div className="px-6 pt-6">
+            <div className="flex justify-between px-6 pt-6">
               <button
                 onClick={() => {
                   pauseWaveLayerTestImmediately();
@@ -2203,6 +2217,13 @@ export default function Home() {
                 className="text-sm text-white/60"
               >
                 ← Back
+              </button>
+
+              <button
+                onClick={() => setScreen("info")}
+                className="text-sm text-white/45 transition hover:text-white/70"
+              >
+                Info →
               </button>
             </div>
 
