@@ -107,16 +107,28 @@ body {
 }
 
 :root {
-  --hibiki-card-scale: min(
-    1,
-    calc((100svh - 48px) / 740),
-    calc((100vw - 48px) / 384)
+  --hibiki-card-width: 384px;
+  --hibiki-card-height: 740px;
+  --hibiki-card-scale: max(
+    0.72,
+    min(
+      1,
+      calc((100svh - 48px) / 740),
+      calc((100vw - 48px) / 384)
+    )
   );
 }
 
+.hibiki-card-stage {
+  width: calc(var(--hibiki-card-width) * var(--hibiki-card-scale));
+  height: calc(var(--hibiki-card-height) * var(--hibiki-card-scale));
+  position: relative;
+  flex: 0 0 auto;
+}
+
 .hibiki-responsive-card {
-  width: min(384px, calc(100vw - 48px));
-  height: 740px;
+  width: var(--hibiki-card-width);
+  height: var(--hibiki-card-height);
   transform: scale(var(--hibiki-card-scale));
-  transform-origin: center;
+  transform-origin: top left;
 }

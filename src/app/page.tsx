@@ -1575,7 +1575,7 @@ export default function Home() {
   if (screen === "select") {
     return (
       <div
-        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden  ${
+        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
@@ -1603,11 +1603,11 @@ export default function Home() {
         <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
         */}
-
-        <div
-          className="relative z-10 mt-0 hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden"
-        >
-          <div className="px-6 pt-6">
+  
+         <div className="relative z-10 mt-0 hibiki-card-stage">
+          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+           <div className="px-6 pt-6">
+        
             <button className="text-sm text-white/0 select-none pointer-events-none">
               ← Back
             </button>
@@ -1695,6 +1695,7 @@ export default function Home() {
                 </p>
               </div>
             </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1704,13 +1705,12 @@ export default function Home() {
   if (screen === "soundscape") {
     return (
       <div
-        className={`hibiki-scroll-shell min-h-screen max-md:portrait:min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-hidden ${
+        className={`hibiki-scroll-shell min-h-screen max-md:portrait:min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
-        <div
-          className="relative hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden"
-        >
+        <div className="relative hibiki-card-stage">
+         <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
           {/* 👇ここに追加（Backボタン） */}
           <div className="px-6 pt-6">
             <button
@@ -1821,6 +1821,7 @@ export default function Home() {
                   Continue
                 </button>
               )}
+              </div>
             </div>
           </div>
         </div>
@@ -1831,13 +1832,12 @@ export default function Home() {
   if (screen === "soundscapeEdit") {
     return (
       <div
-        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-hidden ${
+        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
-        <div
-          className="relative hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden"
-        >
+        <div className="relative hibiki-card-stage">
+         <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
           <div className="px-6 pt-6">
             <button
               onClick={() => {
@@ -2047,6 +2047,7 @@ export default function Home() {
                       </span>
                     )}
                   </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2074,7 +2075,7 @@ export default function Home() {
   if (screen === "player") {
     return (
       <div
-        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden ${
+        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 px-6 py-0 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
@@ -2084,9 +2085,8 @@ export default function Home() {
           </>
         )}
 
-        <div
-          className="relative z-10 mt-0 hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden"
-        >
+        <div className="relative z-10 mt-0 hibiki-card-stage">
+         <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
           <div className="px-6 pt-6">
             <button
               onClick={() => {
@@ -2441,6 +2441,7 @@ export default function Home() {
                   </div>
                 </div>
               )}
+             </div> 
             </div>
           </div>
         </div>
