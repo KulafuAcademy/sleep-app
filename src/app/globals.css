@@ -109,19 +109,14 @@ body {
 :root {
   --hibiki-card-width: 384px;
   --hibiki-card-height: 740px;
-  --hibiki-card-scale: max(
-    0.64,
-    min(
-      1,
-      calc((100svh - 132px) / 740),
-      calc((100vw - 48px) / 384)
-    )
-  );
+  --hibiki-card-scale: 1;
+  --hibiki-stage-width: 384px;
+  --hibiki-stage-height: 740px;
 }
 
 .hibiki-card-stage {
-  width: calc(var(--hibiki-card-width) * var(--hibiki-card-scale));
-  height: calc(var(--hibiki-card-height) * var(--hibiki-card-scale));
+  width: var(--hibiki-stage-width);
+  height: var(--hibiki-stage-height);
   position: relative;
   flex: 0 0 auto;
 }
@@ -131,10 +126,4 @@ body {
   height: var(--hibiki-card-height);
   transform: scale(var(--hibiki-card-scale));
   transform-origin: top left;
-}
-
-.hibiki-scroll-shell {
-  box-sizing: border-box;
-  padding-top: max(24px, env(safe-area-inset-top));
-  padding-bottom: max(24px, env(safe-area-inset-bottom));
 }

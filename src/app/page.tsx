@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, type CSSProperties } from "react";
 import {
   CloudRain,
   Waves,
@@ -620,8 +620,6 @@ export default function Home() {
 
     const folder = selectedSound.toLowerCase();
 
-
-
     if (folder === "forest") {
       if (forestHowlsRef.current.length === 0) {
         prepareForestHowls();
@@ -1008,6 +1006,49 @@ export default function Home() {
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
   const [isSafariBrowser, setIsSafariBrowser] = useState(false);
+
+  const [cardScale, setCardScale] = useState(1);
+
+  useEffect(() => {
+    const updateCardScale = () => {
+      const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+
+      const viewportHeight =
+        window.visualViewport?.height ?? window.innerHeight;
+
+      const scaleByWidth = (viewportWidth - 48) / 384;
+      const scaleByHeight = (viewportHeight - 96) / 740;
+
+      const nextScale = Math.max(
+        0.56,
+        Math.min(1, scaleByWidth, scaleByHeight),
+      );
+
+      setCardScale(nextScale);
+    };
+
+    updateCardScale();
+
+    window.addEventListener("resize", updateCardScale);
+    window.visualViewport?.addEventListener("resize", updateCardScale);
+
+    return () => {
+      window.removeEventListener("resize", updateCardScale);
+      window.visualViewport?.removeEventListener("resize", updateCardScale);
+    };
+  }, []);
+
+  type HibikiShellStyle = CSSProperties & {
+    "--hibiki-card-scale": number;
+    "--hibiki-stage-width": string;
+    "--hibiki-stage-height": string;
+  };
+
+  const hibikiShellStyle: HibikiShellStyle = {
+    "--hibiki-card-scale": cardScale,
+    "--hibiki-stage-width": `${384 * cardScale}px`,
+    "--hibiki-stage-height": `${740 * cardScale}px`,
+  };
 
   useEffect(() => {
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -1575,6 +1616,7 @@ export default function Home() {
   if (screen === "select") {
     return (
       <div
+        style={hibikiShellStyle}
         className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
@@ -1603,98 +1645,97 @@ export default function Home() {
         <div className="absolute w-[500px] h-[500px] bg-white/4 rounded-full blur-3xl top-[-100px] left-[-100px]" />
         <div className="absolute w-[400px] h-[400px] bg-white/4 rounded-full blur-3xl bottom-[-120px] right-[-80px]" />
         */}
-  
-         <div className="relative z-10 mt-0 hibiki-card-stage">
+
+        <div className="relative z-10 mt-0 hibiki-card-stage">
           <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
-           <div className="px-6 pt-6">
-        
-            <button className="text-sm text-white/0 select-none pointer-events-none">
-              ← Back
-            </button>
-          </div>
-
-          <HibikiLogo />
-
-          <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight">
-                Choose Sound
-              </h1>
-
-              <p className="mt-2 text-sm leading-6 text-white/60">
-                Select your environment
-              </p>
-            </div>
-          </div>
-
-          <div className="px-6 pb-6">
-            <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
-              <div className="grid grid-cols-3 gap-4">
-                {sounds.map((item) => {
-                  const Icon = item.icon;
-                  const isSelected = selectedSound === item.name;
-
-                  return (
-                    <button
-                      key={item.name}
-                      onClick={() => handleSelectSound(item.name)}
-                      className="group flex flex-col items-center"
-                    >
-                      <div
-                        className={`flex h-20 w-20 items-center justify-center rounded-[22px] border backdrop-blur-md shadow-lg transition-all duration-200 ${
-                          isSelected
-                            ? "border-[#B8B8B8] bg-[#B8B8B8] scale-[1.01]"
-                            : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"
-                        }`}
-                      >
-                        <Icon
-                          className={`w-8 h-8 transition-all ${
-                            isSelected
-                              ? "text-[#111111] scale-110"
-                              : "text-white/60 group-hover:text-white"
-                          }`}
-                        />
-                      </div>
-                      <span
-                        className={`mt-2 text-xs ${
-                          isSelected ? "text-[#E8E8E8]" : "text-white/65"
-                        }`}
-                      >
-                        {item.name}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="px-6 pt-6">
+              <button className="text-sm text-white/0 select-none pointer-events-none">
+                ← Back
+              </button>
             </div>
 
-            <button
-              onClick={() => {
-                if (!selectedSound) return;
-                setScreen("player");
-              }}
-              className={`mt-6 w-full rounded-2xl border border-white/10 ${
-                selectedSound ? "bg-white/5" : "bg-white/5"
-              } backdrop-blur-md py-4 text-base font-medium text-white/60 transition-all duration-200 hover:bg-white/8 hover:scale-[1.03] active:bg-white/8 active:scale-[0.98]`}
-            >
-              {selectedSound
-                ? `Continue with ${selectedSound}`
-                : "Choose a sound"}
-            </button>
+            <HibikiLogo />
 
-            <button
-              onClick={() => setScreen("soundscape")}
-              className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center transition hover:bg-white/10"
-            >
+            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
               <div>
-                <p className="text-sm font-medium text-white/60">
-                  Create Soundscape
-                </p>
-                <p className="text-xs text-white/45">
-                  Build your own ambient world
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  Choose Sound
+                </h1>
+
+                <p className="mt-2 text-sm leading-6 text-white/60">
+                  Select your environment
                 </p>
               </div>
-            </button>
+            </div>
+
+            <div className="px-6 pb-6">
+              <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
+                <div className="grid grid-cols-3 gap-4">
+                  {sounds.map((item) => {
+                    const Icon = item.icon;
+                    const isSelected = selectedSound === item.name;
+
+                    return (
+                      <button
+                        key={item.name}
+                        onClick={() => handleSelectSound(item.name)}
+                        className="group flex flex-col items-center"
+                      >
+                        <div
+                          className={`flex h-20 w-20 items-center justify-center rounded-[22px] border backdrop-blur-md shadow-lg transition-all duration-200 ${
+                            isSelected
+                              ? "border-[#B8B8B8] bg-[#B8B8B8] scale-[1.01]"
+                              : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"
+                          }`}
+                        >
+                          <Icon
+                            className={`w-8 h-8 transition-all ${
+                              isSelected
+                                ? "text-[#111111] scale-110"
+                                : "text-white/60 group-hover:text-white"
+                            }`}
+                          />
+                        </div>
+                        <span
+                          className={`mt-2 text-xs ${
+                            isSelected ? "text-[#E8E8E8]" : "text-white/65"
+                          }`}
+                        >
+                          {item.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  if (!selectedSound) return;
+                  setScreen("player");
+                }}
+                className={`mt-6 w-full rounded-2xl border border-white/10 ${
+                  selectedSound ? "bg-white/5" : "bg-white/5"
+                } backdrop-blur-md py-4 text-base font-medium text-white/60 transition-all duration-200 hover:bg-white/8 hover:scale-[1.03] active:bg-white/8 active:scale-[0.98]`}
+              >
+                {selectedSound
+                  ? `Continue with ${selectedSound}`
+                  : "Choose a sound"}
+              </button>
+
+              <button
+                onClick={() => setScreen("soundscape")}
+                className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center transition hover:bg-white/10"
+              >
+                <div>
+                  <p className="text-sm font-medium text-white/60">
+                    Create Soundscape
+                  </p>
+                  <p className="text-xs text-white/45">
+                    Build your own ambient world
+                  </p>
+                </div>
+              </button>
             </div>
           </div>
         </div>
@@ -1705,122 +1746,123 @@ export default function Home() {
   if (screen === "soundscape") {
     return (
       <div
+        style={hibikiShellStyle}
         className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
         <div className="relative hibiki-card-stage">
-         <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
-          {/* 👇ここに追加（Backボタン） */}
-          <div className="px-6 pt-6">
-            <button
-              onClick={() => {
-                pauseWaveLayerTestImmediately();
+          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
+            {/* 👇ここに追加（Backボタン） */}
+            <div className="px-6 pt-6">
+              <button
+                onClick={() => {
+                  pauseWaveLayerTestImmediately();
 
-                setIsPlaying(false);
-                setIsTimerRunning(false);
-                setTimeLeft(0);
-                setSelectedTimer(null);
+                  setIsPlaying(false);
+                  setIsTimerRunning(false);
+                  setTimeLeft(0);
+                  setSelectedTimer(null);
 
-                setSelectedMixSounds([]);
+                  setSelectedMixSounds([]);
 
-                setMixVolumes({
-                  Rain: 0.5,
-                  Wave: 0.5,
-                  River: 0.5,
-                  Bonfire: 0.5,
-                  Forest: 0.5,
-                  Cave: 0.5,
-                });
+                  setMixVolumes({
+                    Rain: 0.5,
+                    Wave: 0.5,
+                    River: 0.5,
+                    Bonfire: 0.5,
+                    Forest: 0.5,
+                    Cave: 0.5,
+                  });
 
-                setScreen("select");
-              }}
-              className="text-sm text-white/60"
-            >
-              ← Back
-            </button>
-          </div>
-
-          {/* 👇タイトル */}
-          <HibikiLogo />
-
-          <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight">
-                Create Soundscape
-              </h1>
-
-              <p className="mt-2 text-sm leading-6 text-white/60">
-                Mix your own ambient world
-              </p>
-
-              <p className="mt-2 text-base text-[#D8D8D8]">
-                {selectedMixSounds.join(" + ")}
-              </p>
+                  setScreen("select");
+                }}
+                className="text-sm text-white/60"
+              >
+                ← Back
+              </button>
             </div>
-          </div>
 
-          {/* 👇サウンド選択 */}
-          <div className="px-6 pb-6">
-            <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
-              <p className="mb-4 text-xs text-white/40 text-center">
-                Choose up to 2 sounds
-              </p>
+            {/* 👇タイトル */}
+            <HibikiLogo />
 
-              <div className="grid grid-cols-3 gap-4">
-                {sounds.map((item) => {
-                  const Icon = item.icon;
-                  const isSelected = selectedMixSounds.includes(item.name);
+            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  Create Soundscape
+                </h1>
 
-                  return (
-                    <button
-                      key={item.name}
-                      onClick={() => toggleSound(item.name)}
-                      className="group flex flex-col items-center"
-                    >
-                      <div
-                        className={`flex h-20 w-20 items-center justify-center rounded-[22px] border backdrop-blur-md shadow-lg transition-all duration-200 ${
-                          isSelected
-                            ? "border-[#B8B8B8] bg-[#B8B8B8] scale-[1.01]"
-                            : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"
-                        }`}
-                      >
-                        <Icon
-                          className={`w-8 h-8 transition-all ${
-                            isSelected
-                              ? "text-[#111111] scale-110"
-                              : "text-white/60 group-hover:text-white"
-                          }`}
-                        />
-                      </div>
-                      <span
-                        className={`mt-2 text-xs ${
-                          isSelected ? "text-[#E8E8E8]" : "text-white/65"
-                        }`}
-                      >
-                        {item.name}
-                      </span>
-                    </button>
-                  );
-                })}
+                <p className="mt-2 text-sm leading-6 text-white/60">
+                  Mix your own ambient world
+                </p>
+
+                <p className="mt-2 text-base text-[#D8D8D8]">
+                  {selectedMixSounds.join(" + ")}
+                </p>
               </div>
+            </div>
 
-              {selectedMixSounds.length === 2 && (
-                <button
-                  onClick={() => {
-                    setMixVolumes((prev) => ({
-                      ...prev,
-                      [selectedMixSounds[0]]: 0.5,
-                      [selectedMixSounds[1]]: 0.5,
-                    }));
+            {/* 👇サウンド選択 */}
+            <div className="px-6 pb-6">
+              <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
+                <p className="mb-4 text-xs text-white/40 text-center">
+                  Choose up to 2 sounds
+                </p>
 
-                    setScreen("soundscapeEdit");
-                  }}
-                  className="mt-6 w-full rounded-2xl border border-[#40444D] bg-[#2A2D33] py-4 text-base font-medium text-[#D8D8D8] shadow-lg shadow-black/20 transition hover:bg-[#343842]"
-                >
-                  Continue
-                </button>
-              )}
+                <div className="grid grid-cols-3 gap-4">
+                  {sounds.map((item) => {
+                    const Icon = item.icon;
+                    const isSelected = selectedMixSounds.includes(item.name);
+
+                    return (
+                      <button
+                        key={item.name}
+                        onClick={() => toggleSound(item.name)}
+                        className="group flex flex-col items-center"
+                      >
+                        <div
+                          className={`flex h-20 w-20 items-center justify-center rounded-[22px] border backdrop-blur-md shadow-lg transition-all duration-200 ${
+                            isSelected
+                              ? "border-[#B8B8B8] bg-[#B8B8B8] scale-[1.01]"
+                              : "border-white/10 bg-white/5 group-hover:scale-[1.03] group-hover:bg-white/8"
+                          }`}
+                        >
+                          <Icon
+                            className={`w-8 h-8 transition-all ${
+                              isSelected
+                                ? "text-[#111111] scale-110"
+                                : "text-white/60 group-hover:text-white"
+                            }`}
+                          />
+                        </div>
+                        <span
+                          className={`mt-2 text-xs ${
+                            isSelected ? "text-[#E8E8E8]" : "text-white/65"
+                          }`}
+                        >
+                          {item.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {selectedMixSounds.length === 2 && (
+                  <button
+                    onClick={() => {
+                      setMixVolumes((prev) => ({
+                        ...prev,
+                        [selectedMixSounds[0]]: 0.5,
+                        [selectedMixSounds[1]]: 0.5,
+                      }));
+
+                      setScreen("soundscapeEdit");
+                    }}
+                    className="mt-6 w-full rounded-2xl border border-[#40444D] bg-[#2A2D33] py-4 text-base font-medium text-[#D8D8D8] shadow-lg shadow-black/20 transition hover:bg-[#343842]"
+                  >
+                    Continue
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -1832,221 +1874,246 @@ export default function Home() {
   if (screen === "soundscapeEdit") {
     return (
       <div
+        style={hibikiShellStyle}
         className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
         <div className="relative hibiki-card-stage">
-         <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
-          <div className="px-6 pt-6">
-            <button
-              onClick={() => {
-                pauseWaveLayerTestImmediately();
+          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
+            <div className="px-6 pt-6">
+              <button
+                onClick={() => {
+                  pauseWaveLayerTestImmediately();
 
-                stopSoundscape();
-                setIsSoundscapePlaying(false);
-                setIsSoundscapeTimerRunning(false);
-                setSoundscapeTimeLeft(0);
-                setSelectedSoundscapeTimer(null);
+                  stopSoundscape();
+                  setIsSoundscapePlaying(false);
+                  setIsSoundscapeTimerRunning(false);
+                  setSoundscapeTimeLeft(0);
+                  setSelectedSoundscapeTimer(null);
 
-                setIsPlaying(false);
-                setIsTimerRunning(false);
-                setTimeLeft(0);
-                setSelectedTimer(null);
+                  setIsPlaying(false);
+                  setIsTimerRunning(false);
+                  setTimeLeft(0);
+                  setSelectedTimer(null);
 
-                if (timerRef.current) {
-                  clearInterval(timerRef.current);
-                }
+                  if (timerRef.current) {
+                    clearInterval(timerRef.current);
+                  }
 
-                setMixVolumes((prev) => ({
-                  ...prev,
-                  [selectedMixSounds[0]]: 0.5,
-                  [selectedMixSounds[1]]: 0.5,
-                }));
+                  setMixVolumes((prev) => ({
+                    ...prev,
+                    [selectedMixSounds[0]]: 0.5,
+                    [selectedMixSounds[1]]: 0.5,
+                  }));
 
-                setScreen("soundscape");
-              }}
-              className="text-sm text-white/60"
-            >
-              ← Back
-            </button>
-          </div>
-
-          <HibikiLogo />
-
-          <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight">
-                Create Soundscape
-              </h1>
-
-              <p className="mt-2 text-base text-[#D8D8D8]">
-                {selectedMixSounds.join(" + ")}
-              </p>
+                  setScreen("soundscape");
+                }}
+                className="text-sm text-white/60"
+              >
+                ← Back
+              </button>
             </div>
-          </div>
 
-          <div className="px-6 pb-6">
-            <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-5">
-              <div className="text-sm text-white/75 text-center">
-                Mix your sound
+            <HibikiLogo />
+
+            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  Create Soundscape
+                </h1>
+
+                <p className="mt-2 text-base text-[#D8D8D8]">
+                  {selectedMixSounds.join(" + ")}
+                </p>
               </div>
-              {[...selectedMixSounds]
-                .sort(
-                  (a, b) =>
-                    sounds.findIndex((item) => item.name === a) -
-                    sounds.findIndex((item) => item.name === b),
-                )
-                .map((sound) => (
-                  <div key={sound}>
-                    <div className="mb-2 flex justify-between text-sm text-white/75">
-                      <span>{sound}</span>
-                      <span className="text-white/40">
-                        {Math.round(mixVolumes[sound] * 100)}%
-                      </span>
-                    </div>
-
-                    <input
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={mixVolumes[sound]}
-                      onChange={(e) => {
-                        updateMixVolume(sound, Number(e.target.value));
-                      }}
-                      className="hibiki-slider w-full"
-                    />
-                  </div>
-                ))}
             </div>
-            {/* 👇 Sleep Timer（ここに追加） */}
-            <div className="mt-6">
-              <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4">
+
+            <div className="px-6 pb-6">
+              <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-5">
                 <div className="text-sm text-white/75 text-center">
-                  Rest with this soundscape
+                  Mix your sound
                 </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    onClick={() => startSoundscapeTimer(30)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
-                  >
-                    {selectedSoundscapeTimer === 30 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(soundscapeTimeLeft)}
+                {[...selectedMixSounds]
+                  .sort(
+                    (a, b) =>
+                      sounds.findIndex((item) => item.name === a) -
+                      sounds.findIndex((item) => item.name === b),
+                  )
+                  .map((sound) => (
+                    <div key={sound}>
+                      <div className="mb-2 flex justify-between text-sm text-white/75">
+                        <span>{sound}</span>
+                        <span className="text-white/40">
+                          {Math.round(mixVolumes[sound] * 100)}%
                         </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">30m</span>
-                      </span>
-                    )}
-                  </button>
+                      </div>
 
-                  <button
-                    onClick={() => startSoundscapeTimer(60)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
-                  >
-                    {selectedSoundscapeTimer === 60 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(soundscapeTimeLeft)}
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">60m</span>
-                      </span>
-                    )}
-                  </button>
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={mixVolumes[sound]}
+                        onChange={(e) => {
+                          updateMixVolume(sound, Number(e.target.value));
+                        }}
+                        className="hibiki-slider w-full"
+                      />
+                    </div>
+                  ))}
+              </div>
+              {/* 👇 Sleep Timer（ここに追加） */}
+              <div className="mt-6">
+                <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4">
+                  <div className="text-sm text-white/75 text-center">
+                    Rest with this soundscape
+                  </div>
 
-                  <button
-                    onClick={() => startSoundscapeTimer(120)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
-                  >
-                    {selectedSoundscapeTimer === 120 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(soundscapeTimeLeft)}
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      onClick={() => startSoundscapeTimer(30)}
+                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                    >
+                      {selectedSoundscapeTimer === 30 &&
+                      soundscapeTimeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(soundscapeTimeLeft)}
+                          </span>
                         </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">2h</span>
-                      </span>
-                    )}
-                  </button>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">30m</span>
+                        </span>
+                      )}
+                    </button>
 
-                  <button
-                    onClick={() => startSoundscapeTimer(180)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
-                  >
-                    {selectedSoundscapeTimer === 180 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(soundscapeTimeLeft)}
+                    <button
+                      onClick={() => startSoundscapeTimer(60)}
+                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                    >
+                      {selectedSoundscapeTimer === 60 &&
+                      soundscapeTimeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(soundscapeTimeLeft)}
+                          </span>
                         </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">3h</span>
-                      </span>
-                    )}
-                  </button>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">60m</span>
+                        </span>
+                      )}
+                    </button>
 
-                  <button
-                    onClick={() => startSoundscapeTimer(360)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
-                  >
-                    {selectedSoundscapeTimer === 360 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(soundscapeTimeLeft)}
+                    <button
+                      onClick={() => startSoundscapeTimer(120)}
+                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                    >
+                      {selectedSoundscapeTimer === 120 &&
+                      soundscapeTimeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(soundscapeTimeLeft)}
+                          </span>
                         </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">6h</span>
-                      </span>
-                    )}
-                  </button>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">2h</span>
+                        </span>
+                      )}
+                    </button>
 
-                  <button
-                    onClick={() => startSoundscapeTimer(480)}
-                    className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
-                  >
-                    {selectedSoundscapeTimer === 480 &&
-                    soundscapeTimeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(soundscapeTimeLeft)}
+                    <button
+                      onClick={() => startSoundscapeTimer(180)}
+                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                    >
+                      {selectedSoundscapeTimer === 180 &&
+                      soundscapeTimeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(soundscapeTimeLeft)}
+                          </span>
                         </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">8h</span>
-                      </span>
-                    )}
-                  </button>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">3h</span>
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => startSoundscapeTimer(360)}
+                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                    >
+                      {selectedSoundscapeTimer === 360 &&
+                      soundscapeTimeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(soundscapeTimeLeft)}
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">6h</span>
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => startSoundscapeTimer(480)}
+                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                    >
+                      {selectedSoundscapeTimer === 480 &&
+                      soundscapeTimeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(soundscapeTimeLeft)}
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">8h</span>
+                        </span>
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -2073,12 +2140,13 @@ export default function Home() {
   }
 
   if (screen === "player") {
-    return (
-      <div
-        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-auto ${
-          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
-        }`}
-      >
+  return (
+    <div
+      style={hibikiShellStyle}
+      className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-auto ${
+        isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+      }`}
+    >
         {selectedSound && (
           <>
             <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
@@ -2086,45 +2154,45 @@ export default function Home() {
         )}
 
         <div className="relative z-10 mt-0 hibiki-card-stage">
-         <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
-          <div className="px-6 pt-6">
-            <button
-              onClick={() => {
-                pauseWaveLayerTestImmediately();
+          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="px-6 pt-6">
+              <button
+                onClick={() => {
+                  pauseWaveLayerTestImmediately();
 
-                setIsPlaying(false);
-                setIsTimerRunning(false);
-                setTimeLeft(0);
-                setSelectedTimer(null);
-                setSelectedSound(null);
+                  setIsPlaying(false);
+                  setIsTimerRunning(false);
+                  setTimeLeft(0);
+                  setSelectedTimer(null);
+                  setSelectedSound(null);
 
-                setScreen("select");
-              }}
-              className="text-sm text-white/60"
-            >
-              ← Back
-            </button>
-          </div>
+                  setScreen("select");
+                }}
+                className="text-sm text-white/60"
+              >
+                ← Back
+              </button>
+            </div>
 
-          <HibikiLogo />
+            <HibikiLogo />
 
-          <div className="px-6 pt-0 text-center">
-            <div className="flex min-h-[150px] items-center justify-center">
-              <div>
-                <h1 className="text-3xl font-semibold tracking-tight">
-                  {getSoundConfig().title}
-                </h1>
+            <div className="px-6 pt-0 text-center">
+              <div className="flex min-h-[150px] items-center justify-center">
+                <div>
+                  <h1 className="text-3xl font-semibold tracking-tight">
+                    {getSoundConfig().title}
+                  </h1>
 
-                <p className="mt-2 text-sm leading-6 text-white/60">
-                  {getSoundConfig().subtitle}
-                </p>
+                  <p className="mt-2 text-sm leading-6 text-white/60">
+                    {getSoundConfig().subtitle}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="px-6 pb-6">
-            <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
-              {/*
+            <div className="px-6 pb-6">
+              <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
+                {/*
             <button
               onClick={toggle}
               className="w-full rounded-2xl bg-gradient-to-r from-sky-300 to-indigo-400 py-4 text-base font-medium text-slate-900 shadow-lg shadow-sky-500/30 transition hover:scale-[1.02] active:scale-[0.98]"
@@ -2134,8 +2202,8 @@ export default function Home() {
 
           */}
 
-              {/* DEV ONLY: manual test trigger */}
-              {/* 
+                {/* DEV ONLY: manual test trigger */}
+                {/* 
             <button
             onClick={playChapu}
              className="mt-4 w-full rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm text-white/75"
@@ -2144,304 +2212,316 @@ export default function Home() {
             </button>
             */}
 
-              <div className="mt-5">
-                <div className="pb-8 text-sm text-white/75 text-center ">
-                  Rest with this sound
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      startSleepTimer(30);
-                    }}
-                    className={`rounded-xl border py-2.5 text-sm transition ${
-                      selectedTimer === 30 && timeLeft > 0
-                        ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                        : "border-white/10 bg-white/5 text-white/75"
-                    }`}
-                  >
-                    {selectedTimer === 30 && timeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(timeLeft)}
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">30m</span>
-                      </span>
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => startSleepTimer(60)}
-                    className={`rounded-xl border py-2.5 text-sm transition ${
-                      selectedTimer === 60 && timeLeft > 0
-                        ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                        : "border-white/10 bg-white/5 text-white/75"
-                    }`}
-                  >
-                    {selectedTimer === 60 && timeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(timeLeft)}
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">60m</span>
-                      </span>
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => startSleepTimer(120)}
-                    className={`rounded-xl border py-2.5 text-sm transition ${
-                      selectedTimer === 120 && timeLeft > 0
-                        ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                        : "border-white/10 bg-white/5 text-white/75"
-                    }`}
-                  >
-                    {selectedTimer === 120 && timeLeft > 0 ? (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Square size={8} fill="currentColor" strokeWidth={0} />
-                        <span className="text-xs leading-none">
-                          {formatTime(timeLeft)}
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                        <Play size={10} fill="currentColor" strokeWidth={0} />
-                        <span className="text-sm leading-none">2h</span>
-                      </span>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className="mt-2 grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => startSleepTimer(180)}
-                  className={`rounded-xl border py-2.5 text-sm transition ${
-                    selectedTimer === 180 && timeLeft > 0
-                      ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                      : "border-white/10 bg-white/5 text-white/75"
-                  }`}
-                >
-                  {selectedTimer === 180 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span className="text-xs leading-none">
-                        {formatTime(timeLeft)}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span className="text-sm leading-none">3h</span>
-                    </span>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => startSleepTimer(360)}
-                  className={`rounded-xl border py-2.5 text-sm transition ${
-                    selectedTimer === 360 && timeLeft > 0
-                      ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                      : "border-white/10 bg-white/5 text-white/75"
-                  }`}
-                >
-                  {selectedTimer === 360 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span className="text-xs leading-none">
-                        {formatTime(timeLeft)}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span className="text-sm leading-none">6h</span>
-                    </span>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => startSleepTimer(480)}
-                  className={`rounded-xl border py-2.5 text-sm transition ${
-                    selectedTimer === 480 && timeLeft > 0
-                      ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
-                      : "border-white/10 bg-white/5 text-white/75"
-                  }`}
-                >
-                  {selectedTimer === 480 && timeLeft > 0 ? (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Square size={8} fill="currentColor" strokeWidth={0} />
-                      <span className="text-xs leading-none">
-                        {formatTime(timeLeft)}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-1 whitespace-nowrap">
-                      <Play size={10} fill="currentColor" strokeWidth={0} />
-                      <span className="text-sm leading-none">8h</span>
-                    </span>
-                  )}
-                </button>
-              </div>
-
-              {false && (
-                <div className="mt-6 space-y-4 border border-red-500 p-4">
-                  <div>
-                    <div className="mb-2 flex justify-between text-sm text-white/75">
-                      <span>High Layer Level</span>
-                      <span className="text-white/40">
-                        {highLevel.toFixed(3)}
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="0.05"
-                      step="0.001"
-                      value={highLevel}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        setHighLevel(value);
-                        highLevelRef.current = value;
-                      }}
-                      className="w-full"
-                    />
+                <div className="mt-5">
+                  <div className="pb-8 text-sm text-white/75 text-center ">
+                    Rest with this sound
                   </div>
 
-                  <div>
-                    <div className="mb-2 flex justify-between text-sm text-white/75">
-                      <span>High Layer Frequency</span>
-                      <span className="text-white/40">{highFreq}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="400"
-                      max="5000"
-                      step="50"
-                      value={highFreq}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        setHighFreq(value);
-                        highFreqRef.current = value;
-                      }}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <div className="mb-2 flex justify-between text-sm text-white/75">
-                      <span>Splash Chance</span>
-                      <span className="text-white/40">
-                        {splashChance.toFixed(2)}
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={splashChance}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        setSplashChance(value);
-                        splashChanceRef.current = value;
-                      }}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div>
-                    <div className="mb-2 flex justify-between text-sm text-white/75">
-                      <span>Splash Length</span>
-                      <span className="text-white/40">{splashLength}ms</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="5"
-                      max="100"
-                      step="1"
-                      value={splashLength}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        setSplashLength(value);
-                        splashLengthRef.current = value;
-                      }}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {process.env.NODE_ENV === "development" && (
-                <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
-                  <div className="mb-2 text-xs text-yellow-200">
-                    Debug Time: {debugTimeSec}s /{" "}
-                    {Math.floor(debugTimeSec / 3600)}:
-                    {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(
-                      2,
-                      "0",
-                    )}
-                    :{String(debugTimeSec % 60).padStart(2, "0")}
-                  </div>
-
-                  <input
-                    type="range"
-                    min={0}
-                    max={28800}
-                    step={1}
-                    value={debugTimeSec}
-                    onChange={(e) => {
-                      const sec = Number(e.target.value);
-                      setDebugTimeSec(sec);
-                      jumpWaveToTime(sec);
-                    }}
-                    className="w-full"
-                  />
-
-                  <div className="mt-3 flex gap-2">
-                    <input
-                      type="number"
-                      min={0}
-                      max={28800}
-                      value={debugInputSec}
-                      onChange={(e) => setDebugInputSec(e.target.value)}
-                      placeholder="Enter seconds"
-                      className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
-                    />
-
+                  <div className="grid grid-cols-3 gap-2">
                     <button
                       type="button"
                       onClick={() => {
-                        const sec = Number(debugInputSec);
-                        if (Number.isNaN(sec)) return;
-
-                        setDebugTimeSec(sec);
-                        jumpWaveToTime(sec);
+                        startSleepTimer(30);
                       }}
-                      className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
+                      className={`rounded-xl border py-2.5 text-sm transition ${
+                        selectedTimer === 30 && timeLeft > 0
+                          ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                          : "border-white/10 bg-white/5 text-white/75"
+                      }`}
                     >
-                      Jump
+                      {selectedTimer === 30 && timeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(timeLeft)}
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">30m</span>
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => startSleepTimer(60)}
+                      className={`rounded-xl border py-2.5 text-sm transition ${
+                        selectedTimer === 60 && timeLeft > 0
+                          ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                          : "border-white/10 bg-white/5 text-white/75"
+                      }`}
+                    >
+                      {selectedTimer === 60 && timeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(timeLeft)}
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">60m</span>
+                        </span>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => startSleepTimer(120)}
+                      className={`rounded-xl border py-2.5 text-sm transition ${
+                        selectedTimer === 120 && timeLeft > 0
+                          ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                          : "border-white/10 bg-white/5 text-white/75"
+                      }`}
+                    >
+                      {selectedTimer === 120 && timeLeft > 0 ? (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Square
+                            size={8}
+                            fill="currentColor"
+                            strokeWidth={0}
+                          />
+                          <span className="text-xs leading-none">
+                            {formatTime(timeLeft)}
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                          <Play size={10} fill="currentColor" strokeWidth={0} />
+                          <span className="text-sm leading-none">2h</span>
+                        </span>
+                      )}
                     </button>
                   </div>
                 </div>
-              )}
-             </div> 
+
+                <div className="mt-2 grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => startSleepTimer(180)}
+                    className={`rounded-xl border py-2.5 text-sm transition ${
+                      selectedTimer === 180 && timeLeft > 0
+                        ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                        : "border-white/10 bg-white/5 text-white/75"
+                    }`}
+                  >
+                    {selectedTimer === 180 && timeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span className="text-xs leading-none">
+                          {formatTime(timeLeft)}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span className="text-sm leading-none">3h</span>
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => startSleepTimer(360)}
+                    className={`rounded-xl border py-2.5 text-sm transition ${
+                      selectedTimer === 360 && timeLeft > 0
+                        ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                        : "border-white/10 bg-white/5 text-white/75"
+                    }`}
+                  >
+                    {selectedTimer === 360 && timeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span className="text-xs leading-none">
+                          {formatTime(timeLeft)}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span className="text-sm leading-none">6h</span>
+                      </span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => startSleepTimer(480)}
+                    className={`rounded-xl border py-2.5 text-sm transition ${
+                      selectedTimer === 480 && timeLeft > 0
+                        ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
+                        : "border-white/10 bg-white/5 text-white/75"
+                    }`}
+                  >
+                    {selectedTimer === 480 && timeLeft > 0 ? (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Square size={8} fill="currentColor" strokeWidth={0} />
+                        <span className="text-xs leading-none">
+                          {formatTime(timeLeft)}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-1 whitespace-nowrap">
+                        <Play size={10} fill="currentColor" strokeWidth={0} />
+                        <span className="text-sm leading-none">8h</span>
+                      </span>
+                    )}
+                  </button>
+                </div>
+
+                {false && (
+                  <div className="mt-6 space-y-4 border border-red-500 p-4">
+                    <div>
+                      <div className="mb-2 flex justify-between text-sm text-white/75">
+                        <span>High Layer Level</span>
+                        <span className="text-white/40">
+                          {highLevel.toFixed(3)}
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="0.05"
+                        step="0.001"
+                        value={highLevel}
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          setHighLevel(value);
+                          highLevelRef.current = value;
+                        }}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="mb-2 flex justify-between text-sm text-white/75">
+                        <span>High Layer Frequency</span>
+                        <span className="text-white/40">{highFreq}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="400"
+                        max="5000"
+                        step="50"
+                        value={highFreq}
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          setHighFreq(value);
+                          highFreqRef.current = value;
+                        }}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="mb-2 flex justify-between text-sm text-white/75">
+                        <span>Splash Chance</span>
+                        <span className="text-white/40">
+                          {splashChance.toFixed(2)}
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={splashChance}
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          setSplashChance(value);
+                          splashChanceRef.current = value;
+                        }}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="mb-2 flex justify-between text-sm text-white/75">
+                        <span>Splash Length</span>
+                        <span className="text-white/40">{splashLength}ms</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="5"
+                        max="100"
+                        step="1"
+                        value={splashLength}
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          setSplashLength(value);
+                          splashLengthRef.current = value;
+                        }}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {process.env.NODE_ENV === "development" && (
+                  <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-3">
+                    <div className="mb-2 text-xs text-yellow-200">
+                      Debug Time: {debugTimeSec}s /{" "}
+                      {Math.floor(debugTimeSec / 3600)}:
+                      {String(Math.floor((debugTimeSec % 3600) / 60)).padStart(
+                        2,
+                        "0",
+                      )}
+                      :{String(debugTimeSec % 60).padStart(2, "0")}
+                    </div>
+
+                    <input
+                      type="range"
+                      min={0}
+                      max={28800}
+                      step={1}
+                      value={debugTimeSec}
+                      onChange={(e) => {
+                        const sec = Number(e.target.value);
+                        setDebugTimeSec(sec);
+                        jumpWaveToTime(sec);
+                      }}
+                      className="w-full"
+                    />
+
+                    <div className="mt-3 flex gap-2">
+                      <input
+                        type="number"
+                        min={0}
+                        max={28800}
+                        value={debugInputSec}
+                        onChange={(e) => setDebugInputSec(e.target.value)}
+                        placeholder="Enter seconds"
+                        className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const sec = Number(debugInputSec);
+                          if (Number.isNaN(sec)) return;
+
+                          setDebugTimeSec(sec);
+                          jumpWaveToTime(sec);
+                        }}
+                        className="rounded-lg border border-yellow-300/30 bg-yellow-400/20 px-3 py-2 text-sm text-yellow-100"
+                      >
+                        Jump
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
