@@ -2307,6 +2307,57 @@ export default function Home() {
                 <p className="mt-2 text-sm leading-6 text-white/60">
                   How HIBIKI handles information
                 </p>
+
+                <div className="mt-6 flex-1 overflow-y-auto px-6 pb-8">
+                  <div className="space-y-6 text-sm leading-7 text-white/75">
+                    <div>
+                      <h2 className="mb-2 text-base text-white">
+                        Information We Collect
+                      </h2>
+                      <p>
+                        HIBIKI does not require user accounts and does not
+                        collect personal information such as your name, email
+                        address, or phone number during normal use.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h2 className="mb-2 text-base text-white">Analytics</h2>
+                      <p>
+                        HIBIKI may use privacy-friendly analytics and hosting
+                        services to understand traffic and usage patterns.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h2 className="mb-2 text-base text-white">Cookies</h2>
+                      <p>
+                        HIBIKI may use essential cookies required for the
+                        operation of the website. We do not use cookies for
+                        advertising purposes.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h2 className="mb-2 text-base text-white">
+                        Third-Party Services
+                      </h2>
+                      <p>
+                        HIBIKI relies on third-party services for hosting and
+                        analytics. These services operate under their own
+                        privacy policies.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h2 className="mb-2 text-base text-white">Changes</h2>
+                      <p>
+                        This Privacy Policy may be updated from time to time.
+                        Any changes will be published on this page.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
