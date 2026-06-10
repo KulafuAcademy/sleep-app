@@ -2191,11 +2191,19 @@ export default function Home() {
 
             <HibikiLogo />
 
-            <div className="px-6 pb-8">
-              <h1 className="mb-8 text-center text-3xl font-semibold tracking-tight">
-                Information
-              </h1>
+            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  Information
+                </h1>
 
+                <p className="mt-2 text-sm leading-6 text-white/60">
+                  Privacy, Terms and Support
+                </p>
+              </div>
+            </div>
+
+            <div className="px-6 pb-8">
               <div className="grid grid-cols-3 gap-4">
                 <button className="flex flex-col items-center gap-2">
                   <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
