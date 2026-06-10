@@ -1668,7 +1668,7 @@ export default function Home() {
 
               <button
                 onClick={() => setScreen("info")}
-                className="text-sm text-white/45 transition hover:text-white/70"
+                className="text-sm text-white/60 transition hover:text-white/80"
               >
                 Info →
               </button>
@@ -1804,7 +1804,7 @@ export default function Home() {
 
               <button
                 onClick={() => setScreen("info")}
-                className="text-sm text-white/45 transition hover:text-white/70"
+                className="text-sm text-white/60 transition hover:text-white/80"
               >
                 Info →
               </button>
@@ -1943,7 +1943,7 @@ export default function Home() {
 
               <button
                 onClick={() => setScreen("info")}
-                className="text-sm text-white/45 transition hover:text-white/70"
+                className="text-sm text-white/60 transition hover:text-white/80"
               >
                 Info →
               </button>
@@ -2590,7 +2590,7 @@ export default function Home() {
 
               <button
                 onClick={() => setScreen("info")}
-                className="text-sm text-white/45 transition hover:text-white/70"
+                className="text-sm text-white/60 transition hover:text-white/80"
               >
                 Info →
               </button>
