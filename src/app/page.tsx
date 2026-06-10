@@ -2274,96 +2274,6 @@ export default function Home() {
   }
 
   if (screen === "privacy") {
-  return (
-    <div
-      style={hibikiShellStyle}
-      className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
-        isSafariBrowser ? "hibiki-safari-browser-shell" : ""
-      } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
-    >
-      <div className="relative z-10 mt-0 hibiki-card-stage">
-        <div className="hibiki-responsive-card flex flex-col rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
-          <div className="flex justify-between px-6 pt-6">
-            <button
-              onClick={() => setScreen("info")}
-              className="text-sm text-white/60 transition hover:text-white/80"
-            >
-              ← Back
-            </button>
-
-            <button className="text-sm text-white/0 select-none pointer-events-none">
-              Info →
-            </button>
-          </div>
-
-          <HibikiLogo />
-
-          <div className="px-6 text-center">
-            <h1 className="text-3xl font-semibold tracking-tight">
-              Privacy Policy
-            </h1>
-
-            <p className="mt-2 text-sm leading-6 text-white/60">
-              How HIBIKI handles information
-            </p>
-          </div>
-
-          <div className="mt-6 flex-1 overflow-y-auto px-6 pb-8 text-left">
-            <div className="space-y-6 text-sm leading-7 text-white/75">
-              <div>
-                <h2 className="mb-2 text-base text-white">
-                  Information We Collect
-                </h2>
-                <p>
-                  HIBIKI does not require user accounts and does not collect
-                  personal information such as your name, email address, or
-                  phone number during normal use.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-base text-white">Analytics</h2>
-                <p>
-                  HIBIKI may use privacy-friendly analytics and hosting services
-                  to understand traffic and usage patterns.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-base text-white">Cookies</h2>
-                <p>
-                  HIBIKI may use essential cookies required for the operation of
-                  the website. We do not use cookies for advertising purposes.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-base text-white">
-                  Third-Party Services
-                </h2>
-                <p>
-                  HIBIKI relies on third-party services for hosting and
-                  analytics. These services operate under their own privacy
-                  policies.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-base text-white">Changes</h2>
-                <p>
-                  This Privacy Policy may be updated from time to time. Any
-                  changes will be published on this page.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-  if (screen === "terms") {
     return (
       <div
         style={hibikiShellStyle}
@@ -2372,7 +2282,7 @@ export default function Home() {
         } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
       >
         <div className="relative z-10 mt-0 hibiki-card-stage">
-          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+          <div className="hibiki-responsive-card flex flex-col rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
             <div className="flex justify-between px-6 pt-6">
               <button
                 onClick={() => setScreen("info")}
@@ -2388,15 +2298,245 @@ export default function Home() {
 
             <HibikiLogo />
 
-            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
-              <div>
-                <h1 className="text-3xl font-semibold tracking-tight">
-                  Terms of Use
-                </h1>
+            <div className="px-6 text-center">
+              <h1 className="text-3xl font-semibold tracking-tight">
+                Privacy Policy
+              </h1>
 
-                <p className="mt-2 text-sm leading-6 text-white/60">
-                  Terms for using HIBIKI
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                How HIBIKI handles information
+              </p>
+            </div>
+
+            <div className="mt-6 flex-1 overflow-y-auto px-6 pb-8 text-left">
+              <div className="space-y-6 text-sm leading-7 text-white/75">
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    Information We Collect
+                  </h2>
+                  <p>
+                    HIBIKI does not require user accounts and does not collect
+                    personal information such as your name, email address, or
+                    phone number during normal use.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">Analytics</h2>
+                  <p>
+                    HIBIKI may use privacy-friendly analytics and hosting
+                    services to understand traffic and usage patterns.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">Cookies</h2>
+                  <p>
+                    HIBIKI may use essential cookies required for the operation
+                    of the website. We do not use cookies for advertising
+                    purposes.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    Third-Party Services
+                  </h2>
+                  <p>
+                    HIBIKI relies on third-party services for hosting and
+                    analytics. These services operate under their own privacy
+                    policies.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">Changes</h2>
+                  <p>
+                    This Privacy Policy may be updated from time to time. Any
+                    changes will be published on this page.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === "terms") {
+    return (
+      <div
+        style={hibikiShellStyle}
+        className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
+          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
+      >
+        <div className="relative z-10 mt-0 hibiki-card-stage">
+          <div className="hibiki-responsive-card flex flex-col rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="flex justify-between px-6 pt-6">
+              <button
+                onClick={() => setScreen("info")}
+                className="text-sm text-white/60 transition hover:text-white/80"
+              >
+                ← Back
+              </button>
+
+              <button className="text-sm text-white/0 select-none pointer-events-none">
+                Terms
+              </button>
+            </div>
+
+            <HibikiLogo />
+
+            <div className="px-6 text-center">
+              <h1 className="text-3xl font-semibold tracking-tight">
+                Terms of Use
+              </h1>
+
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                Last updated: June 2026
+              </p>
+            </div>
+
+            <div className="mt-6 flex-1 overflow-y-auto px-6 pb-8 text-left">
+              <div className="space-y-6 text-sm leading-7 text-white/75">
+                <p>Welcome to HIBIKI.</p>
+
+                <p>
+                  By accessing or using HIBIKI, you agree to these Terms of Use.
+                  If you do not agree with these terms, please do not use the
+                  service.
                 </p>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">1. About HIBIKI</h2>
+                  <p>
+                    HIBIKI is an ambient sound experience designed to provide a
+                    space for rest, relaxation, and focus.
+                  </p>
+                  <p className="mt-3">
+                    HIBIKI is provided for personal and non-commercial use only.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    2. No Medical Advice
+                  </h2>
+                  <p>
+                    HIBIKI is not a medical device and does not provide medical,
+                    psychological, or therapeutic advice.
+                  </p>
+                  <p className="mt-3">
+                    The sounds and content available through HIBIKI are intended
+                    for general wellness and personal enjoyment only.
+                  </p>
+                  <p className="mt-3">
+                    If you have concerns regarding your physical or mental
+                    health, please consult a qualified healthcare professional.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    3. Intellectual Property
+                  </h2>
+                  <p>
+                    All audio recordings, soundscapes, designs, logos, text, and
+                    other content provided through HIBIKI are protected by
+                    applicable intellectual property laws.
+                  </p>
+                  <p className="mt-3">
+                    You may not copy, reproduce, distribute, modify, sell, or
+                    create derivative works from any content without prior
+                    written permission.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    4. Acceptable Use
+                  </h2>
+                  <p>You agree not to:</p>
+                  <ul className="mt-3 list-disc pl-5">
+                    <li>Use HIBIKI for any unlawful purpose.</li>
+                    <li>Attempt to interfere with or disrupt the service.</li>
+                    <li>
+                      Reverse engineer, decompile, or attempt to access the
+                      source code of the service.
+                    </li>
+                    <li>
+                      Use automated systems to access the service in a manner
+                      that may damage or overload it.
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">5. Availability</h2>
+                  <p>
+                    HIBIKI is provided on an &quot;as is&quot; and &quot;as
+                    available&quot; basis.
+                  </p>
+                  <p className="mt-3">
+                    We do not guarantee that the service will always be
+                    available, uninterrupted, secure, or error-free.
+                  </p>
+                  <p className="mt-3">
+                    Features, content, and availability may change at any time
+                    without notice.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    6. Limitation of Liability
+                  </h2>
+                  <p>
+                    To the fullest extent permitted by law, HIBIKI and its
+                    creator shall not be liable for any indirect, incidental,
+                    special, consequential, or punitive damages arising from
+                    your use of the service.
+                  </p>
+                  <p className="mt-3">
+                    Your use of HIBIKI is at your own risk.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    7. Third-Party Services
+                  </h2>
+                  <p>
+                    HIBIKI may use or link to third-party services, platforms,
+                    or payment providers.
+                  </p>
+                  <p className="mt-3">
+                    We are not responsible for the content, policies, or
+                    practices of those third-party services.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">8. Termination</h2>
+                  <p>
+                    We reserve the right to suspend or terminate access to
+                    HIBIKI at any time if these Terms are violated or if the
+                    service is discontinued.
+                  </p>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    9. Changes to These Terms
+                  </h2>
+                  <p>These Terms of Use may be updated from time to time.</p>
+                  <p className="mt-3">
+                    Continued use of HIBIKI after changes become effective
+                    constitutes acceptance of the updated Terms.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
