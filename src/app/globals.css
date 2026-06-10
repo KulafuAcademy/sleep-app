@@ -128,9 +128,8 @@ body {
   transform-origin: top left;
 }
 
-@media (display-mode: standalone) {
-  .hibiki-scroll-shell {
-    padding-top: max(120px, env(safe-area-inset-top));
-    padding-bottom: 24px;
-  }
+.hibiki-pwa-shell {
+  align-items: flex-start !important;
+  padding-top: 96px !important;
+  padding-bottom: 24px !important;
 }

@@ -1006,6 +1006,7 @@ export default function Home() {
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
   const [isSafariBrowser, setIsSafariBrowser] = useState(false);
+  const [isStandaloneApp, setIsStandaloneApp] = useState(false);
 
   const [cardScale, setCardScale] = useState(1);
 
@@ -1057,6 +1058,8 @@ export default function Home() {
       window.matchMedia("(display-mode: standalone)").matches ||
       // @ts-expect-error iOS Safari standalone
       window.navigator.standalone === true;
+
+    setIsStandaloneApp(isStandalone);
 
     setIsSafariBrowser(isSafari && !isStandalone);
   }, []);
@@ -1619,7 +1622,7 @@ export default function Home() {
         style={hibikiShellStyle}
         className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
-        }`}
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
       >
         {/*
         {selectBackground === "wave-video" ? (
@@ -1749,7 +1752,7 @@ export default function Home() {
         style={hibikiShellStyle}
         className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
-        }`}
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
       >
         <div className="relative hibiki-card-stage">
           <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
@@ -1877,7 +1880,7 @@ export default function Home() {
         style={hibikiShellStyle}
         className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
-        }`}
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
       >
         <div className="relative hibiki-card-stage">
           <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden">
@@ -2140,13 +2143,13 @@ export default function Home() {
   }
 
   if (screen === "player") {
-  return (
-    <div
-      style={hibikiShellStyle}
-      className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-auto ${
-        isSafariBrowser ? "hibiki-safari-browser-shell" : ""
-      }`}
-    >
+    return (
+      <div
+        style={hibikiShellStyle}
+        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-auto ${
+          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
+      >
         {selectedSound && (
           <>
             <div className="absolute inset-0 bg-[#05070A]/88 md:bg-[#05070A]/60" />
