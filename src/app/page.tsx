@@ -2239,7 +2239,7 @@ export default function Home() {
                     <Heart size={28} className="text-white/60" />
                   </div>
 
-                  <span className="text-xs text-white/60">Donation</span>
+                  <span className="text-xs text-white/60">Support</span>
                 </button>
               </div>
             </div>
