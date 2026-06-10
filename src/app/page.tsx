@@ -52,8 +52,16 @@ export default function Home() {
   const [selectedTimer, setSelectedTimer] = useState<number | null>(null);
 
   const [soundscapeTimeLeft, setSoundscapeTimeLeft] = useState<number>(0);
-  const [isSoundscapeTimerRunning, setIsSoundscapeTimerRunning] =
-    useState(false);
+  const [screen, setScreen] = useState<
+    | "select"
+    | "player"
+    | "soundscape"
+    | "soundscapeEdit"
+    | "info"
+    | "privacy"
+    | "terms"
+  >("select");
+
   const [selectedSoundscapeTimer, setSelectedSoundscapeTimer] = useState<
     number | null
   >(null);
@@ -2205,7 +2213,10 @@ export default function Home() {
 
             <div className="px-6 pb-8">
               <div className="grid grid-cols-3 gap-4">
-                <button className="flex flex-col items-center gap-2">
+                <button
+                  onClick={() => setScreen("privacy")}
+                  className="flex flex-col items-center gap-2"
+                >
                   <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
                     <Shield size={28} className="text-white/60" />
                   </div>
@@ -2213,7 +2224,10 @@ export default function Home() {
                   <span className="text-xs text-white/60">Privacy</span>
                 </button>
 
-                <button className="flex flex-col items-center gap-2">
+                <button
+                  onClick={() => setScreen("terms")}
+                  className="flex flex-col items-center gap-2"
+                >
                   <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
                     <FileText size={28} className="text-white/60" />
                   </div>
@@ -2228,6 +2242,90 @@ export default function Home() {
 
                   <span className="text-xs text-white/60">Donation</span>
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === "privacy") {
+    return (
+      <div
+        style={hibikiShellStyle}
+        className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
+          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
+      >
+        <div className="relative z-10 mt-0 hibiki-card-stage">
+          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="flex justify-between px-6 pt-6">
+              <button
+                onClick={() => setScreen("info")}
+                className="text-sm text-white/60 transition hover:text-white/80"
+              >
+                ← Back
+              </button>
+
+              <button className="text-sm text-white/0 select-none pointer-events-none">
+                Info →
+              </button>
+            </div>
+
+            <HibikiLogo />
+
+            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  Privacy Policy
+                </h1>
+
+                <p className="mt-2 text-sm leading-6 text-white/60">
+                  How HIBIKI handles information
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (screen === "terms") {
+    return (
+      <div
+        style={hibikiShellStyle}
+        className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
+          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
+      >
+        <div className="relative z-10 mt-0 hibiki-card-stage">
+          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="flex justify-between px-6 pt-6">
+              <button
+                onClick={() => setScreen("info")}
+                className="text-sm text-white/60 transition hover:text-white/80"
+              >
+                ← Back
+              </button>
+
+              <button className="text-sm text-white/0 select-none pointer-events-none">
+                Info →
+              </button>
+            </div>
+
+            <HibikiLogo />
+
+            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  Terms of Use
+                </h1>
+
+                <p className="mt-2 text-sm leading-6 text-white/60">
+                  Terms for using HIBIKI
+                </p>
               </div>
             </div>
           </div>
