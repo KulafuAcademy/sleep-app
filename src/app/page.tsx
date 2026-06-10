@@ -1000,7 +1000,7 @@ export default function Home() {
   };
 
   const [screen, setScreen] = useState<
-    "select" | "player" | "soundscape" | "soundscapeEdit"
+    "select" | "player" | "soundscape" | "soundscapeEdit" | "info"
   >("select");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
@@ -1651,9 +1651,16 @@ export default function Home() {
 
         <div className="relative z-10 mt-0 hibiki-card-stage">
           <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
-            <div className="px-6 pt-6">
+            <div className="flex justify-between px-6 pt-6">
               <button className="text-sm text-white/0 select-none pointer-events-none">
                 ← Back
+              </button>
+
+              <button
+                onClick={() => setScreen("info")}
+                className="text-sm text-white/45 transition hover:text-white/70"
+              >
+                Info →
               </button>
             </div>
 
