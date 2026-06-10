@@ -10,6 +10,9 @@ import {
   Mountain,
   Play,
   Square,
+  Shield,
+  FileText,
+  Heart,
 } from "lucide-react";
 
 import { Howl, Howler } from "howler";
@@ -2188,10 +2191,36 @@ export default function Home() {
 
             <HibikiLogo />
 
-            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
-              <h1 className="text-3xl font-semibold tracking-tight">
-                INFO PAGE
+            <div className="px-6 pb-8">
+              <h1 className="mb-8 text-center text-3xl font-semibold tracking-tight">
+                Information
               </h1>
+
+              <div className="grid grid-cols-3 gap-4">
+                <button className="flex flex-col items-center gap-2">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                    <Shield size={28} className="text-white/60" />
+                  </div>
+
+                  <span className="text-xs text-white/60">Privacy</span>
+                </button>
+
+                <button className="flex flex-col items-center gap-2">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                    <FileText size={28} className="text-white/60" />
+                  </div>
+
+                  <span className="text-xs text-white/60">Terms</span>
+                </button>
+
+                <button className="flex flex-col items-center gap-2">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                    <Heart size={28} className="text-white/60" />
+                  </div>
+
+                  <span className="text-xs text-white/60">Donation</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
