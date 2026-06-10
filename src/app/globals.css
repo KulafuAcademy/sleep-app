@@ -106,36 +106,17 @@ body {
   animation: timerBreath 2.5s ease-in-out infinite;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .hibiki-desktop-scale {
-    zoom: 0.85;
-    translate: 0 0 !important;
-  }
-
-  .hibiki-scroll-shell {
-    overflow-y: auto !important;
-  }
-
-  .hibiki-scroll-shell .hibiki-desktop-scale {
-    height: auto !important;
-    min-height: min(740px, calc(100dvh - 48px));
-  }
-}
-.hibiki-safari-browser-shell {
-  align-items: center !important;
-  overflow-y: auto !important;
-  padding-top: 0 !important;
-  padding-bottom: 40px !important;
+:root {
+  --hibiki-card-scale: min(
+    1,
+    calc((100svh - 48px) / 740),
+    calc((100vw - 48px) / 384)
+  );
 }
 
-.hibiki-safari-browser-card-select {
-  transform: translateY(32px) scale(0.88) !important;
-  transform-origin: top center !important;
-  min-height: min(840px, calc(100dvh + 24px)) !important;
-}
-
-.hibiki-safari-browser-card-player {
-  transform: translateY(0) scale(0.88) !important;
-  transform-origin: top center !important;
-  min-height: min(840px, calc(100dvh + 24px)) !important;
+.hibiki-responsive-card {
+  width: min(384px, calc(100vw - 48px));
+  height: 740px;
+  transform: scale(var(--hibiki-card-scale));
+  transform-origin: center;
 }

@@ -1575,7 +1575,7 @@ export default function Home() {
   if (screen === "select") {
     return (
       <div
-        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4 ${
+        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-hidden  ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
@@ -1605,9 +1605,7 @@ export default function Home() {
         */}
 
         <div
-          className={`relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ${
-            isSafariBrowser ? "hibiki-safari-browser-card-select" : ""
-          }`}
+          className="relative z-10 mt-0 hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden"
         >
           <div className="px-6 pt-6">
             <button className="text-sm text-white/0 select-none pointer-events-none">
@@ -1706,14 +1704,12 @@ export default function Home() {
   if (screen === "soundscape") {
     return (
       <div
-        className={`hibiki-scroll-shell min-h-screen max-md:portrait:min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4 ${
+        className={`hibiki-scroll-shell min-h-screen max-md:portrait:min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-hidden ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
         <div
-          className={`relative w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ${
-            isSafariBrowser ? "hibiki-safari-browser-card-player" : ""
-          }`}
+          className="relative hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden"
         >
           {/* 👇ここに追加（Backボタン） */}
           <div className="px-6 pt-6">
@@ -1835,14 +1831,12 @@ export default function Home() {
   if (screen === "soundscapeEdit") {
     return (
       <div
-        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4 ${
+        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-hidden ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
         <div
-          className={`relative w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ${
-            isSafariBrowser ? "hibiki-safari-browser-card-player" : ""
-          }`}
+          className="relative hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md overflow-hidden"
         >
           <div className="px-6 pt-6">
             <button
@@ -2080,7 +2074,7 @@ export default function Home() {
   if (screen === "player") {
     return (
       <div
-        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden max-lg:landscape:overflow-y-auto max-lg:landscape:py-4 ${
+        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 overflow-hidden ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
@@ -2091,9 +2085,7 @@ export default function Home() {
         )}
 
         <div
-          className={`relative z-10 mt-0 w-full max-w-sm hibiki-desktop-scale h-[min(740px,calc(100dvh-48px))] translate-y-8 rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden md:translate-y-0 max-lg:landscape:h-auto max-lg:landscape:max-h-none max-lg:landscape:translate-y-0 max-lg:landscape:overflow-visible ${
-            isSafariBrowser ? "hibiki-safari-browser-card-player" : ""
-          }`}
+          className="relative z-10 mt-0 hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden"
         >
           <div className="px-6 pt-6">
             <button
