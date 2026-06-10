@@ -1013,7 +1013,7 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
   const [isSoundscapeTimerRunning, setIsSoundscapeTimerRunning] =
-  useState(false);
+    useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
   const [isSafariBrowser, setIsSafariBrowser] = useState(false);
   const [isStandaloneApp, setIsStandaloneApp] = useState(false);
@@ -2211,35 +2211,53 @@ export default function Home() {
             </div>
 
             <div className="px-6 pb-8">
-              <div className="grid grid-cols-3 gap-4">
-                <button
-                  onClick={() => setScreen("privacy")}
-                  className="flex flex-col items-center gap-2"
-                >
-                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                    <Shield size={28} className="text-white/60" />
+              <div className="space-y-3">
+                <button className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+                    <Shield size={24} className="text-white/60" />
                   </div>
 
-                  <span className="text-xs text-white/60">Privacy</span>
+                  <div>
+                    <div className="text-sm font-medium text-white/80">
+                      Privacy Policy
+                    </div>
+
+                    <div className="text-xs text-white/45">
+                      How we handle your information
+                    </div>
+                  </div>
                 </button>
 
-                <button
-                  onClick={() => setScreen("terms")}
-                  className="flex flex-col items-center gap-2"
-                >
-                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                    <FileText size={28} className="text-white/60" />
+                <button className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+                    <FileText size={24} className="text-white/60" />
                   </div>
 
-                  <span className="text-xs text-white/60">Terms</span>
+                  <div>
+                    <div className="text-sm font-medium text-white/80">
+                      Terms of Use
+                    </div>
+
+                    <div className="text-xs text-white/45">
+                      Rules and conditions for using HIBIKI
+                    </div>
+                  </div>
                 </button>
 
-                <button className="flex flex-col items-center gap-2">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                    <Heart size={28} className="text-white/60" />
+                <button className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+                    <Heart size={24} className="text-white/60" />
                   </div>
 
-                  <span className="text-xs text-white/60">Support</span>
+                  <div>
+                    <div className="text-sm font-medium text-white/80">
+                      Support HIBIKI
+                    </div>
+
+                    <div className="text-xs text-white/45">
+                      Help support this quiet place
+                    </div>
+                  </div>
                 </button>
               </div>
             </div>
