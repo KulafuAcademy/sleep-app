@@ -2171,15 +2171,29 @@ export default function Home() {
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
       >
-        <div className="text-center">
-          <button
-            onClick={() => setScreen("select")}
-            className="mb-8 text-sm text-white/60"
-          >
-            ← Back
-          </button>
+        <div className="relative z-10 mt-0 hibiki-card-stage">
+          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="flex justify-between px-6 pt-6">
+              <button
+                onClick={() => setScreen("select")}
+                className="text-sm text-white/60 transition hover:text-white/80"
+              >
+                ← Back
+              </button>
 
-          <h1 className="text-3xl font-semibold">INFO PAGE</h1>
+              <button className="text-sm text-white/0 select-none pointer-events-none">
+                Info →
+              </button>
+            </div>
+
+            <HibikiLogo />
+
+            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
+              <h1 className="text-3xl font-semibold tracking-tight">
+                INFO PAGE
+              </h1>
+            </div>
+          </div>
         </div>
       </div>
     );
