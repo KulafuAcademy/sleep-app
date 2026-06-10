@@ -2214,18 +2214,21 @@ export default function Home() {
               <div className="space-y-3">
                 <button
                   onClick={() => setScreen("privacy")}
-                  className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left"
+                  className="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left transition-all duration-200 hover:scale-[1.03] hover:border-white/20 hover:bg-white/8 active:scale-[0.98] active:bg-white/8"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                    <Shield size={24} className="text-white/60" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-200 group-hover:border-white/20 group-hover:bg-white/10">
+                    <Shield
+                      size={24}
+                      className="text-white/60 transition-colors duration-200 group-hover:text-white/85"
+                    />
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-white/80">
+                    <div className="text-sm font-medium text-white/80 transition-colors duration-200 group-hover:text-white">
                       Privacy Policy
                     </div>
 
-                    <div className="text-xs text-white/45">
+                    <div className="text-xs text-white/45 transition-colors duration-200 group-hover:text-white/60">
                       How we handle your information
                     </div>
                   </div>
@@ -2233,34 +2236,40 @@ export default function Home() {
 
                 <button
                   onClick={() => setScreen("terms")}
-                  className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left"
+                  className="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left transition-all duration-200 hover:scale-[1.03] hover:border-white/20 hover:bg-white/8 active:scale-[0.98] active:bg-white/8"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                    <FileText size={24} className="text-white/60" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-200 group-hover:border-white/20 group-hover:bg-white/10">
+                    <FileText
+                      size={24}
+                      className="text-white/60 transition-colors duration-200 group-hover:text-white/85"
+                    />
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-white/80">
+                    <div className="text-sm font-medium text-white/80 transition-colors duration-200 group-hover:text-white">
                       Terms of Use
                     </div>
 
-                    <div className="text-xs text-white/45">
+                    <div className="text-xs text-white/45 transition-colors duration-200 group-hover:text-white/60">
                       Rules and conditions for using HIBIKI
                     </div>
                   </div>
                 </button>
 
-                <button className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                    <Heart size={24} className="text-white/60" />
+                <button className="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left transition-all duration-200 hover:scale-[1.03] hover:border-white/20 hover:bg-white/8 active:scale-[0.98] active:bg-white/8">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-200 group-hover:border-white/20 group-hover:bg-white/10">
+                    <Heart
+                      size={24}
+                      className="text-white/60 transition-colors duration-200 group-hover:text-white/85"
+                    />
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-white/80">
+                    <div className="text-sm font-medium text-white/80 transition-colors duration-200 group-hover:text-white">
                       Support HIBIKI
                     </div>
 
-                    <div className="text-xs text-white/45">
+                    <div className="text-xs text-white/45 transition-colors duration-200 group-hover:text-white/60">
                       Help support this quiet place
                     </div>
                   </div>
