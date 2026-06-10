@@ -1010,11 +1010,10 @@ export default function Home() {
     return `${m}m`;
   };
 
-  const [screen, setScreen] = useState<
-    "select" | "player" | "soundscape" | "soundscapeEdit" | "info"
-  >("select");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
+  const [isSoundscapeTimerRunning, setIsSoundscapeTimerRunning] =
+  useState(false);
   const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
   const [isSafariBrowser, setIsSafariBrowser] = useState(false);
   const [isStandaloneApp, setIsStandaloneApp] = useState(false);
