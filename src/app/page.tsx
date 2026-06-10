@@ -2274,97 +2274,94 @@ export default function Home() {
   }
 
   if (screen === "privacy") {
-    return (
-      <div
-        style={hibikiShellStyle}
-        className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
-          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
-        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
-      >
-        <div className="relative z-10 mt-0 hibiki-card-stage">
-          <div className="hibiki-responsive-card rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
-            <div className="flex justify-between px-6 pt-6">
-              <button
-                onClick={() => setScreen("info")}
-                className="text-sm text-white/60 transition hover:text-white/80"
-              >
-                ← Back
-              </button>
+  return (
+    <div
+      style={hibikiShellStyle}
+      className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
+        isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+      } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
+    >
+      <div className="relative z-10 mt-0 hibiki-card-stage">
+        <div className="hibiki-responsive-card flex flex-col rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+          <div className="flex justify-between px-6 pt-6">
+            <button
+              onClick={() => setScreen("info")}
+              className="text-sm text-white/60 transition hover:text-white/80"
+            >
+              ← Back
+            </button>
 
-              <button className="text-sm text-white/0 select-none pointer-events-none">
-                Info →
-              </button>
-            </div>
+            <button className="text-sm text-white/0 select-none pointer-events-none">
+              Info →
+            </button>
+          </div>
 
-            <HibikiLogo />
+          <HibikiLogo />
 
-            <div className="flex min-h-[150px] items-center justify-center px-6 text-center">
+          <div className="px-6 text-center">
+            <h1 className="text-3xl font-semibold tracking-tight">
+              Privacy Policy
+            </h1>
+
+            <p className="mt-2 text-sm leading-6 text-white/60">
+              How HIBIKI handles information
+            </p>
+          </div>
+
+          <div className="mt-6 flex-1 overflow-y-auto px-6 pb-8 text-left">
+            <div className="space-y-6 text-sm leading-7 text-white/75">
               <div>
-                <h1 className="text-3xl font-semibold tracking-tight">
-                  Privacy Policy
-                </h1>
-
-                <p className="mt-2 text-sm leading-6 text-white/60">
-                  How HIBIKI handles information
+                <h2 className="mb-2 text-base text-white">
+                  Information We Collect
+                </h2>
+                <p>
+                  HIBIKI does not require user accounts and does not collect
+                  personal information such as your name, email address, or
+                  phone number during normal use.
                 </p>
+              </div>
 
-                <div className="mt-6 flex-1 overflow-y-auto px-6 pb-8">
-                  <div className="space-y-6 text-sm leading-7 text-white/75">
-                    <div>
-                      <h2 className="mb-2 text-base text-white">
-                        Information We Collect
-                      </h2>
-                      <p>
-                        HIBIKI does not require user accounts and does not
-                        collect personal information such as your name, email
-                        address, or phone number during normal use.
-                      </p>
-                    </div>
+              <div>
+                <h2 className="mb-2 text-base text-white">Analytics</h2>
+                <p>
+                  HIBIKI may use privacy-friendly analytics and hosting services
+                  to understand traffic and usage patterns.
+                </p>
+              </div>
 
-                    <div>
-                      <h2 className="mb-2 text-base text-white">Analytics</h2>
-                      <p>
-                        HIBIKI may use privacy-friendly analytics and hosting
-                        services to understand traffic and usage patterns.
-                      </p>
-                    </div>
+              <div>
+                <h2 className="mb-2 text-base text-white">Cookies</h2>
+                <p>
+                  HIBIKI may use essential cookies required for the operation of
+                  the website. We do not use cookies for advertising purposes.
+                </p>
+              </div>
 
-                    <div>
-                      <h2 className="mb-2 text-base text-white">Cookies</h2>
-                      <p>
-                        HIBIKI may use essential cookies required for the
-                        operation of the website. We do not use cookies for
-                        advertising purposes.
-                      </p>
-                    </div>
+              <div>
+                <h2 className="mb-2 text-base text-white">
+                  Third-Party Services
+                </h2>
+                <p>
+                  HIBIKI relies on third-party services for hosting and
+                  analytics. These services operate under their own privacy
+                  policies.
+                </p>
+              </div>
 
-                    <div>
-                      <h2 className="mb-2 text-base text-white">
-                        Third-Party Services
-                      </h2>
-                      <p>
-                        HIBIKI relies on third-party services for hosting and
-                        analytics. These services operate under their own
-                        privacy policies.
-                      </p>
-                    </div>
-
-                    <div>
-                      <h2 className="mb-2 text-base text-white">Changes</h2>
-                      <p>
-                        This Privacy Policy may be updated from time to time.
-                        Any changes will be published on this page.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <h2 className="mb-2 text-base text-white">Changes</h2>
+                <p>
+                  This Privacy Policy may be updated from time to time. Any
+                  changes will be published on this page.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   if (screen === "terms") {
     return (
