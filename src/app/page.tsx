@@ -1575,7 +1575,7 @@ export default function Home() {
   if (screen === "select") {
     return (
       <div
-        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 px-6 overflow-auto ${
+        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
@@ -1705,7 +1705,7 @@ export default function Home() {
   if (screen === "soundscape") {
     return (
       <div
-        className={`hibiki-scroll-shell min-h-screen max-md:portrait:min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 px-6 overflow-auto ${
+        className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
@@ -1832,7 +1832,7 @@ export default function Home() {
   if (screen === "soundscapeEdit") {
     return (
       <div
-        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[#030405] text-white flex items-center justify-center px-6 py-0 overflow-auto ${
+        className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
@@ -2075,7 +2075,7 @@ export default function Home() {
   if (screen === "player") {
     return (
       <div
-        className={`hibiki-scroll-shell relative min-h-[100dvh] bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 py-0 px-6 py-0 overflow-auto ${
+        className={`hibiki-scroll-shell fixed inset-0 bg-[radial-gradient(circle_at_top,_#141518_0%,_#0A0B0D_45%,_#030405_100%)] text-white flex items-center justify-center px-6 overflow-auto ${
           isSafariBrowser ? "hibiki-safari-browser-shell" : ""
         }`}
       >
