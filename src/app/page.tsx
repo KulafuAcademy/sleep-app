@@ -2212,7 +2212,10 @@ export default function Home() {
 
             <div className="px-6 pb-8">
               <div className="space-y-3">
-                <button className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
+                <button
+                  onClick={() => setScreen("privacy")}
+                  className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left"
+                >
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
                     <Shield size={24} className="text-white/60" />
                   </div>
@@ -2228,7 +2231,10 @@ export default function Home() {
                   </div>
                 </button>
 
-                <button className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
+                <button
+                  onClick={() => setScreen("terms")}
+                  className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left"
+                >
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5">
                     <FileText size={24} className="text-white/60" />
                   </div>
