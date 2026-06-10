@@ -127,3 +127,10 @@ body {
   transform: scale(var(--hibiki-card-scale));
   transform-origin: top left;
 }
+
+@media (display-mode: standalone) {
+  .hibiki-scroll-shell {
+    padding-top: max(120px, env(safe-area-inset-top));
+    padding-bottom: 24px;
+  }
+}
