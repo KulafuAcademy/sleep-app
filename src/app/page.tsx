@@ -1300,6 +1300,29 @@ export default function Home() {
     mixHowlsRef.current = {};
   };
 
+  const pauseSoundscape = () => {
+    Object.values(mixHowlsRef.current).forEach((entries) => {
+      entries?.forEach((entry) => {
+        if (entry.id !== null) {
+          entry.sound.pause(entry.id);
+        }
+      });
+    });
+  };
+
+  const resumeSoundscape = async () => {
+    await unlockHowlerAudio();
+    startSilentKeeper();
+
+    Object.values(mixHowlsRef.current).forEach((entries) => {
+      entries?.forEach((entry) => {
+        if (entry.id !== null) {
+          entry.sound.play(entry.id);
+        }
+      });
+    });
+  };
+
   const [highLevel, setHighLevel] = useState(0.015);
   const [highFreq, setHighFreq] = useState(1800);
 
