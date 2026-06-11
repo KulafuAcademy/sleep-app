@@ -2145,6 +2145,7 @@ export default function Home() {
                       )}
                     </button>
 
+                    <div className="flex justify-center">
                     <button
                       type="button"
                       onClick={() => {
@@ -2162,6 +2163,7 @@ export default function Home() {
                     >
                       Pause
                     </button>
+                    </div>
                   </div>
                 </div>
               </div>
