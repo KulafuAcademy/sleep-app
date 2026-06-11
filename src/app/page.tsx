@@ -187,15 +187,12 @@ export default function Home() {
       cancelFade(getFadeKey(category, name));
 
       if (id === null) {
-        sound.mute(true);
         sound.volume(0);
         sound.stop();
         return;
       }
 
-      sound.mute(true, id);
       sound.volume(0, id);
-      sound.pause(id);
       sound.stop(id);
 
       entry.id = null;
@@ -1270,8 +1267,12 @@ export default function Home() {
       const entries = mixHowlsRef.current[sound] ?? [];
 
       entries.forEach((entry) => {
+        entry.sound.mute(false);
+
         const id = entry.sound.play();
         entry.id = id;
+
+        entry.sound.mute(false, id);
 
         const baseVolume =
           entry.name in volMap ? volMap[entry.name as keyof typeof volMap] : 0;
