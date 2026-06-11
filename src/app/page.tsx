@@ -1199,42 +1199,21 @@ export default function Home() {
     const safeValue = Math.min(Math.max(value, 0), 1);
     const entries = mixHowlsRef.current[sound];
 
-    console.log("[applySoundscapeVolume]", {
-      sound,
-      safeValue,
-      hasEntries: !!entries,
-      entryCount: entries?.length ?? 0,
-    });
-
     entries?.forEach((entry) => {
-      console.log("[soundscape entry]", {
-        sound,
-        layer: entry.name,
-        id: entry.id,
-      });
-
       if (entry.id === null) return;
 
       const baseVolume = getSoundscapeBaseVolume(sound, entry.name);
       const nextVolume = baseVolume * safeValue;
 
-      console.log("[soundscape volume]", {
-        sound,
-        layer: entry.name,
-        safeValue,
-        baseVolume,
-        nextVolume,
-        beforeVolume: entry.sound.volume(entry.id),
-      });
+      if (safeValue <= 0) {
+        entry.sound.mute(true, entry.id);
+        entry.sound.volume(0, entry.id);
+        return;
+      }
 
       entry.sound.mute(false, entry.id);
+      entry.sound.volume(nextVolume);
       entry.sound.volume(nextVolume, entry.id);
-
-      console.log("[soundscape volume applied]", {
-        sound,
-        layer: entry.name,
-        afterVolume: entry.sound.volume(entry.id),
-      });
     });
   };
 
@@ -1319,25 +1298,10 @@ export default function Home() {
   const stopSoundscape = () => {
     stopSilentKeeper();
 
-    fadeJobsRef.current.forEach((job) => {
-      job.cancelled = true;
+    Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
+      if (!entries) return;
 
-      if (job.frameId !== null) {
-        cancelAnimationFrame(job.frameId);
-      }
-    });
-
-    fadeJobsRef.current.clear();
-
-    Object.values(mixHowlsRef.current).forEach((entries) => {
-      entries?.forEach((entry) => {
-        if (entry.id !== null) {
-          entry.sound.stop(entry.id);
-        }
-
-        entry.sound.unload();
-        entry.id = null;
-      });
+      stopHowlEntries(entries, soundName.toLowerCase());
     });
 
     mixHowlsRef.current = {};
