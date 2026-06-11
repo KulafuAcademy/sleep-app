@@ -1018,6 +1018,7 @@ export default function Home() {
     }
   };
 
+  /*
   useEffect(() => {
     prepareRainHowls();
     prepareWaveHowls();
@@ -1026,6 +1027,7 @@ export default function Home() {
     prepareBonfireHowls();
     prepareCaveHowls();
   }, []);
+  */
 
   useEffect(() => {
     if (!("mediaSession" in navigator)) return;
