@@ -1310,6 +1310,24 @@ export default function Home() {
     });
   };
 
+  const muteSoundscape = () => {
+    Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
+      if (!entries) return;
+
+      entries.forEach((entry) => {
+        if (entry.id === null) return;
+
+        entry.sound.volume(0, entry.id);
+      });
+    });
+  };
+
+  const unmuteSoundscape = () => {
+    selectedMixSounds.forEach((sound) => {
+      applySoundscapeVolume(sound, mixVolumes[sound]);
+    });
+  };
+
   const resumeSoundscape = async () => {
     await unlockHowlerAudio();
     startSilentKeeper();
