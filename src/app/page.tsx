@@ -193,8 +193,6 @@ export default function Home() {
 
       sound.volume(0, id);
       sound.stop(id);
-
-      entry.id = null;
     });
   };
 
