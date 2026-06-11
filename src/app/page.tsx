@@ -182,28 +182,15 @@ export default function Home() {
     category: string,
   ) => {
     entries.forEach(({ sound, id, name }) => {
+      cancelFade(getFadeKey(category, name));
+
       if (id === null) {
         sound.stop();
         return;
       }
 
-      const currentVolume = Number(sound.volume(id));
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      const fadeConfig = getActiveFadeConfig(category);
-
-      fadeHowlVolume({
-        key: getFadeKey(category, name),
-        sound,
-        id,
-        from: safeVolume,
-        to: 0,
-        duration: fadeConfig.fadeOutMs,
-        curve: fadeConfig.fadeOutCurve,
-        onComplete: () => {
-          sound.stop(id);
-        },
-      });
+      sound.volume(0, id);
+      sound.stop(id);
     });
   };
 
