@@ -2590,7 +2590,7 @@ export default function Home() {
 
               <button
                 onClick={() => setScreen("info")}
-                className="text-sm text-white/60 transition hover:text-white/80"８８
+                className="text-sm text-white/60 transition hover:text-white/80"
               >
                 Info →
               </button>
