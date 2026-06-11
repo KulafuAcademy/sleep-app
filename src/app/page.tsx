@@ -2172,50 +2172,57 @@ export default function Home() {
                   </div>
 
                   <div className="flex justify-center">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (isSoundscapePlaying) {
+                    <div className="flex justify-center">
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (isSoundscapePlaying) {
+                            stopSoundscape();
+                            setIsSoundscapePlaying(false);
+
+                            if (timerRef.current) {
+                              clearInterval(timerRef.current);
+                              timerRef.current = null;
+                            }
+
+                            return;
+                          }
+
+                          await unlockHowlerAudio();
+
                           stopSoundscape();
-                          setIsSoundscapePlaying(false);
+                          await startSoundscape();
+
+                          setIsSoundscapePlaying(true);
+                          setIsSoundscapeTimerRunning(true);
 
                           if (timerRef.current) {
                             clearInterval(timerRef.current);
-                            timerRef.current = null;
                           }
 
-                          return;
-                        }
+                          timerRef.current = setInterval(() => {
+                            setSoundscapeTimeLeft((prev) => {
+                              if (prev <= 1) {
+                                clearInterval(timerRef.current!);
+                                timerRef.current = null;
 
-                        startSoundscape();
-                        setIsSoundscapePlaying(true);
+                                stopSoundscape();
+                                setIsSoundscapePlaying(false);
+                                setIsSoundscapeTimerRunning(false);
+                                setSelectedSoundscapeTimer(null);
 
-                        if (timerRef.current) {
-                          clearInterval(timerRef.current);
-                        }
+                                return 0;
+                              }
 
-                        timerRef.current = setInterval(() => {
-                          setSoundscapeTimeLeft((prev) => {
-                            if (prev <= 1) {
-                              clearInterval(timerRef.current!);
-                              timerRef.current = null;
-
-                              stopSoundscape();
-                              setIsSoundscapePlaying(false);
-                              setIsSoundscapeTimerRunning(false);
-                              setSelectedSoundscapeTimer(null);
-
-                              return 0;
-                            }
-
-                            return prev - 1;
-                          });
-                        }, 1000);
-                      }}
-                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:bg-white/10 active:scale-[0.98]"
-                    >
-                      <Pause size={16} />
-                    </button>
+                              return prev - 1;
+                            });
+                          }, 1000);
+                        }}
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:bg-white/10 active:scale-[0.98]"
+                      >
+                        <Pause size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
