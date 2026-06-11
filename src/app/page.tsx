@@ -85,97 +85,6 @@ export default function Home() {
     { sound: Howl; id: number | null; name: "a1" | "b1" | "c1" }[]
   >([]);
 
-  type FadeJob = {
-    cancelled: boolean;
-    frameId: number | null;
-  };
-
-  const fadeJobsRef = useRef<Map<string, FadeJob>>(new Map());
-
-  const getFadeKey = (category: string, layer: string) =>
-    `${category}:${layer}`;
-
-  const cancelFade = (key: string) => {
-    const job = fadeJobsRef.current.get(key);
-    if (!job) return;
-
-    job.cancelled = true;
-
-    if (job.frameId !== null) {
-      cancelAnimationFrame(job.frameId);
-    }
-
-    fadeJobsRef.current.delete(key);
-  };
-
-  const fadeHowlVolume = ({
-    key,
-    sound,
-    id,
-    from,
-    to,
-    duration,
-    curve = 1,
-    onComplete,
-  }: {
-    key: string;
-    sound: Howl;
-    id: number;
-    from: number;
-    to: number;
-    duration: number;
-    curve?: number;
-    onComplete?: () => void;
-  }) => {
-    cancelFade(key);
-
-    if (duration <= 0) {
-      sound.volume(to, id);
-      onComplete?.();
-      return;
-    }
-
-    const job: FadeJob = {
-      cancelled: false,
-      frameId: null,
-    };
-
-    fadeJobsRef.current.set(key, job);
-
-    const start = performance.now();
-
-    const tick = (now: number) => {
-      if (job.cancelled) return;
-
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const shaped = Math.pow(progress, curve);
-
-      const nextVolume = from + (to - from) * shaped;
-
-      sound.volume(nextVolume, id);
-
-      if (to === 0 && key.startsWith("rain:")) {
-        console.log("[rain fadeOut]", {
-          key,
-          progress,
-          nextVolume,
-        });
-      }
-
-      if (progress < 1) {
-        job.frameId = requestAnimationFrame(tick);
-        return;
-      }
-
-      sound.volume(to, id);
-      fadeJobsRef.current.delete(key);
-      onComplete?.();
-    };
-
-    job.frameId = requestAnimationFrame(tick);
-  };
-
   const stopHowlEntries = (
     entries: { sound: Howl; id: number | null; name: string }[],
     category: string,
@@ -185,24 +94,7 @@ export default function Home() {
         sound.stop();
         return;
       }
-
-      const currentVolume = Number(sound.volume(id));
-      const safeVolume = Number.isFinite(currentVolume) ? currentVolume : 0;
-
-      const fadeConfig = getActiveFadeConfig(category);
-
-      fadeHowlVolume({
-        key: getFadeKey(category, name),
-        sound,
-        id,
-        from: safeVolume,
-        to: 0,
-        duration: fadeConfig.fadeOutMs,
-        curve: fadeConfig.fadeOutCurve,
-        onComplete: () => {
-          sound.stop(id);
-        },
-      });
+      sound.stop(id);
     });
   };
 
@@ -260,133 +152,6 @@ export default function Home() {
 
   const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
-  // =====================================================
-  // Fade Tuning
-  // Desktop / Mobile fade behavior
-  //
-  // fadeInMs   : 音が立ち上がる時間
-  // fadeOutMs  : 音が消える時間(現在未使用・将来用)
-  // curve
-  //   1.0  = linear
-  //   <1.0 = 早めに立ち上がる
-  //   >1.0 = ゆっくり立ち上がる
-  //
-  // 実機テストで調整する主要パラメータ
-  // =====================================================
-
-  type FadeConfig = {
-    fadeInMs: number;
-    fadeOutMs: number;
-    fadeInCurve: number;
-    fadeOutCurve: number;
-  };
-
-  const FADE_CONFIG_DESKTOP = {
-    fadeInMs: 450,
-    fadeOutMs: 1800,
-    fadeInCurve: 0.75,
-    fadeOutCurve: 0.75,
-  };
-
-  const FADE_CONFIG_MOBILE = {
-    fadeInMs: 0,
-    fadeOutMs: 0,
-    fadeInCurve: 1,
-    fadeOutCurve: 1,
-  };
-
-  // =====================================================
-  // Mobile Per-Preset Fade Tuning
-  //
-  // Wave / Rain / River / Forest / Bonfire / Cave
-  // 個別フェード調整用
-  // ACTIVE_FADE_CONFIG から切り替え有効化済み
-  // =====================================================
-
-  const FADE_CONFIG_MOBILE_BY_SOUND = {
-    wave: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
-    },
-
-    rain: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
-    },
-
-    river: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
-    },
-
-    forest: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
-    },
-
-    bonfire: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
-    },
-
-    cave: {
-      fadeInMs: 0,
-      fadeOutMs: 0,
-      fadeInCurve: 1,
-      fadeOutCurve: 1,
-    },
-  };
-
-  const getActiveFadeConfig = (folder: string): FadeConfig => {
-    if (!isMobile) return FADE_CONFIG_DESKTOP;
-
-    return (
-      FADE_CONFIG_MOBILE_BY_SOUND[
-        folder as keyof typeof FADE_CONFIG_MOBILE_BY_SOUND
-      ] ?? FADE_CONFIG_MOBILE
-    );
-  };
-
-  const ACTIVE_FADE_CONFIG = isMobile
-    ? FADE_CONFIG_MOBILE
-    : FADE_CONFIG_DESKTOP;
-
-  // =====================================================
-  // Fade Out Stop Timing
-  //
-  // fadeOutDuration : 実際のフェードアウト時間
-  // pauseDelay      : 将来pauseを使う場合の待機時間
-  // resetDelay      : 将来seek(0)等を行う場合の待機時間
-  //
-  // フェードアウトがぶつ切りに聞こえる場合は
-  // fadeOutDuration を調整
-  // =====================================================
-
-  const AUDIO_STOP_CONFIG_DESKTOP = {
-    fadeOutDuration: 2600,
-    pauseDelay: 300,
-    resetDelay: 100,
-  };
-
-  const AUDIO_STOP_CONFIG_MOBILE = {
-    fadeOutDuration: 2600,
-    pauseDelay: 900,
-    resetDelay: 300,
-  };
-
-  const ACTIVE_AUDIO_STOP_CONFIG = isMobile
-    ? AUDIO_STOP_CONFIG_MOBILE
-    : AUDIO_STOP_CONFIG_DESKTOP;
 
   const stopForestHowls = () => {
     stopHowlEntries(forestHowlsRef.current, "forest");
@@ -642,23 +407,11 @@ export default function Home() {
         const id = entry.sound.play();
         entry.id = id;
 
-        entry.sound.volume(0, id);
-
         const targetVolume = forestVolMap[entry.name] ?? 0;
 
-        const fadeConfig = getActiveFadeConfig("forest");
+        entry.sound.volume(targetVolume, id);
 
-        const key = getFadeKey("forest", entry.name);
 
-        fadeHowlVolume({
-          key,
-          sound: entry.sound,
-          id,
-          from: 0,
-          to: targetVolume,
-          duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.fadeInCurve,
-        });
       });
 
       return;
@@ -675,23 +428,10 @@ export default function Home() {
         const id = entry.sound.play();
         entry.id = id;
 
-        entry.sound.volume(0, id);
-
         const targetVolume = waveVolMap[entry.name] ?? 0;
 
-        const fadeConfig = getActiveFadeConfig("wave");
+        entry.sound.volume(targetVolume, id);
 
-        const key = getFadeKey("wave", entry.name);
-
-        fadeHowlVolume({
-          key,
-          sound: entry.sound,
-          id,
-          from: 0,
-          to: targetVolume,
-          duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.fadeInCurve,
-        });
       });
 
       return;
@@ -708,23 +448,10 @@ export default function Home() {
         const id = entry.sound.play();
         entry.id = id;
 
-        entry.sound.volume(0, id);
-
         const targetVolume = riverVolMap[entry.name] ?? 0;
 
-        const fadeConfig = getActiveFadeConfig("river");
+        entry.sound.volume(targetVolume, id);
 
-        const key = getFadeKey("river", entry.name);
-
-        fadeHowlVolume({
-          key,
-          sound: entry.sound,
-          id,
-          from: 0,
-          to: targetVolume,
-          duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.fadeInCurve,
-        });
       });
 
       return;
@@ -741,23 +468,10 @@ export default function Home() {
         const id = entry.sound.play();
         entry.id = id;
 
-        entry.sound.volume(0, id);
-
         const targetVolume = rainVolMap[entry.name] ?? 0;
+ 
+        entry.sound.volume(targetVolume, id);
 
-        const fadeConfig = getActiveFadeConfig("rain");
-
-        const key = getFadeKey("rain", entry.name);
-
-        fadeHowlVolume({
-          key,
-          sound: entry.sound,
-          id,
-          from: 0,
-          to: targetVolume,
-          duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.fadeInCurve,
-        });
       });
 
       return;
@@ -774,23 +488,10 @@ export default function Home() {
         const id = entry.sound.play();
         entry.id = id;
 
-        entry.sound.volume(0, id);
-
         const targetVolume = bonfireVolMap[entry.name] ?? 0;
 
-        const fadeConfig = getActiveFadeConfig("bonfire");
+        entry.sound.volume(targetVolume, id);
 
-        const key = getFadeKey("bonfire", entry.name);
-
-        fadeHowlVolume({
-          key,
-          sound: entry.sound,
-          id,
-          from: 0,
-          to: targetVolume,
-          duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.fadeInCurve,
-        });
       });
 
       return;
@@ -807,23 +508,11 @@ export default function Home() {
         const id = entry.sound.play();
         entry.id = id;
 
-        entry.sound.volume(0, id);
 
         const targetVolume = caveVolMap[entry.name] ?? 0;
 
-        const fadeConfig = getActiveFadeConfig("cave");
+        entry.sound.volume(targetVolume, id);
 
-        const key = getFadeKey("cave", entry.name);
-
-        fadeHowlVolume({
-          key,
-          sound: entry.sound,
-          id,
-          from: 0,
-          to: targetVolume,
-          duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.fadeInCurve,
-        });
       });
 
       return;
@@ -1122,48 +811,7 @@ export default function Home() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const playChapu = async () => {
-    try {
-      if (!audioCtxRef.current) {
-        audioCtxRef.current = new AudioContext();
-      }
 
-      const ctx = audioCtxRef.current;
-
-      const res = await fetch("/sound/wave/chapu_small.wav");
-      console.log("fetch status:", res.status, res.headers.get("content-type"));
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const arrayBuffer = await res.arrayBuffer();
-      console.log("arrayBuffer bytes:", arrayBuffer.byteLength);
-
-      const buffer = await ctx.decodeAudioData(arrayBuffer);
-      console.log("decoded:", buffer.duration);
-
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.playbackRate.value = 0.8 + Math.random() * 0.4;
-
-      const gain = ctx.createGain();
-      gain.gain.value = 0.012;
-
-      source.connect(gain);
-      gain.connect(ctx.destination);
-
-      source.start();
-    } catch (error) {
-      console.error("playChapu error:", error);
-    }
-  };
-
-  const noiseRef = useRef<AudioBufferSourceNode | null>(null);
-  const gainRef = useRef<GainNode | null>(null);
-  const intervalRef = useRef<number | null>(null);
-  const lowRef = useRef<AudioBufferSourceNode | null>(null);
-  const loopAudioRef = useRef<HTMLAudioElement | null>(null);
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
     {},
   );
@@ -1276,21 +924,8 @@ export default function Home() {
 
         const targetVolume = baseVolume * mixVolumes[sound];
 
-        const fadeConfig = getActiveFadeConfig(folder);
+        entry.sound.volume(targetVolume, id);
 
-        entry.sound.volume(0, id);
-
-        const key = getFadeKey(folder, entry.name);
-
-        fadeHowlVolume({
-          key,
-          sound: entry.sound,
-          id,
-          from: 0,
-          to: targetVolume,
-          duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.fadeInCurve,
-        });
       });
     }
   };
@@ -1319,123 +954,9 @@ export default function Home() {
   const splashChanceRef = useRef(0.2);
   const splashLengthRef = useRef(25);
 
-  const createNoise = (ctx: AudioContext) => {
-    const bufferSize = ctx.sampleRate * 2;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * 0.3 + (data[i - 1] || 0) * 0.7;
-    }
-
-    return buffer;
-  };
-
-  const createPinkNoise = (ctx: AudioContext) => {
-    const bufferSize = ctx.sampleRate * 2;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-
-    let last = 0;
-
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-
-      // 👇 ピンク寄りフィルター
-      last = 0.98 * last + 0.02 * white;
-      data[i] = last;
-
-      // 👇 軽く丸める（重要）
-      data[i] = Math.tanh(data[i]);
-    }
-
-    return buffer;
-  };
-
-  const getSoundConfig = () => {
-    switch (selectedSound) {
-      case "Wave":
-        return {
-          title: "Wave",
-          subtitle: "Gentle waves for relaxation.",
-          frequency: 1200,
-          gain: 0.3,
-          controlLabel: "Wave",
-        };
-      case "River":
-        return {
-          title: "River",
-          subtitle: "Flowing river ambience for relaxation.",
-          frequency: 3200,
-          gain: 0.2,
-          controlLabel: "River",
-        };
-      case "Bonfire":
-        return {
-          title: "Bonfire",
-          subtitle: "Warm bonfire ambience for relaxation.",
-          frequency: 850,
-          gain: 0.26,
-          controlLabel: "Fire",
-        };
-      case "Forest":
-        return {
-          title: "Forest",
-          subtitle: "Natural forest ambience for relaxation.",
-          frequency: 1900,
-          gain: 0.18,
-          controlLabel: "Forest",
-        };
-      case "Cave":
-        return {
-          title: "Cave",
-          subtitle: "Deep cave ambience for relaxation.",
-          frequency: 2000,
-          gain: 0.2,
-          controlLabel: "Cave",
-        };
-      default:
-        return {
-          title: "Rain",
-          subtitle: "Endless rain sound for relaxation.",
-          frequency: 2500,
-          gain: 0.25,
-          controlLabel: "Rain",
-        };
-    }
-  };
-
   const stopRain = () => {
-    if (intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-
-    if (noiseRef.current && gainRef.current && audioCtxRef.current) {
-      const ctx = audioCtxRef.current;
-      const now = ctx.currentTime;
-
-      // 👇 フェードアウト（2秒）
-      gainRef.current.gain.linearRampToValueAtTime(0, now + 4);
-
-      // 👇 Audioの時間で止める
-      noiseRef.current.stop(now + 4);
-    }
-
-    if (lowRef.current) {
-      lowRef.current.stop();
-      lowRef.current.disconnect();
-      lowRef.current = null;
-    }
-
-    // 👇 これ追加
-    if (loopAudioRef.current) {
-      loopAudioRef.current.pause();
-      loopAudioRef.current.currentTime = 0;
-      loopAudioRef.current = null;
-    }
-    stopWaveLayerTest();
-  };
+     stopWaveLayerTest();
+}; 
 
   const startRain = async () => {
     stopRain();
@@ -1444,98 +965,7 @@ export default function Home() {
       audioCtxRef.current = new AudioContext();
     }
 
-    const ctx = audioCtxRef.current;
-    const sound = getSoundConfig();
-
     playWaveLayerTest();
-    return;
-
-    if (ctx.state === "suspended") {
-      await ctx.resume();
-    }
-
-    if (noiseRef.current) return;
-
-    const noise = ctx.createBufferSource();
-    noise.buffer = createNoise(ctx);
-
-    noise.loop = true;
-
-    // 👇低音レイヤー
-    if (selectedSound === "Wave") {
-      const low = ctx.createBufferSource();
-      low.buffer = createNoise(ctx);
-      low.loop = true;
-
-      const lowFilter = ctx.createBiquadFilter();
-      lowFilter.type = "lowpass";
-      lowFilter.frequency.value = 450;
-
-      const lowGain = ctx.createGain();
-      lowGain.gain.value = 0.05;
-
-      low.connect(lowFilter);
-      lowFilter.connect(lowGain);
-      lowGain.connect(ctx.destination);
-
-      low.start();
-      lowRef.current = low; // ←これを追加
-    }
-
-    const filter = ctx.createBiquadFilter();
-    filter.type = "lowpass";
-
-    if (selectedSound === "Cave") {
-      filter.frequency.value = 2000;
-    } else {
-      filter.frequency.value = sound.frequency;
-    }
-
-    const gain = ctx.createGain();
-
-    // 👇 最終目標値を先に決める
-    const targetGain = sound.gain;
-
-    gainRef.current = gain;
-
-    const now = ctx.currentTime;
-
-    // 👇 無音スタート
-    gain.gain.setValueAtTime(0, now);
-
-    // 👇 フェードイン
-    gain.gain.linearRampToValueAtTime(targetGain, now + 3);
-
-    noise.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-
-    noise.start();
-    noiseRef.current = noise;
-
-    if (selectedSound === "Wave") {
-      intervalRef.current = window.setInterval(() => {
-        const base = 500 + Math.sin(Date.now() / 2400) * 260;
-        filter.frequency.value = base;
-
-        gain.gain.value = sound.gain * 0.25;
-
-        // 👇高音ブロック（チャプチャプ）
-        if (Math.random() < splashChanceRef.current) {
-          playChapu();
-        }
-      }, 400);
-    }
-
-    if (selectedSound === "Rain") {
-      intervalRef.current = window.setInterval(() => {
-        const base = 1800 + Math.sin(Date.now() / 1800) * 120;
-        filter.frequency.value = base + Math.random() * 80;
-
-        const rain = 0.7 + Math.random() * 0.08;
-        gain.gain.value = rain * sound.gain;
-      }, 250);
-    }
   };
 
   const toggle = async () => {
@@ -2610,11 +2040,11 @@ export default function Home() {
               <div className="flex min-h-[150px] items-center justify-center">
                 <div>
                   <h1 className="text-3xl font-semibold tracking-tight">
-                    {getSoundConfig().title}
+                    {selectedSound}
                   </h1>
 
                   <p className="mt-2 text-sm leading-6 text-white/60">
-                    {getSoundConfig().subtitle}
+                    Gentle ambient sound for rest.
                   </p>
                 </div>
               </div>
