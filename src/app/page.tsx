@@ -1246,7 +1246,7 @@ export default function Home() {
           src: [`/sound/${folder}/v1/${name}.wav`],
           loop: true,
           volume: 0,
-          html5: true,
+          html5: false,
           preload: true,
         });
 
