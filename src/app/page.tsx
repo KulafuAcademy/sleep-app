@@ -1999,7 +1999,7 @@ export default function Home() {
               </div>
               {/* 👇 Sleep Timer（ここに追加） */}
               <div className="mt-6">
-                <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4">
+                <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4 min-h-[220px]">
                   <div className="text-sm text-white/75 text-center">
                     Rest with this soundscape
                   </div>
@@ -2007,7 +2007,7 @@ export default function Home() {
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       onClick={() => startSoundscapeTimer(30)}
-                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                      className={`rounded-xl border py-3 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
                       {selectedSoundscapeTimer === 30 &&
                       soundscapeTimeLeft > 0 ? (
@@ -2031,7 +2031,7 @@ export default function Home() {
 
                     <button
                       onClick={() => startSoundscapeTimer(60)}
-                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                      className={`rounded-xl border py-3 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
                       {selectedSoundscapeTimer === 60 &&
                       soundscapeTimeLeft > 0 ? (
@@ -2055,7 +2055,7 @@ export default function Home() {
 
                     <button
                       onClick={() => startSoundscapeTimer(120)}
-                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                      className={`rounded-xl border py-3 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
                       {selectedSoundscapeTimer === 120 &&
                       soundscapeTimeLeft > 0 ? (
@@ -2079,7 +2079,7 @@ export default function Home() {
 
                     <button
                       onClick={() => startSoundscapeTimer(180)}
-                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                      className={`rounded-xl border py-3 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
                       {selectedSoundscapeTimer === 180 &&
                       soundscapeTimeLeft > 0 ? (
@@ -2103,7 +2103,7 @@ export default function Home() {
 
                     <button
                       onClick={() => startSoundscapeTimer(360)}
-                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                      className={`rounded-xl border py-3 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
                       {selectedSoundscapeTimer === 360 &&
                       soundscapeTimeLeft > 0 ? (
@@ -2127,7 +2127,7 @@ export default function Home() {
 
                     <button
                       onClick={() => startSoundscapeTimer(480)}
-                      className={`rounded-xl border py-2 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
+                      className={`rounded-xl border py-3 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
                       {selectedSoundscapeTimer === 480 &&
                       soundscapeTimeLeft > 0 ? (
