@@ -1098,6 +1098,14 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (screen !== "soundscape") return;
+
+    sounds.forEach((sound) => {
+      prepareMixHowls(sound.name);
+    });
+  }, [screen]);
+
   const [playerVolume, setPlayerVolume] = useState(0.3);
   const [selectedMixSounds, setSelectedMixSounds] = useState<SoundName[]>([]);
   const [mixVolumes, setMixVolumes] = useState<Record<SoundName, number>>({
@@ -1223,6 +1231,31 @@ export default function Home() {
     applySoundscapeVolume(sound, safeValue);
   };
 
+  const prepareMixHowls = (sound: SoundName) => {
+    if (mixHowlsRef.current[sound]) return;
+
+    const folder = sound.toLowerCase();
+
+    const layerNames =
+      folder === "bonfire" || folder === "cave"
+        ? (["a1", "b1", "c1"] as const)
+        : (["a1", "b1", "c1", "a2", "a3"] as const);
+
+    const entries = layerNames.map((name) => ({
+      sound: new Howl({
+        src: [`/sound/${folder}/v1/${name}.wav`],
+        loop: true,
+        volume: 0,
+        html5: true,
+        preload: true,
+      }),
+      id: null as number | null,
+      name,
+    }));
+
+    mixHowlsRef.current[sound] = entries;
+  };
+
   const startSoundscape = async () => {
     stopSoundscape();
 
@@ -1237,28 +1270,9 @@ export default function Home() {
         ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
         ACTIVE_VOLUME_MAP.wave;
 
-      const layerNames =
-        folder === "bonfire" || folder === "cave"
-          ? (["a1", "b1", "c1"] as const)
-          : (["a1", "b1", "c1", "a2", "a3"] as const);
+      prepareMixHowls(sound);
 
-      const entries = layerNames.map((name) => {
-        const howl = new Howl({
-          src: [`/sound/${folder}/v1/${name}.wav`],
-          loop: true,
-          volume: 0,
-          html5: true,
-          preload: true,
-        });
-
-        return {
-          sound: howl,
-          id: null as number | null,
-          name,
-        };
-      });
-
-      mixHowlsRef.current[sound] = entries;
+      const entries = mixHowlsRef.current[sound] ?? [];
 
       entries.forEach((entry) => {
         const id = entry.sound.play();
@@ -1296,8 +1310,6 @@ export default function Home() {
 
       stopHowlEntries(entries, soundName.toLowerCase());
     });
-
-    mixHowlsRef.current = {};
   };
 
   const pauseSoundscape = () => {
