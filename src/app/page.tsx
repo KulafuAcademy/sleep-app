@@ -1997,6 +1997,7 @@ export default function Home() {
                     </div>
                   ))}
               </div>
+
               {/* 👇 Sleep Timer（ここに追加） */}
               <div className="mt-6">
                 <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4 min-h-[190px]">
@@ -2144,8 +2145,9 @@ export default function Home() {
                         </span>
                       )}
                     </button>
+                  </div>
 
-                    <div className="flex justify-center">
+                  <div className="flex justify-center">
                     <button
                       type="button"
                       onClick={() => {
@@ -2163,13 +2165,14 @@ export default function Home() {
                     >
                       Pause
                     </button>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/* 👇ここに追加 */}
-            {/*<button
+          </div>
+
+          {/* 👇ここに追加 */}
+          {/*<button
   onClick={() => {
     if (isSoundscapePlaying) 
       stopSoundscape();
@@ -2183,7 +2186,6 @@ export default function Home() {
 >
   {isSoundscapePlaying ? "Stop" : "Play Soundscape"}
 </button>*/}
-          </div>
         </div>
       </div>
     );
