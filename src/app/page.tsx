@@ -1199,11 +1199,26 @@ export default function Home() {
     const safeValue = Math.min(Math.max(value, 0), 1);
     const entries = mixHowlsRef.current[sound];
 
-    entries?.forEach((entry) => {
+    if (!entries) return;
+
+    entries.forEach((entry, index) => {
       if (entry.id === null) return;
 
       const baseVolume = getSoundscapeBaseVolume(sound, entry.name);
       const nextVolume = baseVolume * safeValue;
+
+      if (isMobile) {
+        const activeCount = Math.ceil(entries.length * safeValue);
+        const shouldMute = index >= activeCount || safeValue <= 0;
+
+        entry.sound.mute(shouldMute, entry.id);
+
+        if (!shouldMute) {
+          entry.sound.volume(baseVolume, entry.id);
+        }
+
+        return;
+      }
 
       if (safeValue <= 0) {
         entry.sound.mute(true, entry.id);
@@ -1212,7 +1227,6 @@ export default function Home() {
       }
 
       entry.sound.mute(false, entry.id);
-      entry.sound.volume(nextVolume);
       entry.sound.volume(nextVolume, entry.id);
     });
   };
