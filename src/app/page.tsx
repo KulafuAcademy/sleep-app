@@ -1248,8 +1248,6 @@ export default function Home() {
   };
 
   const startSoundscape = async () => {
-    stopSoundscape();
-
     await unlockHowlerAudio();
 
     startSilentKeeper();
