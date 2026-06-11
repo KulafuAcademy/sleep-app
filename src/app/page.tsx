@@ -1278,21 +1278,7 @@ export default function Home() {
 
         const targetVolume = baseVolume * mixVolumes[sound];
 
-        const fadeConfig = getActiveFadeConfig(folder);
-
-        entry.sound.volume(0, id);
-
-        const key = getFadeKey(folder, entry.name);
-
-        fadeHowlVolume({
-          key,
-          sound: entry.sound,
-          id,
-          from: 0,
-          to: targetVolume,
-          duration: fadeConfig.fadeInMs,
-          curve: fadeConfig.fadeInCurve,
-        });
+        entry.sound.volume(targetVolume, id);
       });
     }
   };
