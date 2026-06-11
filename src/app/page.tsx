@@ -9,7 +9,6 @@ import {
   Wind,
   Mountain,
   Play,
-  Pause,
   Square,
   Shield,
   FileText,
@@ -2195,60 +2194,6 @@ export default function Home() {
                         </span>
                       )}
                     </button>
-                  </div>
-
-                  <div className="flex justify-center">
-                    <div className="flex justify-center">
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          if (isSoundscapePlaying) {
-                            stopSoundscape();
-                            setIsSoundscapePlaying(false);
-
-                            if (timerRef.current) {
-                              clearInterval(timerRef.current);
-                              timerRef.current = null;
-                            }
-
-                            return;
-                          }
-
-                          await unlockHowlerAudio();
-
-                          stopSoundscape();
-                          await startSoundscape();
-
-                          setIsSoundscapePlaying(true);
-                          setIsSoundscapeTimerRunning(true);
-
-                          if (timerRef.current) {
-                            clearInterval(timerRef.current);
-                          }
-
-                          timerRef.current = setInterval(() => {
-                            setSoundscapeTimeLeft((prev) => {
-                              if (prev <= 1) {
-                                clearInterval(timerRef.current!);
-                                timerRef.current = null;
-
-                                stopSoundscape();
-                                setIsSoundscapePlaying(false);
-                                setIsSoundscapeTimerRunning(false);
-                                setSelectedSoundscapeTimer(null);
-
-                                return 0;
-                              }
-
-                              return prev - 1;
-                            });
-                          }, 1000);
-                        }}
-                        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:bg-white/10 active:scale-[0.98]"
-                      >
-                        <Pause size={16} />
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
