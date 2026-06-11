@@ -992,30 +992,6 @@ export default function Home() {
     }
 
     setSelectedSound(sound);
-
-    if (sound === "Forest") {
-      prepareForestHowls();
-    }
-
-    if (sound === "Wave") {
-      prepareWaveHowls();
-    }
-
-    if (sound === "River") {
-      prepareRiverHowls();
-    }
-
-    if (sound === "Rain") {
-      prepareRainHowls();
-    }
-
-    if (sound === "Bonfire") {
-      prepareBonfireHowls();
-    }
-
-    if (sound === "Cave") {
-      prepareCaveHowls();
-    }
   };
 
   /*
