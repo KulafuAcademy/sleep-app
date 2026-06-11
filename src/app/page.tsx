@@ -226,7 +226,7 @@ export default function Home() {
   // =====================================================
 
   const VOLUME_MAP_DESKTOP = {
-    wave: { a1: 0.15, b1: 0.28, c1: 0.15, a2: 0.5, a3: 0.5 },
+    wave: { a1: 0.15, b1: 0.00, c1: 0.15, a2: 0.5, a3: 0.5 },
     forest: { a1: 0.06, b1: 0.06, c1: 0.2, a2: 0.14, a3: 0.1 },
     rain: { a1: 0.35, b1: 0.18, c1: 0.11, a2: 0.19, a3: 0.1 },
     cave: { a1: 0.01, b1: 0.28, c1: 0.22 },
@@ -246,7 +246,7 @@ export default function Home() {
   // =====================================================
 
   const VOLUME_MAP_MOBILE = {
-    wave: { a1: 0.14, b1: 0.26, c1: 0.14, a2: 0.46, a3: 0.46 },
+    wave: { a1: 0.14, b1: 0.00, c1: 0.14, a2: 0.46, a3: 0.46 },
     forest: { a1: 0.04, b1: 0.04, c1: 0.14, a2: 0.11, a3: 0.07 },
     rain: { a1: 0.3, b1: 0.16, c1: 0.1, a2: 0.17, a3: 0.09 },
     cave: { a1: 0.01, b1: 0.2, c1: 0.16 },
@@ -2590,7 +2590,7 @@ export default function Home() {
 
               <button
                 onClick={() => setScreen("info")}
-                className="text-sm text-white/60 transition hover:text-white/80"
+                className="text-sm text-white/60 transition hover:text-white/80"８８
               >
                 Info →
               </button>
