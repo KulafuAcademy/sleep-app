@@ -2162,7 +2162,7 @@ export default function Home() {
                           clearInterval(timerRef.current);
                         }
                       }}
-                      className="w-10 rounded-full border border-white/10 bg-white/5 h-10 text-sm text-white/70 transition hover:bg-white/10 active:scale-[0.98]"
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:bg-white/10 active:scale-[0.98]"
                     >
                       <Pause size={16} />
                     </button>
