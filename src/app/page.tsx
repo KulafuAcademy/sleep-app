@@ -226,7 +226,7 @@ export default function Home() {
   // =====================================================
 
   const VOLUME_MAP_DESKTOP = {
-    wave: { a1: 0.15, b1: 0.00, c1: 0.15, a2: 0.5, a3: 0.5 },
+    wave: { a1: 0.15, b1: 0.0, c1: 0.15, a2: 0.5, a3: 0.5 },
     forest: { a1: 0.06, b1: 0.06, c1: 0.2, a2: 0.14, a3: 0.1 },
     rain: { a1: 0.35, b1: 0.18, c1: 0.11, a2: 0.19, a3: 0.1 },
     cave: { a1: 0.01, b1: 0.28, c1: 0.22 },
@@ -246,7 +246,7 @@ export default function Home() {
   // =====================================================
 
   const VOLUME_MAP_MOBILE = {
-    wave: { a1: 0.14, b1: 0.00, c1: 0.14, a2: 0.46, a3: 0.46 },
+    wave: { a1: 0.14, b1: 0.0, c1: 0.14, a2: 0.46, a3: 0.46 },
     forest: { a1: 0.04, b1: 0.04, c1: 0.14, a2: 0.11, a3: 0.07 },
     rain: { a1: 0.3, b1: 0.16, c1: 0.1, a2: 0.17, a3: 0.09 },
     cave: { a1: 0.01, b1: 0.2, c1: 0.16 },
@@ -2000,10 +2000,6 @@ export default function Home() {
               {/* 👇 Sleep Timer（ここに追加） */}
               <div className="mt-6">
                 <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-4 min-h-[190px]">
-                  <div className="text-sm text-white/75 text-center">
-                    Rest with this soundscape
-                  </div>
-
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       onClick={() => startSoundscapeTimer(30)}
@@ -2147,6 +2143,24 @@ export default function Home() {
                           <span className="text-sm leading-none">8h</span>
                         </span>
                       )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        stopSoundscape();
+                        setIsSoundscapePlaying(false);
+                        setIsSoundscapeTimerRunning(false);
+                        setSoundscapeTimeLeft(0);
+                        setSelectedSoundscapeTimer(null);
+
+                        if (timerRef.current) {
+                          clearInterval(timerRef.current);
+                        }
+                      }}
+                      className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 text-sm text-white/70 transition hover:bg-white/10 active:scale-[0.98]"
+                    >
+                      Pause
                     </button>
                   </div>
                 </div>
