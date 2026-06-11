@@ -181,16 +181,24 @@ export default function Home() {
     entries: { sound: Howl; id: number | null; name: string }[],
     category: string,
   ) => {
-    entries.forEach(({ sound, id, name }) => {
+    entries.forEach((entry) => {
+      const { sound, id, name } = entry;
+
       cancelFade(getFadeKey(category, name));
 
       if (id === null) {
+        sound.mute(true);
+        sound.volume(0);
         sound.stop();
         return;
       }
 
+      sound.mute(true, id);
       sound.volume(0, id);
+      sound.pause(id);
       sound.stop(id);
+
+      entry.id = null;
     });
   };
 
