@@ -2621,7 +2621,7 @@ export default function Home() {
             </div>
 
             <div className="px-6 pb-6">
-              <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg">
+              <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg min-h-[190px]">
                 {/*
             <button
               onClick={toggle}
@@ -2653,7 +2653,7 @@ export default function Home() {
                       onClick={() => {
                         startSleepTimer(30);
                       }}
-                      className={`rounded-xl border py-2.5 text-sm transition ${
+                      className={`rounded-xl border py-4.5 text-sm transition ${
                         selectedTimer === 30 && timeLeft > 0
                           ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                           : "border-white/10 bg-white/5 text-white/75"
@@ -2681,7 +2681,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => startSleepTimer(60)}
-                      className={`rounded-xl border py-2.5 text-sm transition ${
+                      className={`rounded-xl border py-4.5 text-sm transition ${
                         selectedTimer === 60 && timeLeft > 0
                           ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                           : "border-white/10 bg-white/5 text-white/75"
@@ -2709,7 +2709,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => startSleepTimer(120)}
-                      className={`rounded-xl border py-2.5 text-sm transition ${
+                      className={`rounded-xl border py-4.5 text-sm transition ${
                         selectedTimer === 120 && timeLeft > 0
                           ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                           : "border-white/10 bg-white/5 text-white/75"
@@ -2740,7 +2740,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => startSleepTimer(180)}
-                    className={`rounded-xl border py-2.5 text-sm transition ${
+                    className={`rounded-xl border py-4.5 text-sm transition ${
                       selectedTimer === 180 && timeLeft > 0
                         ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                         : "border-white/10 bg-white/5 text-white/75"
@@ -2764,7 +2764,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => startSleepTimer(360)}
-                    className={`rounded-xl border py-2.5 text-sm transition ${
+                    className={`rounded-xl border py-4.5 text-sm transition ${
                       selectedTimer === 360 && timeLeft > 0
                         ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                         : "border-white/10 bg-white/5 text-white/75"
@@ -2788,7 +2788,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => startSleepTimer(480)}
-                    className={`rounded-xl border py-2.5 text-sm transition ${
+                    className={`rounded-xl border py-4.5 text-sm transition ${
                       selectedTimer === 480 && timeLeft > 0
                         ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]"
                         : "border-white/10 bg-white/5 text-white/75"
