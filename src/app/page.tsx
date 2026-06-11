@@ -152,7 +152,6 @@ export default function Home() {
 
   const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
-
   const stopForestHowls = () => {
     stopHowlEntries(forestHowlsRef.current, "forest");
   };
@@ -404,14 +403,15 @@ export default function Home() {
       const forestVolMap = ACTIVE_VOLUME_MAP.forest;
 
       forestHowlsRef.current.forEach((entry) => {
+        const targetVolume = forestVolMap[entry.name] ?? 0;
+
+        entry.sound.mute(false);
+        entry.sound.volume(targetVolume);
+
         const id = entry.sound.play();
         entry.id = id;
 
-        const targetVolume = forestVolMap[entry.name] ?? 0;
-
         entry.sound.volume(targetVolume, id);
-
-
       });
 
       return;
@@ -425,13 +425,15 @@ export default function Home() {
       const waveVolMap = ACTIVE_VOLUME_MAP.wave;
 
       waveHowlsRef.current.forEach((entry) => {
+        const targetVolume = waveVolMap[entry.name] ?? 0;
+
+        entry.sound.mute(false);
+        entry.sound.volume(targetVolume);
+
         const id = entry.sound.play();
         entry.id = id;
 
-        const targetVolume = waveVolMap[entry.name] ?? 0;
-
         entry.sound.volume(targetVolume, id);
-
       });
 
       return;
@@ -445,13 +447,15 @@ export default function Home() {
       const riverVolMap = ACTIVE_VOLUME_MAP.river;
 
       riverHowlsRef.current.forEach((entry) => {
+        const targetVolume = riverVolMap[entry.name] ?? 0;
+
+        entry.sound.mute(false);
+        entry.sound.volume(targetVolume);
+
         const id = entry.sound.play();
         entry.id = id;
 
-        const targetVolume = riverVolMap[entry.name] ?? 0;
-
         entry.sound.volume(targetVolume, id);
-
       });
 
       return;
@@ -465,13 +469,15 @@ export default function Home() {
       const rainVolMap = ACTIVE_VOLUME_MAP.rain;
 
       rainHowlsRef.current.forEach((entry) => {
+        const targetVolume = rainVolMap[entry.name] ?? 0;
+
+        entry.sound.mute(false);
+        entry.sound.volume(targetVolume);
+
         const id = entry.sound.play();
         entry.id = id;
 
-        const targetVolume = rainVolMap[entry.name] ?? 0;
- 
         entry.sound.volume(targetVolume, id);
-
       });
 
       return;
@@ -485,13 +491,15 @@ export default function Home() {
       const bonfireVolMap = ACTIVE_VOLUME_MAP.bonfire;
 
       bonfireHowlsRef.current.forEach((entry) => {
+        const targetVolume = bonfireVolMap[entry.name] ?? 0;
+
+        entry.sound.mute(false);
+        entry.sound.volume(targetVolume);
+
         const id = entry.sound.play();
         entry.id = id;
 
-        const targetVolume = bonfireVolMap[entry.name] ?? 0;
-
         entry.sound.volume(targetVolume, id);
-
       });
 
       return;
@@ -505,14 +513,15 @@ export default function Home() {
       const caveVolMap = ACTIVE_VOLUME_MAP.cave;
 
       caveHowlsRef.current.forEach((entry) => {
+        const targetVolume = caveVolMap[entry.name] ?? 0;
+
+        entry.sound.mute(false);
+        entry.sound.volume(targetVolume);
+
         const id = entry.sound.play();
         entry.id = id;
 
-
-        const targetVolume = caveVolMap[entry.name] ?? 0;
-
         entry.sound.volume(targetVolume, id);
-
       });
 
       return;
@@ -811,7 +820,6 @@ export default function Home() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
     {},
   );
@@ -925,7 +933,6 @@ export default function Home() {
         const targetVolume = baseVolume * mixVolumes[sound];
 
         entry.sound.volume(targetVolume, id);
-
       });
     }
   };
@@ -955,8 +962,8 @@ export default function Home() {
   const splashLengthRef = useRef(25);
 
   const stopRain = () => {
-     stopWaveLayerTest();
-}; 
+    stopWaveLayerTest();
+  };
 
   const startRain = async () => {
     stopRain();
