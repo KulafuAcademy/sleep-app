@@ -628,7 +628,7 @@ export default function Home() {
     setSoundscapeTimeLeft(minutes * 60);
     setIsSoundscapeTimerRunning(true);
 
-    stopSoundscape();
+    stopCurrentSoundscapePlayback();
     startSoundscape();
     setIsSoundscapePlaying(true);
 
