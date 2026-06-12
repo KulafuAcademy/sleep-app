@@ -2006,14 +2006,14 @@ export default function Home() {
 
                   setScreen("select");
                 }}
-                className="text-sm text-white/60"
+                className="text-sm text-white/60 "
               >
                 ← Back
               </button>
 
               <button
                 onClick={() => setScreen("info")}
-                className="text-sm text-white/60 transition hover:text-white/80"
+                className="text-sm text-white/60 "
               >
                 Info →
               </button>
