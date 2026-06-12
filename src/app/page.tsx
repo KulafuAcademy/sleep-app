@@ -798,6 +798,9 @@ export default function Home() {
   const [playerVolume, setPlayerVolume] = useState(0.3);
   const [selectedMixSounds, setSelectedMixSounds] = useState<SoundName[]>([]);
   const [isSoundscapeReady, setIsSoundscapeReady] = useState(false);
+  const [soundscapeLoadedCount, setSoundscapeLoadedCount] = useState(0);
+  const [soundscapeTotalCount, setSoundscapeTotalCount] = useState(0);
+
   const [mixVolumes, setMixVolumes] = useState<Record<SoundName, number>>({
     Rain: 0.5,
     Wave: 0.5,
@@ -887,11 +890,13 @@ export default function Home() {
     applySoundscapeVolume(sound, safeValue);
   };
 
-  const prepareSoundscapeHowls = () => {
-    setIsSoundscapeReady(false);
-
-    let loadedCount = 0;
-    let totalCount = 0;
+    const prepareSoundscapeHowls = () => {
+      setIsSoundscapeReady(false);
+      setSoundscapeLoadedCount(0);
+      setSoundscapeTotalCount(0);
+ 
+      let loadedCount = 0;
+      let totalCount = 0;
 
     sounds.forEach(({ name: sound }) => {
       if (mixHowlsRef.current[sound]?.length) return;
@@ -904,6 +909,7 @@ export default function Home() {
           : (["a1", "b1", "c1", "a2", "a3"] as const);
 
       totalCount += layerNames.length;
+      setSoundscapeTotalCount(totalCount);
 
       const entries = layerNames.map((name) => {
         const howl = new Howl({
@@ -915,6 +921,8 @@ export default function Home() {
 
           onload: () => {
             loadedCount++;
+
+            setSoundscapeLoadedCount(loadedCount);
 
             if (loadedCount >= totalCount) {
               setIsSoundscapeReady(true);
@@ -1366,8 +1374,10 @@ export default function Home() {
                         : "border-[#2A2D33] bg-[#1A1C20] text-[#7A7A7A]"
                     }`}
                   >
-                    {isSoundscapeReady ? "Continue" : "Preparing..."}
-                  </button>
+                    {isSoundscapeReady
+                      ? "Continue"
+                      : `Preparing... ${soundscapeLoadedCount}/${soundscapeTotalCount}`} 
+                   </button>
                 )}
               </div>
             </div>
