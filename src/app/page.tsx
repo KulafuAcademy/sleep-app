@@ -1412,9 +1412,9 @@ export default function Home() {
 
                 {selectedMixSounds.length === 2 && (
                   <button
-                    disabled={!isSoundscapeReady}
+                    disabled={isMobile && !isSoundscapeReady}
                     onClick={() => {
-                      if (!isSoundscapeReady) return;
+                      if (isMobile && !isSoundscapeReady) return;
 
                       setMixVolumes((prev) => ({
                         ...prev,
@@ -1425,12 +1425,12 @@ export default function Home() {
                       setScreen("soundscapeEdit");
                     }}
                     className={`mt-6 w-full rounded-2xl border py-4 text-base font-medium shadow-lg shadow-black/20 transition ${
-                      isSoundscapeReady
+                      !isMobile || isSoundscapeReady
                         ? "border-[#40444D] bg-[#2A2D33] text-[#D8D8D8] hover:bg-[#343842]"
                         : "timer-breath border-[#2A2D33] bg-[#1A1C20] text-[#7A7A7A]"
                     }`}
                   >
-                    {isSoundscapeReady
+                    {!isMobile || isSoundscapeReady
                       ? "Continue"
                       : `Preparing... ${soundscapeLoadedCount}/${soundscapeTotalCount}`}
                   </button>
