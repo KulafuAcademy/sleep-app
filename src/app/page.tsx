@@ -617,8 +617,7 @@ export default function Home() {
       }
 
       if (isSoundscapePlaying) {
-        stopForestHowls();
-        stopSoundscape();
+        stopCurrentSoundscapePlayback();
         setIsSoundscapePlaying(false);
       }
 
