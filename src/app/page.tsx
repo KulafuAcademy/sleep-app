@@ -797,6 +797,7 @@ export default function Home() {
 
   const [playerVolume, setPlayerVolume] = useState(0.3);
   const [selectedMixSounds, setSelectedMixSounds] = useState<SoundName[]>([]);
+  const [isSoundscapeReady, setIsSoundscapeReady] = useState(false);
   const [mixVolumes, setMixVolumes] = useState<Record<SoundName, number>>({
     Rain: 0.5,
     Wave: 0.5,
@@ -887,6 +888,11 @@ export default function Home() {
   };
 
   const prepareSoundscapeHowls = () => {
+    setIsSoundscapeReady(false);
+
+    let loadedCount = 0;
+    let totalCount = 0;
+
     sounds.forEach(({ name: sound }) => {
       if (mixHowlsRef.current[sound]?.length) return;
 
@@ -897,6 +903,8 @@ export default function Home() {
           ? (["a1", "b1", "c1"] as const)
           : (["a1", "b1", "c1", "a2", "a3"] as const);
 
+      totalCount += layerNames.length;
+
       const entries = layerNames.map((name) => {
         const howl = new Howl({
           src: [`/sound/${folder}/v1/${name}.wav`],
@@ -904,6 +912,14 @@ export default function Home() {
           volume: 0,
           html5: true,
           preload: true,
+
+          onload: () => {
+            loadedCount++;
+
+            if (loadedCount >= totalCount) {
+              setIsSoundscapeReady(true);
+            }
+          },
         });
 
         return {
@@ -1332,7 +1348,10 @@ export default function Home() {
 
                 {selectedMixSounds.length === 2 && (
                   <button
+                    disabled={!isSoundscapeReady}
                     onClick={() => {
+                      if (!isSoundscapeReady) return;
+
                       setMixVolumes((prev) => ({
                         ...prev,
                         [selectedMixSounds[0]]: 0.5,
@@ -1341,9 +1360,13 @@ export default function Home() {
 
                       setScreen("soundscapeEdit");
                     }}
-                    className="mt-6 w-full rounded-2xl border border-[#40444D] bg-[#2A2D33] py-4 text-base font-medium text-[#D8D8D8] shadow-lg shadow-black/20 transition hover:bg-[#343842]"
+                    className={`mt-6 w-full rounded-2xl border py-4 text-base font-medium shadow-lg shadow-black/20 transition ${
+                      isSoundscapeReady
+                        ? "border-[#40444D] bg-[#2A2D33] text-[#D8D8D8] hover:bg-[#343842]"
+                        : "border-[#2A2D33] bg-[#1A1C20] text-[#7A7A7A]"
+                    }`}
                   >
-                    Continue
+                    {isSoundscapeReady ? "Continue" : "Preparing..."}
                   </button>
                 )}
               </div>
