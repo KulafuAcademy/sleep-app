@@ -1376,12 +1376,12 @@ export default function Home() {
 
                       setScreen("soundscapeEdit");
                     }}
-                    className={`mt-6 w-full rounded-2xl border py-4 text-base font-medium shadow-lg shadow-black/20 transition ${
-                      isSoundscapeReady
-                        ? "border-[#40444D] bg-[#2A2D33] text-[#D8D8D8] hover:bg-[#343842]"
-                        : "border-[#2A2D33] bg-[#1A1C20] text-[#7A7A7A]"
-                    }`}
-                  >
+                      className={`mt-6 w-full rounded-2xl border py-4 text-base font-medium shadow-lg shadow-black/20 transition ${
+                        isSoundscapeReady
+                          ? "border-[#40444D] bg-[#2A2D33] text-[#D8D8D8] hover:bg-[#343842]"
+                          : "hibiki-breathe border-[#2A2D33] bg-[#1A1C20] text-[#7A7A7A]"
+                       }`}
+                       >  
                     {isSoundscapeReady
                       ? "Continue"
                       : `Preparing... ${soundscapeLoadedCount}/${soundscapeTotalCount}`}
