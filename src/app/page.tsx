@@ -931,7 +931,7 @@ export default function Home() {
   };
 
   const updateMixVolume = (sound: SoundName, value: number) => {
-    console.log("UPDATE", sound, value);
+    alert(`UPDATE ${sound} ${value} / isIOS=${isIOS}`);
 
     const safeValue = Math.min(Math.max(value, 0), 1);
 
