@@ -886,19 +886,11 @@ export default function Home() {
     applySoundscapeVolume(sound, safeValue);
   };
 
-  const startSoundscape = async () => {
-    stopSoundscape();
+  const prepareSoundscapeHowls = () => {
+    sounds.forEach(({ name: sound }) => {
+      if (mixHowlsRef.current[sound]?.length) return;
 
-    await unlockHowlerAudio();
-
-    startSilentKeeper();
-
-    for (const sound of selectedMixSounds) {
       const folder = sound.toLowerCase();
-
-      const volMap =
-        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-        ACTIVE_VOLUME_MAP.wave;
 
       const layerNames =
         folder === "bonfire" || folder === "cave"
@@ -922,6 +914,31 @@ export default function Home() {
       });
 
       mixHowlsRef.current[sound] = entries;
+    });
+  };
+
+  const startSoundscape = async () => {
+    stopSoundscape();
+
+    await unlockHowlerAudio();
+
+    startSilentKeeper();
+
+    for (const sound of selectedMixSounds) {
+      const folder = sound.toLowerCase();
+
+      const volMap =
+        ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+        ACTIVE_VOLUME_MAP.wave;
+
+      let entries = mixHowlsRef.current[sound];
+
+      if (!entries?.length) {
+        prepareSoundscapeHowls();
+        entries = mixHowlsRef.current[sound];
+      }
+
+      if (!entries) return;
 
       entries.forEach((entry) => {
         const id = entry.sound.play();
@@ -1167,7 +1184,10 @@ export default function Home() {
               </button>
 
               <button
-                onClick={() => setScreen("soundscape")}
+                onClick={() => {
+                  prepareSoundscapeHowls();
+                  setScreen("soundscape");
+                }}
                 className="mt-4 flex w-full items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center transition hover:bg-white/10"
               >
                 <div>
