@@ -891,6 +891,18 @@ export default function Home() {
 
         const now = entry.gain.context.currentTime;
 
+        console.log(
+        "GAIN",
+        sound,
+        entry.name,
+        "safeValue",
+        safeValue,
+        "current",
+        entry.gain.gain.value,
+        "next",
+        safeValue * safeValue,
+      );
+
         entry.gain.gain.cancelScheduledValues(now);
         entry.gain.gain.setValueAtTime(safeValue * safeValue, now);
       });
@@ -927,6 +939,8 @@ export default function Home() {
       ...prev,
       [sound]: safeValue,
     }));
+    
+    console.log("ISIOS", isIOS);
 
     applySoundscapeVolume(sound, safeValue);
   };
@@ -971,7 +985,7 @@ export default function Home() {
         const baseVolume = getSoundscapeBaseVolume(sound, entry.name);
         const targetVolume = baseVolume * mixVolumes[sound];
 
-        entry.gain.gain.value = 0.01;
+        entry.gain.gain.value = targetVolume;
         await entry.audio.play();
       }
     }
