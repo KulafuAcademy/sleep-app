@@ -943,7 +943,7 @@ export default function Home() {
 
         audio.loop = true;
         audio.preload = "auto";
-        audio.volume = 1;
+        audio.volume = 0;
 
         const source = ctx.createMediaElementSource(audio);
         const gain = ctx.createGain();
