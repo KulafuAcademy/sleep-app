@@ -990,13 +990,11 @@ export default function Home() {
   };
 
   const stopCurrentSoundscapePlayback = () => {
-    Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
+    Object.values(mixHowlsRef.current).forEach((entries) => {
       if (!entries) return;
 
       entries.forEach((entry) => {
-        if (entry.id === null) return;
-
-        entry.sound.stop(entry.id);
+        entry.sound.stop();
         entry.id = null;
       });
     });
@@ -1413,7 +1411,7 @@ export default function Home() {
                 onClick={() => {
                   pauseWaveLayerTestImmediately();
 
-                  stopSoundscape();
+                  stopCurrentSoundscapePlayback();
                   setIsSoundscapePlaying(false);
                   setIsSoundscapeTimerRunning(false);
                   setSoundscapeTimeLeft(0);
