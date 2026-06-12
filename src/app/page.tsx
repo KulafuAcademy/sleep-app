@@ -957,6 +957,55 @@ export default function Home() {
 
     startSilentKeeper();
 
+    if (!isMobile) {
+      for (const sound of selectedMixSounds) {
+        const folder = sound.toLowerCase();
+
+        const volMap =
+          ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
+          ACTIVE_VOLUME_MAP.wave;
+
+        const layerNames =
+          folder === "bonfire" || folder === "cave"
+            ? (["a1", "b1", "c1"] as const)
+            : (["a1", "b1", "c1", "a2", "a3"] as const);
+
+        const entries = layerNames.map((name) => {
+          const howl = new Howl({
+            src: [`/sound/${folder}/v1/${name}.wav`],
+            loop: true,
+            volume: 0,
+            html5: true,
+            preload: true,
+          });
+
+          return {
+            sound: howl,
+            id: null as number | null,
+            name,
+          };
+        });
+
+        mixHowlsRef.current[sound] = entries;
+
+        entries.forEach((entry) => {
+          const id = entry.sound.play();
+          entry.id = id;
+
+          const baseVolume =
+            entry.name in volMap
+              ? volMap[entry.name as keyof typeof volMap]
+              : 0;
+
+          const targetVolume = baseVolume * mixVolumes[sound];
+
+          entry.sound.volume(targetVolume, id);
+        });
+      }
+
+      return;
+    }
+
     for (const sound of selectedMixSounds) {
       const folder = sound.toLowerCase();
 
