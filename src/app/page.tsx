@@ -918,7 +918,7 @@ export default function Home() {
   };
 
   const startSoundscape = async () => {
-    stopSoundscape();
+    stopCurrentSoundscapePlayback();
 
     await unlockHowlerAudio();
 
@@ -952,6 +952,19 @@ export default function Home() {
         entry.sound.volume(targetVolume, id);
       });
     }
+  };
+
+  const stopCurrentSoundscapePlayback = () => {
+    Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
+      if (!entries) return;
+
+      entries.forEach((entry) => {
+        if (entry.id === null) return;
+
+        entry.sound.stop(entry.id);
+        entry.id = null;
+      });
+    });
   };
 
   const stopSoundscape = () => {
