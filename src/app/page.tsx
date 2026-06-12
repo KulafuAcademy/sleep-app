@@ -888,7 +888,11 @@ export default function Home() {
     if (isIOS) {
       iosSoundscapeLayersRef.current[sound]?.forEach((entry) => {
         const baseVolume = getSoundscapeBaseVolume(sound, entry.name);
-        entry.gain.gain.value = safeValue * safeValue;
+
+        const now = entry.gain.context.currentTime;
+
+        entry.gain.gain.cancelScheduledValues(now);
+        entry.gain.gain.setValueAtTime(safeValue * safeValue, now);
       });
 
       return;
