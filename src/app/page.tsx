@@ -895,21 +895,24 @@ export default function Home() {
     );
 
     if (alreadyPrepared) {
-      setSoundscapeLoadedCount(soundscapeTotalCount || 26);
-      setSoundscapeTotalCount(soundscapeTotalCount || 26);
+      setSoundscapeLoadedCount(26);
+      setSoundscapeTotalCount(26);
       setIsSoundscapeReady(true);
       return;
     }
 
     setIsSoundscapeReady(false);
     setSoundscapeLoadedCount(0);
-    setSoundscapeTotalCount(0);
+    setSoundscapeTotalCount(26);
 
     let loadedCount = 0;
-    let totalCount = 0;
 
     sounds.forEach(({ name: sound }) => {
-      if (mixHowlsRef.current[sound]?.length) return;
+      if (mixHowlsRef.current[sound]?.length) {
+        loadedCount += mixHowlsRef.current[sound]?.length ?? 0;
+        setSoundscapeLoadedCount(loadedCount);
+        return;
+      }
 
       const folder = sound.toLowerCase();
 
@@ -917,9 +920,6 @@ export default function Home() {
         folder === "bonfire" || folder === "cave"
           ? (["a1", "b1", "c1"] as const)
           : (["a1", "b1", "c1", "a2", "a3"] as const);
-
-      totalCount += layerNames.length;
-      setSoundscapeTotalCount(totalCount);
 
       const entries = layerNames.map((name) => {
         const howl = new Howl({
@@ -931,10 +931,9 @@ export default function Home() {
 
           onload: () => {
             loadedCount++;
-
             setSoundscapeLoadedCount(loadedCount);
 
-            if (loadedCount >= totalCount) {
+            if (loadedCount >= 26) {
               setIsSoundscapeReady(true);
             }
           },
@@ -1376,12 +1375,12 @@ export default function Home() {
 
                       setScreen("soundscapeEdit");
                     }}
-                      className={`mt-6 w-full rounded-2xl border py-4 text-base font-medium shadow-lg shadow-black/20 transition ${
-                        isSoundscapeReady
-                          ? "border-[#40444D] bg-[#2A2D33] text-[#D8D8D8] hover:bg-[#343842]"
-                          : "timer-breath border-[#2A2D33] bg-[#1A1C20] text-[#7A7A7A]"
-                       }`}
-                       >  
+                    className={`mt-6 w-full rounded-2xl border py-4 text-base font-medium shadow-lg shadow-black/20 transition ${
+                      isSoundscapeReady
+                        ? "border-[#40444D] bg-[#2A2D33] text-[#D8D8D8] hover:bg-[#343842]"
+                        : "timer-breath border-[#2A2D33] bg-[#1A1C20] text-[#7A7A7A]"
+                    }`}
+                  >
                     {isSoundscapeReady
                       ? "Continue"
                       : `Preparing... ${soundscapeLoadedCount}/${soundscapeTotalCount}`}
