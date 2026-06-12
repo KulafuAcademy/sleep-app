@@ -937,7 +937,10 @@ export default function Home() {
     for (const sound of selectedMixSounds) {
       const folder = sound.toLowerCase();
 
-      const layerNames = ["a1"] as const;
+      const layerNames =
+        folder === "bonfire" || folder === "cave"
+          ? (["a1", "b1", "c1"] as const)
+          : (["a1", "b1", "c1", "a2", "a3"] as const);
 
       const entries = layerNames.map((name) => {
         const audio = new Audio(`/sound/${folder}/v1/${name}.wav`);
@@ -968,7 +971,7 @@ export default function Home() {
         const baseVolume = getSoundscapeBaseVolume(sound, entry.name);
         const targetVolume = baseVolume * mixVolumes[sound];
 
-        entry.gain.gain.value = targetVolume;
+        entry.gain.gain.value = 0.01;
         await entry.audio.play();
       }
     }
