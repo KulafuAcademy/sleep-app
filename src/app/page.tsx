@@ -1059,6 +1059,14 @@ export default function Home() {
     mixHowlsRef.current = {};
   };
 
+  const clearSoundscapePreload = () => {
+    stopSoundscape();
+
+    setIsSoundscapeReady(false);
+    setSoundscapeLoadedCount(0);
+    setSoundscapeTotalCount(0);
+  };
+
   const [highLevel, setHighLevel] = useState(0.015);
   const [highFreq, setHighFreq] = useState(1800);
 
@@ -1096,6 +1104,8 @@ export default function Home() {
   };
 
   const handleSelectSound = (sound: SoundName) => {
+    clearSoundscapePreload();
+
     if (isPlaying) {
       stopRain();
       setIsPlaying(false);
