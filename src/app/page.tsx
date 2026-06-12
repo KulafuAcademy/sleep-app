@@ -150,6 +150,10 @@ export default function Home() {
     typeof navigator !== "undefined" &&
     /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+  const isIOS =
+    typeof navigator !== "undefined" &&
+    /iPad|iPhone|iPod/i.test(navigator.userAgent);
+
   const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
   const stopForestHowls = () => {
@@ -836,6 +840,33 @@ export default function Home() {
     >
   >({});
 
+  type SoundscapeLayerName = "a1" | "b1" | "c1" | "a2" | "a3";
+
+  type IOSSoundscapeLayer = {
+    audio: HTMLAudioElement;
+    source: MediaElementAudioSourceNode;
+    gain: GainNode;
+    name: SoundscapeLayerName;
+  };
+
+  const iosSoundscapeAudioCtxRef = useRef<AudioContext | null>(null);
+
+  const iosSoundscapeLayersRef = useRef<
+    Partial<Record<SoundName, IOSSoundscapeLayer[]>>
+  >({});
+
+  const getIOSSoundscapeAudioContext = async () => {
+    if (!iosSoundscapeAudioCtxRef.current) {
+      iosSoundscapeAudioCtxRef.current = new AudioContext();
+    }
+
+    if (iosSoundscapeAudioCtxRef.current.state === "suspended") {
+      await iosSoundscapeAudioCtxRef.current.resume();
+    }
+
+    return iosSoundscapeAudioCtxRef.current;
+  };
+
   const getSoundscapeBaseVolume = (
     sound: SoundName,
     layerName: "a1" | "b1" | "c1" | "a2" | "a3",
@@ -853,6 +884,16 @@ export default function Home() {
 
   const applySoundscapeVolume = (sound: SoundName, value: number) => {
     const safeValue = Math.min(Math.max(value, 0), 1);
+
+    if (isIOS) {
+      iosSoundscapeLayersRef.current[sound]?.forEach((entry) => {
+        const baseVolume = getSoundscapeBaseVolume(sound, entry.name);
+        entry.gain.gain.value = baseVolume * safeValue;
+      });
+
+      return;
+    }
+
     const entries = mixHowlsRef.current[sound];
 
     entries?.forEach((entry) => {
@@ -886,12 +927,63 @@ export default function Home() {
     applySoundscapeVolume(sound, safeValue);
   };
 
+  const startIOSSoundscape = async () => {
+    const ctx = await getIOSSoundscapeAudioContext();
+
+    for (const sound of selectedMixSounds) {
+      const folder = sound.toLowerCase();
+
+      const layerNames =
+        folder === "bonfire" || folder === "cave"
+          ? (["a1", "b1", "c1"] as const)
+          : (["a1", "b1", "c1", "a2", "a3"] as const);
+
+      const entries = layerNames.map((name) => {
+        const audio = new Audio(`/sound/${folder}/v1/${name}.wav`);
+
+        audio.loop = true;
+        audio.preload = "auto";
+        audio.volume = 1;
+
+        const source = ctx.createMediaElementSource(audio);
+        const gain = ctx.createGain();
+
+        gain.gain.value = 0;
+
+        source.connect(gain);
+        gain.connect(ctx.destination);
+
+        return {
+          audio,
+          source,
+          gain,
+          name,
+        };
+      });
+
+      iosSoundscapeLayersRef.current[sound] = entries;
+
+      for (const entry of entries) {
+        const baseVolume = getSoundscapeBaseVolume(sound, entry.name);
+        const targetVolume = baseVolume * mixVolumes[sound];
+
+        entry.gain.gain.value = targetVolume;
+        await entry.audio.play();
+      }
+    }
+  };
+
   const startSoundscape = async () => {
     stopSoundscape();
 
     await unlockHowlerAudio();
 
     startSilentKeeper();
+
+    if (isIOS) {
+      await startIOSSoundscape();
+      return;
+    }
 
     for (const sound of selectedMixSounds) {
       const folder = sound.toLowerCase();
@@ -938,6 +1030,23 @@ export default function Home() {
   };
 
   const stopSoundscape = () => {
+    if (isIOS) {
+      Object.values(iosSoundscapeLayersRef.current).forEach((entries) => {
+        if (!entries) return;
+
+        entries.forEach((entry) => {
+          entry.audio.pause();
+          entry.audio.currentTime = 0;
+          entry.source.disconnect();
+          entry.gain.disconnect();
+        });
+      });
+
+      iosSoundscapeLayersRef.current = {};
+      stopSilentKeeper();
+      return;
+    }
+
     stopSilentKeeper();
 
     Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
