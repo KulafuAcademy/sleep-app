@@ -890,13 +890,24 @@ export default function Home() {
     applySoundscapeVolume(sound, safeValue);
   };
 
-    const prepareSoundscapeHowls = () => {
-      setIsSoundscapeReady(false);
-      setSoundscapeLoadedCount(0);
-      setSoundscapeTotalCount(0);
- 
-      let loadedCount = 0;
-      let totalCount = 0;
+  const prepareSoundscapeHowls = () => {
+    const alreadyPrepared = sounds.every(
+      ({ name: sound }) => mixHowlsRef.current[sound]?.length,
+    );
+
+    if (alreadyPrepared) {
+      setSoundscapeLoadedCount(soundscapeTotalCount || 26);
+      setSoundscapeTotalCount(soundscapeTotalCount || 26);
+      setIsSoundscapeReady(true);
+      return;
+    }
+
+    setIsSoundscapeReady(false);
+    setSoundscapeLoadedCount(0);
+    setSoundscapeTotalCount(0);
+
+    let loadedCount = 0;
+    let totalCount = 0;
 
     sounds.forEach(({ name: sound }) => {
       if (mixHowlsRef.current[sound]?.length) return;
@@ -1376,8 +1387,8 @@ export default function Home() {
                   >
                     {isSoundscapeReady
                       ? "Continue"
-                      : `Preparing... ${soundscapeLoadedCount}/${soundscapeTotalCount}`} 
-                   </button>
+                      : `Preparing... ${soundscapeLoadedCount}/${soundscapeTotalCount}`}
+                  </button>
                 )}
               </div>
             </div>
