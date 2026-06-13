@@ -1764,7 +1764,7 @@ export default function Home() {
                 </h1>
 
                 <p className="mt-2 text-sm leading-6 text-white/60">
-                  Privacy, Terms and Support
+                  ver0.8.5.7.5
                 </p>
               </div>
             </div>
