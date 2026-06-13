@@ -1050,10 +1050,14 @@ export default function Home() {
   const stopSoundscape = () => {
     stopSilentKeeper();
 
-    Object.entries(mixHowlsRef.current).forEach(([soundName, entries]) => {
+    Object.values(mixHowlsRef.current).forEach((entries) => {
       if (!entries) return;
 
-      stopHowlEntries(entries, soundName.toLowerCase());
+      entries.forEach((entry) => {
+        entry.sound.stop();
+        entry.sound.unload();
+        entry.id = null;
+      });
     });
 
     mixHowlsRef.current = {};
