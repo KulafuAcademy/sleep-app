@@ -118,7 +118,7 @@ export default function Home() {
   // =====================================================
 
   const VOLUME_MAP_DESKTOP = {
-    wave: { a1: 0.15, b1: 0.00, c1: 0.15, a2: 0.5, a3: 0.5 },
+    wave: { a1: 0.15, b1: 0.0, c1: 0.15, a2: 0.5, a3: 0.5 },
     forest: { a1: 0.06, b1: 0.06, c1: 0.2, a2: 0.14, a3: 0.1 },
     rain: { a1: 0.35, b1: 0.18, c1: 0.11, a2: 0.19, a3: 0.1 },
     cave: { a1: 0.01, b1: 0.28, c1: 0.22 },
@@ -138,7 +138,7 @@ export default function Home() {
   // =====================================================
 
   const VOLUME_MAP_MOBILE = {
-    wave: { a1: 0.14, b1: 0.00, c1: 0.14, a2: 0.46, a3: 0.46 },
+    wave: { a1: 0.14, b1: 0.0, c1: 0.14, a2: 0.46, a3: 0.46 },
     forest: { a1: 0.04, b1: 0.04, c1: 0.14, a2: 0.11, a3: 0.07 },
     rain: { a1: 0.3, b1: 0.16, c1: 0.1, a2: 0.17, a3: 0.09 },
     cave: { a1: 0.01, b1: 0.2, c1: 0.16 },
@@ -871,8 +871,15 @@ export default function Home() {
       }
 
       entry.sound.mute(false, entry.id);
-      entry.sound.volume(nextVolume);
+
       entry.sound.volume(nextVolume, entry.id);
+      entry.sound.volume(nextVolume);
+
+      setTimeout(() => {
+        if (entry.id !== null) {
+          entry.sound.volume(nextVolume, entry.id);
+        }
+      }, 16);
     });
   };
 
@@ -1548,8 +1555,8 @@ export default function Home() {
                         max="1"
                         step="0.01"
                         value={mixVolumes[sound]}
-                        onChange={(e) => {   
-                        updateMixVolume(sound, Number(e.target.value));
+                        onChange={(e) => {
+                          updateMixVolume(sound, Number(e.target.value));
                         }}
                         className="hibiki-slider w-full"
                       />
