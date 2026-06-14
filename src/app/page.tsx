@@ -1549,7 +1549,7 @@ export default function Home() {
                         step="0.01"
                         value={mixVolumes[sound]}
                         onInput={(e) => {
-                          updateMixVolume(sound, Number(e.target.value));
+                          updateMixVolume(sound, Number(e.currentTarget.value));
                         }}
                         className="hibiki-slider w-full"
                       />
