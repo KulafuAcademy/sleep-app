@@ -2183,7 +2183,7 @@ export default function Home() {
 
                   <p className="mt-2 text-xs text-amber-300">Status: Fixing</p>
 
-                  <p>
+                  <p className="mt-4">
                     We have confirmed that volume sliders in Create Soundscape
                     do not affect individual sound levels on some iPhone
                     devices.
