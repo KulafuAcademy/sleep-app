@@ -2175,9 +2175,13 @@ export default function Home() {
             <div className="mt-6 flex-1 overflow-y-auto px-6 pb-8 text-left">
               <div className="space-y-6 text-sm leading-7 text-white/75">
                 <div>
-                  <h2 className="mb-2 text-base text-white">
-                    Known Issue — iPhone Volume Sliders Jun 16,2026
+                  <h2 className="mb-1 text-base text-white">
+                    Known Issue — iPhone Volume Sliders
                   </h2>
+
+                  <p className="text-xs text-white/50">June 16, 2026</p>
+
+                  <p className="mt-2 text-xs text-amber-300">Status: Fixing</p>
 
                   <p>
                     We have confirmed that volume sliders in Create Soundscape
