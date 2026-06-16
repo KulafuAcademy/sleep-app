@@ -13,6 +13,7 @@ import {
   Shield,
   FileText,
   Heart,
+  Wrench,
 } from "lucide-react";
 
 import { Howl, Howler } from "howler";
@@ -60,6 +61,7 @@ export default function Home() {
     | "info"
     | "privacy"
     | "terms"
+    | "devlog"
   >("select");
 
   const [selectedSoundscapeTimer, setSelectedSoundscapeTimer] = useState<
@@ -871,15 +873,8 @@ export default function Home() {
       }
 
       entry.sound.mute(false, entry.id);
-
-      entry.sound.volume(nextVolume, entry.id);
       entry.sound.volume(nextVolume);
-
-      setTimeout(() => {
-        if (entry.id !== null) {
-          entry.sound.volume(nextVolume, entry.id);
-        }
-      }, 16);
+      entry.sound.volume(nextVolume, entry.id);
     });
   };
 
@@ -1822,6 +1817,28 @@ export default function Home() {
                   </div>
                 </button>
 
+                <button
+                  onClick={() => setScreen("devlog")}
+                  className="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left transition-all duration-200 hover:scale-[1.03] hover:border-white/20 hover:bg-white/8 active:scale-[0.98] active:bg-white/8"
+                >
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-200 group-hover:border-white/20 group-hover:bg-white/10">
+                    <Wrench
+                      size={24}
+                      className="text-white/60 transition-colors duration-200 group-hover:text-white/85"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="text-sm font-medium text-white/80 transition-colors duration-200 group-hover:text-white">
+                      Development Log
+                    </div>
+
+                    <div className="text-xs text-white/45 transition-colors duration-200 group-hover:text-white/60">
+                      Notes from the development journey
+                    </div>
+                  </div>
+                </button>
+
                 <button className="group flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left transition-all duration-200 hover:scale-[1.03] hover:border-white/20 hover:bg-white/8 active:scale-[0.98] active:bg-white/8">
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-200 group-hover:border-white/20 group-hover:bg-white/10">
                     <Heart
@@ -2111,6 +2128,65 @@ export default function Home() {
                     Continued use of HIBIKI after changes become effective
                     constitutes acceptance of the updated Terms.
                   </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+   
+
+  if (screen === "devlog") {
+    return (
+      <div
+        style={hibikiShellStyle}
+        className={`hibiki-scroll-shell fixed inset-0 bg-[#030405] text-white flex items-center justify-center px-6 overflow-auto ${
+          isSafariBrowser ? "hibiki-safari-browser-shell" : ""
+        } ${isStandaloneApp ? "hibiki-pwa-shell" : ""}`}
+      >
+        <div className="relative z-10 mt-0 hibiki-card-stage">
+          <div className="hibiki-responsive-card flex flex-col rounded-[32px] border border-[#2A2D33] bg-[#111315] backdrop-blur-md shadow-2xl overflow-hidden">
+            <div className="flex justify-between px-6 pt-6">
+              <button
+                onClick={() => setScreen("info")}
+                className="text-sm text-white/60 transition hover:text-white/80"
+              >
+                ← Back
+              </button>
+
+              <button className="text-sm text-white/0 select-none pointer-events-none">
+                Devlog
+              </button>
+            </div>
+   
+            <HibikiLogo />
+
+            <div className="px-6 text-center">
+              <h1 className="text-3xl font-semibold tracking-tight">
+                Development Log
+              </h1>
+
+              <div> 
+              <h2 className="mb-2 text-base text-white">
+              Known Issue — iPhone Volume Sliders
+              </h2>
+  
+               <p>
+                We have confirmed that volume sliders in Create Soundscape
+                do not affect sound volume on some iPhone devices.
+              </p>
+
+               <p className="mt-3">
+               The issue is currently under investigation.
+              </p>
+
+               <p className="mt-3">
+               Our goal is to restore slider functionality while preserving
+               background playback on iOS.
+               </p>
+                 </div> 
                 </div>
               </div>
             </div>
