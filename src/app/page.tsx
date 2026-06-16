@@ -2136,7 +2136,6 @@ export default function Home() {
       </div>
     );
   }
-   
 
   if (screen === "devlog") {
     return (
@@ -2160,7 +2159,7 @@ export default function Home() {
                 Devlog
               </button>
             </div>
-   
+
             <HibikiLogo />
 
             <div className="px-6 text-center">
@@ -2168,25 +2167,34 @@ export default function Home() {
                 Development Log
               </h1>
 
-              <div> 
-              <h2 className="mb-2 text-base text-white">
-              Known Issue — iPhone Volume Sliders
-              </h2>
-  
-               <p>
-                We have confirmed that volume sliders in Create Soundscape
-                do not affect sound volume on some iPhone devices.
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                Notes from the development journey
               </p>
+            </div>
 
-               <p className="mt-3">
-               The issue is currently under investigation.
-              </p>
+            <div className="mt-6 flex-1 overflow-y-auto px-6 pb-8 text-left">
+              <div className="space-y-6 text-sm leading-7 text-white/75">
+                <div>
+                  <h2 className="mb-2 text-base text-white">
+                    Known Issue — iPhone Volume Sliders
+                  </h2>
 
-               <p className="mt-3">
-               Our goal is to restore slider functionality while preserving
-               background playback on iOS.
-               </p>
-                 </div> 
+                  <p>
+                    We have confirmed that volume sliders in Create Soundscape
+                    do not affect individual sound levels on some iPhone
+                    devices.
+                  </p>
+
+                  <p className="mt-3">
+                    The issue is related to iOS audio behavior and is currently
+                    under investigation.
+                  </p>
+
+                  <p className="mt-3">
+                    We are actively testing alternative audio control methods in
+                    an effort to restore slider functionality while preserving
+                    background playback support on iOS.
+                  </p>
                 </div>
               </div>
             </div>
