@@ -1766,7 +1766,7 @@ export default function Home() {
                 </h1>
 
                 <p className="mt-2 text-sm leading-6 text-white/60">
-                  Ver0.8.5.7.5
+                  Ver0.8.5.7.7
                 </p>
               </div>
             </div>
@@ -2176,7 +2176,7 @@ export default function Home() {
               <div className="space-y-6 text-sm leading-7 text-white/75">
                 <div>
                   <h2 className="mb-2 text-base text-white">
-                    Known Issue — iPhone Volume Sliders
+                    Known Issue — iPhone Volume Sliders Jun 16,2026
                   </h2>
 
                   <p>
