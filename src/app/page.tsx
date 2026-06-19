@@ -101,6 +101,7 @@ export default function Home() {
   };
 
   const silentKeeperRef = useRef<Howl | null>(null);
+  const mediaAnchorRef = useRef<HTMLAudioElement | null>(null);
 
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
@@ -355,6 +356,20 @@ export default function Home() {
   const startSilentKeeper = () => {
     if (silentKeeperRef.current) return;
 
+    if (!mediaAnchorRef.current) {
+      const audio = new Audio("/sound/silence.mp3");
+      audio.loop = true;
+      audio.volume = 0.01;
+      audio.preload = "auto";
+      audio.setAttribute("playsinline", "true");
+
+      mediaAnchorRef.current = audio;
+    }
+
+    mediaAnchorRef.current.play().catch((error) => {
+      console.log("[mediaAnchor]", error);
+    });
+
     silentKeeperRef.current = new Howl({
       src: ["/sound/silence.mp3"],
       loop: true,
@@ -367,6 +382,11 @@ export default function Home() {
   };
 
   const stopSilentKeeper = () => {
+    if (mediaAnchorRef.current) {
+      mediaAnchorRef.current.pause();
+      mediaAnchorRef.current.currentTime = 0;
+    }
+
     if (!silentKeeperRef.current) return;
 
     silentKeeperRef.current.stop();
