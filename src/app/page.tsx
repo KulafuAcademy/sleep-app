@@ -625,7 +625,7 @@ export default function Home() {
   };
 
   /* 👇ここに追加（この位置が正解） */
-  const startSoundscapeTimer = (minutes: number) => {
+  const startSoundscapeTimer = async (minutes: number) => {
     const isSameTimer =
       selectedSoundscapeTimer === minutes && isSoundscapeTimerRunning;
 
@@ -650,7 +650,7 @@ export default function Home() {
     setIsSoundscapeTimerRunning(true);
 
     stopCurrentSoundscapePlayback();
-    startSoundscape();
+    await startSoundscape();
     setIsSoundscapePlaying(true);
 
     if (timerRef.current) {
