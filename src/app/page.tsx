@@ -1145,7 +1145,8 @@ export default function Home() {
       ],
     });
 
-    //navigator.mediaSession.playbackState =isPlaying ? "playing" : "paused";
+    navigator.mediaSession.playbackState =
+      isPlaying || isSoundscapePlaying ? "playing" : "paused";
 
     navigator.mediaSession.setActionHandler("pause", () => {
       Object.values(mixAudioRefs.current).forEach((audios) => {
@@ -1173,7 +1174,7 @@ export default function Home() {
     navigator.mediaSession.setActionHandler("seekbackward", null);
     navigator.mediaSession.setActionHandler("seekforward", null);
     navigator.mediaSession.setActionHandler("seekto", null);
-  }, [selectedSound, isPlaying]);
+  }, [selectedSound, isPlaying, isSoundscapePlaying]);
 
   if (screen === "select") {
     return (
