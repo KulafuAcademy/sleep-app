@@ -25,6 +25,14 @@ type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Cave";
 const MOBILE_MIX_DURATION_SECONDS = 30;
 const MOBILE_MIX_SAMPLE_RATE = 44100;
 const MOBILE_MIX_TRANSITION_SECONDS = 0.8;
+const ANDROID_LOOP_CROSSFADE_SECONDS = 1.2;
+
+type AndroidMediaPair = {
+  elements: [HTMLAudioElement, HTMLAudioElement];
+  activeIndex: 0 | 1;
+  transitioning: boolean;
+  volume: number;
+};
 
 function audioBufferToWav(buffer: AudioBuffer) {
   const channelCount = Math.min(buffer.numberOfChannels, 2);
@@ -158,8 +166,8 @@ export default function Home() {
 
   const silentKeeperRef = useRef<Howl | null>(null);
   const mediaAnchorRef = useRef<HTMLAudioElement | null>(null);
-  const androidMediaAudioRefs = useRef<
-    Partial<Record<SoundName, HTMLAudioElement>>
+  const androidMediaPairsRef = useRef<
+    Partial<Record<SoundName, AndroidMediaPair>>
   >({});
 
   const fluctuationRef = useRef<number | null>(null);
@@ -219,22 +227,22 @@ export default function Home() {
   const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
   const clearAndroidMediaAudio = () => {
-    Object.values(androidMediaAudioRefs.current).forEach((audio) => {
-      if (!audio) return;
-      audio.pause();
-      audio.removeAttribute("src");
-      audio.load();
-      audio.remove();
+    Object.values(androidMediaPairsRef.current).forEach((pair) => {
+      pair?.elements.forEach((audio) => {
+        audio.pause();
+        audio.removeAttribute("src");
+        audio.load();
+        audio.remove();
+      });
     });
-    androidMediaAudioRefs.current = {};
+    androidMediaPairsRef.current = {};
   };
 
-  const createAndroidMediaAudio = (sound: SoundName, volume: number) => {
+  const createAndroidMediaElement = (sound: SoundName) => {
     const audio = document.createElement("audio");
-    audio.src = `/sound/mixes/android/${sound.toLowerCase()}.wav`;
-    audio.loop = true;
+    audio.src = `/sound/mixes/android/${sound.toLowerCase()}.webm`;
+    audio.loop = false;
     audio.preload = "auto";
-    audio.volume = volume;
     audio.setAttribute("playsinline", "true");
     audio.setAttribute("aria-hidden", "true");
     audio.style.position = "fixed";
@@ -243,8 +251,83 @@ export default function Home() {
     audio.style.opacity = "0";
     audio.style.pointerEvents = "none";
     document.body.appendChild(audio);
-    androidMediaAudioRefs.current[sound] = audio;
     return audio;
+  };
+
+  const createAndroidMediaPair = (sound: SoundName, volume: number) => {
+    const pair: AndroidMediaPair = {
+      elements: [
+        createAndroidMediaElement(sound),
+        createAndroidMediaElement(sound),
+      ],
+      activeIndex: 0,
+      transitioning: false,
+      volume,
+    };
+
+    const handleTimeUpdate = (audio: HTMLAudioElement) => {
+      const active = pair.elements[pair.activeIndex];
+      if (audio !== active || !Number.isFinite(active.duration)) return;
+
+      const remaining = active.duration - active.currentTime;
+      if (remaining > ANDROID_LOOP_CROSSFADE_SECONDS) return;
+
+      const standbyIndex = pair.activeIndex === 0 ? 1 : 0;
+      const standby = pair.elements[standbyIndex];
+
+      if (!pair.transitioning) {
+        pair.transitioning = true;
+        standby.currentTime = 0;
+        standby.volume = 0;
+        standby.muted = pair.volume <= 0;
+        standby.play().catch((error) => {
+          console.log("[android loop overlap error]", sound, error);
+        });
+      }
+
+      const progress = Math.min(
+        Math.max(
+          (ANDROID_LOOP_CROSSFADE_SECONDS - remaining) /
+            ANDROID_LOOP_CROSSFADE_SECONDS,
+          0,
+        ),
+        1,
+      );
+      active.volume = pair.volume * (1 - progress);
+      standby.volume = pair.volume * progress;
+    };
+
+    const handleEnded = (audio: HTMLAudioElement) => {
+      const active = pair.elements[pair.activeIndex];
+      if (audio !== active) return;
+
+      const oldActiveIndex = pair.activeIndex;
+      const nextActiveIndex = oldActiveIndex === 0 ? 1 : 0;
+      const nextActive = pair.elements[nextActiveIndex];
+
+      audio.pause();
+      audio.currentTime = 0;
+      audio.volume = 0;
+      pair.activeIndex = nextActiveIndex;
+      pair.transitioning = false;
+      nextActive.muted = pair.volume <= 0;
+      nextActive.volume = pair.volume;
+
+      if (nextActive.paused) {
+        nextActive.play().catch((error) => {
+          console.log("[android loop fallback error]", sound, error);
+        });
+      }
+    };
+
+    pair.elements.forEach((audio) => {
+      audio.addEventListener("timeupdate", () => handleTimeUpdate(audio));
+      audio.addEventListener("ended", () => handleEnded(audio));
+    });
+    pair.elements[0].volume = volume;
+    pair.elements[1].volume = 0;
+    androidMediaPairsRef.current[sound] = pair;
+    return pair;
   };
 
   const stopForestHowls = () => {
@@ -493,8 +576,8 @@ export default function Home() {
       clearAndroidMediaAudio();
       if (!selectedSound) return;
 
-      const audio = createAndroidMediaAudio(selectedSound, 1);
-      audio.play().catch((error) => {
+      const pair = createAndroidMediaPair(selectedSound, 1);
+      pair.elements[pair.activeIndex].play().catch((error) => {
         console.log("[android single preset play error]", error);
       });
       return;
@@ -1008,8 +1091,9 @@ export default function Home() {
     let loadedCount = 0;
 
     selectedSounds.forEach((sound) => {
-      const audio = createAndroidMediaAudio(sound, volumes[sound]);
-      audio.addEventListener(
+      const pair = createAndroidMediaPair(sound, volumes[sound]);
+      const active = pair.elements[pair.activeIndex];
+      active.addEventListener(
         "canplay",
         () => {
           loadedCount++;
@@ -1019,23 +1103,33 @@ export default function Home() {
         },
         { once: true },
       );
-      audio.addEventListener(
+      active.addEventListener(
         "error",
         () => {
-          console.log("[android mix load error]", sound, audio.error);
+          console.log("[android mix load error]", sound, active.error);
           setIsMobileMixReady(false);
         },
         { once: true },
       );
-      audio.load();
+      pair.elements.forEach((audio) => audio.load());
     });
   };
 
   const applyAndroidMixVolume = (sound: SoundName, value: number) => {
-    const audio = androidMediaAudioRefs.current[sound];
-    if (!audio) return;
-    audio.muted = value <= 0;
-    audio.volume = value;
+    const pair = androidMediaPairsRef.current[sound];
+    if (!pair) return;
+
+    pair.volume = value;
+    const active = pair.elements[pair.activeIndex];
+    const standby = pair.elements[pair.activeIndex === 0 ? 1 : 0];
+    pair.elements.forEach((audio) => {
+      audio.muted = value <= 0;
+    });
+
+    if (!pair.transitioning) {
+      active.volume = value;
+      standby.volume = 0;
+    }
   };
 
   const loadMobilePresetBuffer = async (sound: SoundName) => {
@@ -1400,12 +1494,14 @@ export default function Home() {
       if (!isMobileMixReady) return;
 
       [...selectedMixSounds].reverse().forEach((sound) => {
-        const audio = androidMediaAudioRefs.current[sound];
-        if (!audio) return;
+        const pair = androidMediaPairsRef.current[sound];
+        if (!pair) return;
+        const active = pair.elements[pair.activeIndex];
 
-        audio.muted = mixVolumes[sound] <= 0;
-        audio.volume = mixVolumes[sound];
-        audio.play().catch((error) => {
+        pair.volume = mixVolumes[sound];
+        active.muted = pair.volume <= 0;
+        active.volume = pair.volume;
+        active.play().catch((error) => {
           console.log("[android soundscape play error]", sound, error);
         });
       });
@@ -1472,10 +1568,15 @@ export default function Home() {
   };
 
   const stopCurrentSoundscapePlayback = () => {
-    Object.values(androidMediaAudioRefs.current).forEach((audio) => {
-      if (!audio) return;
-      audio.pause();
-      audio.currentTime = 0;
+    Object.values(androidMediaPairsRef.current).forEach((pair) => {
+      if (!pair) return;
+      pair.elements.forEach((audio, index) => {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = index === 0 ? pair.volume : 0;
+      });
+      pair.activeIndex = 0;
+      pair.transitioning = false;
     });
 
     const mobileMix = mobileMixHowlRef.current;
@@ -1622,11 +1723,19 @@ export default function Home() {
       isPlaying || isSoundscapePlaying ? "playing" : "paused";
 
     navigator.mediaSession.setActionHandler("pause", () => {
-      const androidAudios = Object.values(androidMediaAudioRefs.current);
-      androidAudios.forEach((audio) => {
-        audio?.pause();
+      const androidPairs = Object.values(androidMediaPairsRef.current);
+      androidPairs.forEach((pair) => {
+        if (!pair) return;
+        pair.elements.forEach((audio) => audio.pause());
+        if (pair.transitioning) {
+          const standby = pair.elements[pair.activeIndex === 0 ? 1 : 0];
+          standby.currentTime = 0;
+          standby.volume = 0;
+          pair.elements[pair.activeIndex].volume = pair.volume;
+          pair.transitioning = false;
+        }
       });
-      if (androidAudios.length > 0) {
+      if (androidPairs.length > 0) {
         setIsSoundscapePlaying(false);
       }
 
@@ -1653,12 +1762,13 @@ export default function Home() {
     });
 
     navigator.mediaSession.setActionHandler("play", () => {
-      const androidEntries = Object.values(
-        androidMediaAudioRefs.current,
-      ).filter((audio) => audio !== undefined);
-      if (isAndroid && androidEntries.length > 0) {
-        androidEntries.forEach((audio) => {
-          audio.play().catch((error) => {
+      const androidPairs = Object.values(androidMediaPairsRef.current).filter(
+        (pair) => pair !== undefined,
+      );
+      if (isAndroid && androidPairs.length > 0) {
+        androidPairs.forEach((pair) => {
+          const active = pair.elements[pair.activeIndex];
+          active.play().catch((error) => {
             console.log("[android media session play error]", error);
           });
         });
