@@ -24,6 +24,7 @@ type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Cave";
 
 const MOBILE_MIX_DURATION_SECONDS = 30;
 const MOBILE_MIX_SAMPLE_RATE = 44100;
+const MOBILE_MIX_TRANSITION_SECONDS = 0.8;
 
 function audioBufferToWav(buffer: AudioBuffer) {
   const channelCount = Math.min(buffer.numberOfChannels, 2);
@@ -914,6 +915,14 @@ export default function Home() {
     id: number | null;
     url: string;
   } | null>(null);
+  const mobilePendingMixHowlRef = useRef<{
+    sound: Howl;
+    id: number | null;
+    url: string;
+  } | null>(null);
+  const mobileRenderedVolumesRef = useRef<Record<SoundName, number> | null>(
+    null,
+  );
   const [isMobileMixReady, setIsMobileMixReady] = useState(false);
 
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
@@ -950,6 +959,24 @@ export default function Home() {
     mobilePresetBuffersRef.current[sound] = decodedAudio;
     return decodedAudio;
   };
+
+  const loadMobileHtml5Howl = (url: string, loop: boolean) =>
+    new Promise<Howl>((resolve, reject) => {
+      const howl = new Howl({
+        src: [url],
+        format: ["wav"],
+        loop,
+        volume: 1,
+        html5: true,
+        preload: true,
+        onload: () => resolve(howl),
+        onloaderror: (_, error) => {
+          howl.unload();
+          URL.revokeObjectURL(url);
+          reject(error);
+        },
+      });
+    });
 
   const renderMobileSoundscape = async (
     selectedSounds: SoundName[],
@@ -995,51 +1022,118 @@ export default function Home() {
         previousMix?.id !== null &&
         previousMix?.id !== undefined &&
         previousMix.sound.playing(previousMix.id);
-      const previousSeek =
-        previousMix?.id !== null && previousMix?.id !== undefined
-          ? Number(previousMix.sound.seek(previousMix.id)) || 0
-          : 0;
+      const nextHowl = await loadMobileHtml5Howl(url, true);
 
-      const nextMix = new Howl({
-        src: [url],
-        format: ["wav"],
-        loop: true,
-        volume: 1,
-        html5: true,
-        preload: true,
-        onload: () => {
-          if (renderId !== mobileMixRenderRef.current) {
-            nextMix.unload();
-            URL.revokeObjectURL(url);
-            return;
-          }
+      if (renderId !== mobileMixRenderRef.current) {
+        nextHowl.unload();
+        URL.revokeObjectURL(url);
+        return;
+      }
 
-          mobileMixHowlRef.current = {
-            sound: nextMix,
-            id: null,
-            url,
-          };
+      const nextMix = {
+        sound: nextHowl,
+        id: null as number | null,
+        url,
+      };
+      const previousVolumes = mobileRenderedVolumesRef.current;
 
-          if (wasPlaying) {
-            const id = nextMix.play();
-            mobileMixHowlRef.current.id = id;
-            nextMix.seek(previousSeek % MOBILE_MIX_DURATION_SECONDS, id);
-          }
+      if (wasPlaying && previousMix && previousVolumes) {
+        const transitionStart =
+          Number(previousMix.sound.seek(previousMix.id!)) %
+          MOBILE_MIX_DURATION_SECONDS;
+        const transitionContext = new OfflineAudioContext(
+          2,
+          Math.ceil(
+            MOBILE_MIX_TRANSITION_SECONDS * MOBILE_MIX_SAMPLE_RATE,
+          ),
+          MOBILE_MIX_SAMPLE_RATE,
+        );
 
-          if (previousMix) {
-            previousMix.sound.stop();
-            previousMix.sound.unload();
-            URL.revokeObjectURL(previousMix.url);
-          }
+        buffers.forEach((buffer, index) => {
+          const source = transitionContext.createBufferSource();
+          const gain = transitionContext.createGain();
+          const sound = selectedSounds[index];
 
-          setIsMobileMixReady(true);
-        },
-        onloaderror: (_, error) => {
-          console.log("[mobile mix load error]", error);
+          source.buffer = buffer;
+          source.loop = true;
+          gain.gain.setValueAtTime(previousVolumes[sound], 0);
+          gain.gain.linearRampToValueAtTime(
+            volumes[sound],
+            MOBILE_MIX_TRANSITION_SECONDS,
+          );
+          source.connect(gain).connect(transitionContext.destination);
+          source.start(0, transitionStart);
+        });
+
+        const transitionBuffer = await transitionContext.startRendering();
+        if (renderId !== mobileMixRenderRef.current) {
+          nextHowl.unload();
           URL.revokeObjectURL(url);
-          setIsMobileMixReady(false);
-        },
-      });
+          return;
+        }
+
+        const transitionUrl = URL.createObjectURL(
+          new Blob([audioBufferToWav(transitionBuffer)], {
+            type: "audio/wav",
+          }),
+        );
+        const transitionHowl = await loadMobileHtml5Howl(
+          transitionUrl,
+          false,
+        );
+
+        if (renderId !== mobileMixRenderRef.current) {
+          transitionHowl.unload();
+          URL.revokeObjectURL(transitionUrl);
+          nextHowl.unload();
+          URL.revokeObjectURL(url);
+          return;
+        }
+
+        mobilePendingMixHowlRef.current = nextMix;
+        const transitionMix = {
+          sound: transitionHowl,
+          id: null as number | null,
+          url: transitionUrl,
+        };
+        mobileMixHowlRef.current = transitionMix;
+        mobileRenderedVolumesRef.current = { ...volumes };
+
+        transitionHowl.once("end", () => {
+          if (renderId !== mobileMixRenderRef.current) return;
+
+          const id = nextHowl.play();
+          nextMix.id = id;
+          nextHowl.seek(
+            (transitionStart + MOBILE_MIX_TRANSITION_SECONDS) %
+              MOBILE_MIX_DURATION_SECONDS,
+            id,
+          );
+          mobileMixHowlRef.current = nextMix;
+          mobilePendingMixHowlRef.current = null;
+          transitionHowl.unload();
+          URL.revokeObjectURL(transitionUrl);
+          setIsMobileMixReady(true);
+        });
+
+        const transitionId = transitionHowl.play();
+        transitionMix.id = transitionId;
+        previousMix.sound.stop();
+        previousMix.sound.unload();
+        URL.revokeObjectURL(previousMix.url);
+        return;
+      }
+
+      mobileMixHowlRef.current = nextMix;
+      mobileRenderedVolumesRef.current = { ...volumes };
+
+      if (previousMix) {
+        previousMix.sound.stop();
+        previousMix.sound.unload();
+        URL.revokeObjectURL(previousMix.url);
+      }
+
+      setIsMobileMixReady(true);
     } catch (error) {
       console.log("[mobile mix render error]", error);
       if (renderId === mobileMixRenderRef.current) {
@@ -1296,6 +1390,14 @@ export default function Home() {
       URL.revokeObjectURL(mobileMix.url);
       mobileMixHowlRef.current = null;
     }
+    const pendingMobileMix = mobilePendingMixHowlRef.current;
+    if (pendingMobileMix) {
+      pendingMobileMix.sound.stop();
+      pendingMobileMix.sound.unload();
+      URL.revokeObjectURL(pendingMobileMix.url);
+      mobilePendingMixHowlRef.current = null;
+    }
+    mobileRenderedVolumesRef.current = null;
     setIsMobileMixReady(false);
 
     Object.values(mixHowlsRef.current).forEach((entries) => {
