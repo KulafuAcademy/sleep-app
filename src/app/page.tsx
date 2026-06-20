@@ -22,6 +22,61 @@ Howler.autoSuspend = false;
 
 type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Cave";
 
+const MOBILE_MIX_DURATION_SECONDS = 30;
+const MOBILE_MIX_SAMPLE_RATE = 44100;
+
+function audioBufferToWav(buffer: AudioBuffer) {
+  const channelCount = Math.min(buffer.numberOfChannels, 2);
+  const frameCount = buffer.length;
+  const bytesPerSample = 2;
+  const dataSize = frameCount * channelCount * bytesPerSample;
+  const wav = new ArrayBuffer(44 + dataSize);
+  const view = new DataView(wav);
+
+  const writeText = (offset: number, text: string) => {
+    for (let index = 0; index < text.length; index++) {
+      view.setUint8(offset + index, text.charCodeAt(index));
+    }
+  };
+
+  writeText(0, "RIFF");
+  view.setUint32(4, 36 + dataSize, true);
+  writeText(8, "WAVE");
+  writeText(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, channelCount, true);
+  view.setUint32(24, buffer.sampleRate, true);
+  view.setUint32(
+    28,
+    buffer.sampleRate * channelCount * bytesPerSample,
+    true,
+  );
+  view.setUint16(32, channelCount * bytesPerSample, true);
+  view.setUint16(34, bytesPerSample * 8, true);
+  writeText(36, "data");
+  view.setUint32(40, dataSize, true);
+
+  const channels = Array.from({ length: channelCount }, (_, channel) =>
+    buffer.getChannelData(channel),
+  );
+  let offset = 44;
+
+  for (let frame = 0; frame < frameCount; frame++) {
+    for (let channel = 0; channel < channelCount; channel++) {
+      const sample = Math.max(-1, Math.min(1, channels[channel][frame]));
+      view.setInt16(
+        offset,
+        sample < 0 ? sample * 0x8000 : sample * 0x7fff,
+        true,
+      );
+      offset += bytesPerSample;
+    }
+  }
+
+  return wav;
+}
+
 const sounds: {
   name: SoundName;
   icon: React.ComponentType<{ className?: string }>;
@@ -625,7 +680,9 @@ export default function Home() {
   };
 
   /* 👇ここに追加（この位置が正解） */
-  const startSoundscapeTimer = async (minutes: number) => {
+  const startSoundscapeTimer = (minutes: number) => {
+    if (isMobile && !isMobileMixReady) return;
+
     const isSameTimer =
       selectedSoundscapeTimer === minutes && isSoundscapeTimerRunning;
 
@@ -650,7 +707,7 @@ export default function Home() {
     setIsSoundscapeTimerRunning(true);
 
     stopCurrentSoundscapePlayback();
-    await startSoundscape();
+    startSoundscape();
     setIsSoundscapePlaying(true);
 
     if (timerRef.current) {
@@ -845,6 +902,20 @@ export default function Home() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const mobilePresetBuffersRef = useRef<Partial<Record<SoundName, AudioBuffer>>>(
+    {},
+  );
+  const mobileMixRenderRef = useRef(0);
+  const mobileMixDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const mobileMixHowlRef = useRef<{
+    sound: Howl;
+    id: number | null;
+    url: string;
+  } | null>(null);
+  const [isMobileMixReady, setIsMobileMixReady] = useState(false);
+
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
     {},
   );
@@ -860,6 +931,137 @@ export default function Home() {
       >
     >
   >({});
+
+  const loadMobilePresetBuffer = async (sound: SoundName) => {
+    const cached = mobilePresetBuffersRef.current[sound];
+    if (cached) return cached;
+
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new AudioContext();
+    }
+
+    const response = await fetch(`/sound/mixes/${sound.toLowerCase()}.m4a`);
+    if (!response.ok) {
+      throw new Error(`Unable to load ${sound} preset mix`);
+    }
+
+    const encodedAudio = await response.arrayBuffer();
+    const decodedAudio = await audioCtxRef.current.decodeAudioData(encodedAudio);
+    mobilePresetBuffersRef.current[sound] = decodedAudio;
+    return decodedAudio;
+  };
+
+  const renderMobileSoundscape = async (
+    selectedSounds: SoundName[],
+    volumes: Record<SoundName, number>,
+  ) => {
+    if (!isMobile || selectedSounds.length !== 2) return;
+
+    const renderId = ++mobileMixRenderRef.current;
+    setIsMobileMixReady(false);
+
+    try {
+      const buffers = await Promise.all(
+        selectedSounds.map((sound) => loadMobilePresetBuffer(sound)),
+      );
+
+      const offlineContext = new OfflineAudioContext(
+        2,
+        MOBILE_MIX_DURATION_SECONDS * MOBILE_MIX_SAMPLE_RATE,
+        MOBILE_MIX_SAMPLE_RATE,
+      );
+
+      buffers.forEach((buffer, index) => {
+        const source = offlineContext.createBufferSource();
+        const gain = offlineContext.createGain();
+        const sound = selectedSounds[index];
+
+        source.buffer = buffer;
+        source.loop = true;
+        gain.gain.value = Math.min(Math.max(volumes[sound], 0), 1);
+        source.connect(gain).connect(offlineContext.destination);
+        source.start(0);
+      });
+
+      const renderedBuffer = await offlineContext.startRendering();
+      if (renderId !== mobileMixRenderRef.current) return;
+
+      const blob = new Blob([audioBufferToWav(renderedBuffer)], {
+        type: "audio/wav",
+      });
+      const url = URL.createObjectURL(blob);
+      const previousMix = mobileMixHowlRef.current;
+      const wasPlaying =
+        previousMix?.id !== null &&
+        previousMix?.id !== undefined &&
+        previousMix.sound.playing(previousMix.id);
+      const previousSeek =
+        previousMix?.id !== null && previousMix?.id !== undefined
+          ? Number(previousMix.sound.seek(previousMix.id)) || 0
+          : 0;
+
+      const nextMix = new Howl({
+        src: [url],
+        format: ["wav"],
+        loop: true,
+        volume: 1,
+        html5: true,
+        preload: true,
+        onload: () => {
+          if (renderId !== mobileMixRenderRef.current) {
+            nextMix.unload();
+            URL.revokeObjectURL(url);
+            return;
+          }
+
+          mobileMixHowlRef.current = {
+            sound: nextMix,
+            id: null,
+            url,
+          };
+
+          if (wasPlaying) {
+            const id = nextMix.play();
+            mobileMixHowlRef.current.id = id;
+            nextMix.seek(previousSeek % MOBILE_MIX_DURATION_SECONDS, id);
+          }
+
+          if (previousMix) {
+            previousMix.sound.stop();
+            previousMix.sound.unload();
+            URL.revokeObjectURL(previousMix.url);
+          }
+
+          setIsMobileMixReady(true);
+        },
+        onloaderror: (_, error) => {
+          console.log("[mobile mix load error]", error);
+          URL.revokeObjectURL(url);
+          setIsMobileMixReady(false);
+        },
+      });
+    } catch (error) {
+      console.log("[mobile mix render error]", error);
+      if (renderId === mobileMixRenderRef.current) {
+        setIsMobileMixReady(false);
+      }
+    }
+  };
+
+  const scheduleMobileSoundscapeRender = (
+    selectedSounds: SoundName[],
+    volumes: Record<SoundName, number>,
+  ) => {
+    if (!isMobile) return;
+
+    if (mobileMixDebounceRef.current) {
+      clearTimeout(mobileMixDebounceRef.current);
+    }
+
+    mobileMixDebounceRef.current = setTimeout(() => {
+      void renderMobileSoundscape(selectedSounds, volumes);
+    }, 120);
+  };
 
   const getSoundscapeBaseVolume = (
     sound: SoundName,
@@ -899,19 +1101,42 @@ export default function Home() {
   };
 
   const updateMixVolume = (sound: SoundName, value: number) => {
-    console.log("UPDATE", sound, value);
-
     const safeValue = Math.min(Math.max(value, 0), 1);
-
-    setMixVolumes((prev) => ({
-      ...prev,
+    const nextVolumes = {
+      ...mixVolumes,
       [sound]: safeValue,
-    }));
+    };
+
+    setMixVolumes(nextVolumes);
+
+    if (isMobile) {
+      return;
+    }
 
     applySoundscapeVolume(sound, safeValue);
   };
 
+  const commitMobileMixVolume = (sound: SoundName, value: number) => {
+    if (!isMobile) return;
+
+    const safeValue = Math.min(Math.max(value, 0), 1);
+    const nextVolumes = {
+      ...mixVolumes,
+      [sound]: safeValue,
+    };
+
+    setMixVolumes(nextVolumes);
+    scheduleMobileSoundscapeRender(selectedMixSounds, nextVolumes);
+  };
+
   const prepareSoundscapeHowls = () => {
+    if (isMobile) {
+      setSoundscapeLoadedCount(0);
+      setSoundscapeTotalCount(0);
+      setIsSoundscapeReady(true);
+      return;
+    }
+
     const alreadyPrepared = sounds.every(
       ({ name: sound }) => mixHowlsRef.current[sound]?.length,
     );
@@ -975,58 +1200,18 @@ export default function Home() {
   const startSoundscape = async () => {
     stopCurrentSoundscapePlayback();
 
+    if (isMobile) {
+      const mobileMix = mobileMixHowlRef.current;
+      if (!mobileMix || !isMobileMixReady) return;
+
+      const id = mobileMix.sound.play();
+      mobileMix.id = id;
+      return;
+    }
+
     await unlockHowlerAudio();
 
     startSilentKeeper();
-
-    if (!isMobile) {
-      for (const sound of selectedMixSounds) {
-        const folder = sound.toLowerCase();
-
-        const volMap =
-          ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
-          ACTIVE_VOLUME_MAP.wave;
-
-        const layerNames =
-          folder === "bonfire" || folder === "cave"
-            ? (["a1", "b1", "c1"] as const)
-            : (["a1", "b1", "c1", "a2", "a3"] as const);
-
-        const entries = layerNames.map((name) => {
-          const howl = new Howl({
-            src: [`/sound/${folder}/v1/${name}.wav`],
-            loop: true,
-            volume: 0,
-            html5: true,
-            preload: true,
-          });
-
-          return {
-            sound: howl,
-            id: null as number | null,
-            name,
-          };
-        });
-
-        mixHowlsRef.current[sound] = entries;
-
-        entries.forEach((entry) => {
-          const id = entry.sound.play();
-          entry.id = id;
-
-          const baseVolume =
-            entry.name in volMap
-              ? volMap[entry.name as keyof typeof volMap]
-              : 0;
-
-          const targetVolume = baseVolume * mixVolumes[sound];
-
-          entry.sound.volume(targetVolume, id);
-        });
-      }
-
-      return;
-    }
 
     for (const sound of selectedMixSounds) {
       const folder = sound.toLowerCase();
@@ -1035,21 +1220,37 @@ export default function Home() {
         ACTIVE_VOLUME_MAP[folder as keyof typeof ACTIVE_VOLUME_MAP] ??
         ACTIVE_VOLUME_MAP.wave;
 
-      let entries = mixHowlsRef.current[sound];
+      const layerNames =
+        folder === "bonfire" || folder === "cave"
+          ? (["a1", "b1", "c1"] as const)
+          : (["a1", "b1", "c1", "a2", "a3"] as const);
 
-      if (!entries?.length) {
-        prepareSoundscapeHowls();
-        entries = mixHowlsRef.current[sound];
-      }
+      const entries = layerNames.map((name) => {
+        const howl = new Howl({
+          src: [`/sound/${folder}/v1/${name}.wav`],
+          loop: true,
+          volume: 0,
+          html5: true,
+          preload: true,
+        });
 
-      if (!entries) return;
+        return {
+          sound: howl,
+          id: null as number | null,
+          name,
+        };
+      });
+
+      mixHowlsRef.current[sound] = entries;
 
       entries.forEach((entry) => {
         const id = entry.sound.play();
         entry.id = id;
 
         const baseVolume =
-          entry.name in volMap ? volMap[entry.name as keyof typeof volMap] : 0;
+          entry.name in volMap
+            ? volMap[entry.name as keyof typeof volMap]
+            : 0;
 
         const targetVolume = baseVolume * mixVolumes[sound];
 
@@ -1059,6 +1260,16 @@ export default function Home() {
   };
 
   const stopCurrentSoundscapePlayback = () => {
+    const mobileMix = mobileMixHowlRef.current;
+    if (mobileMix) {
+      if (mobileMix.id !== null) {
+        mobileMix.sound.stop(mobileMix.id);
+      } else {
+        mobileMix.sound.stop();
+      }
+      mobileMix.id = null;
+    }
+
     Object.values(mixHowlsRef.current).forEach((entries) => {
       if (!entries) return;
 
@@ -1071,6 +1282,21 @@ export default function Home() {
 
   const stopSoundscape = () => {
     stopSilentKeeper();
+
+    mobileMixRenderRef.current++;
+    if (mobileMixDebounceRef.current) {
+      clearTimeout(mobileMixDebounceRef.current);
+      mobileMixDebounceRef.current = null;
+    }
+
+    const mobileMix = mobileMixHowlRef.current;
+    if (mobileMix) {
+      mobileMix.sound.stop();
+      mobileMix.sound.unload();
+      URL.revokeObjectURL(mobileMix.url);
+      mobileMixHowlRef.current = null;
+    }
+    setIsMobileMixReady(false);
 
     Object.values(mixHowlsRef.current).forEach((entries) => {
       if (!entries) return;
@@ -1169,6 +1395,12 @@ export default function Home() {
       isPlaying || isSoundscapePlaying ? "playing" : "paused";
 
     navigator.mediaSession.setActionHandler("pause", () => {
+      const mobileMix = mobileMixHowlRef.current;
+      if (mobileMix?.id !== null && mobileMix?.id !== undefined) {
+        mobileMix.sound.pause(mobileMix.id);
+        setIsSoundscapePlaying(false);
+      }
+
       Object.values(mixAudioRefs.current).forEach((audios) => {
         audios?.forEach((audio) => {
           audio.pause();
@@ -1186,6 +1418,15 @@ export default function Home() {
     });
 
     navigator.mediaSession.setActionHandler("play", () => {
+      const mobileMix = mobileMixHowlRef.current;
+      if (mobileMix && isMobileMixReady) {
+        const id = mobileMix.sound.play();
+        mobileMix.id = id;
+        setIsSoundscapePlaying(true);
+        navigator.mediaSession.playbackState = "playing";
+        return;
+      }
+
       setIsPlaying(true);
     });
 
@@ -1194,7 +1435,7 @@ export default function Home() {
     navigator.mediaSession.setActionHandler("seekbackward", null);
     navigator.mediaSession.setActionHandler("seekforward", null);
     navigator.mediaSession.setActionHandler("seekto", null);
-  }, [selectedSound, isPlaying, isSoundscapePlaying]);
+  }, [selectedSound, isPlaying, isSoundscapePlaying, isMobileMixReady]);
 
   if (screen === "select") {
     return (
@@ -1453,11 +1694,17 @@ export default function Home() {
                     onClick={() => {
                       if (isMobile && !isSoundscapeReady) return;
 
-                      setMixVolumes((prev) => ({
-                        ...prev,
+                      const nextVolumes = {
+                        ...mixVolumes,
                         [selectedMixSounds[0]]: 0.5,
                         [selectedMixSounds[1]]: 0.5,
-                      }));
+                      };
+
+                      setMixVolumes(nextVolumes);
+                      scheduleMobileSoundscapeRender(
+                        selectedMixSounds,
+                        nextVolumes,
+                      );
 
                       setScreen("soundscapeEdit");
                     }}
@@ -1548,7 +1795,9 @@ export default function Home() {
             <div className="px-6 pb-6">
               <div className="rounded-3xl border border-white/10 bg-white/6 p-5 backdrop-blur-lg space-y-5">
                 <div className="text-sm text-white/75 text-center">
-                  Mix your sound
+                  {isMobile && !isMobileMixReady
+                    ? "Preparing your mix..."
+                    : "Mix your sound"}
                 </div>
                 {[...selectedMixSounds]
                   .sort(
@@ -1574,6 +1823,24 @@ export default function Home() {
                         onChange={(e) => {
                           updateMixVolume(sound, Number(e.target.value));
                         }}
+                        onPointerUp={(e) => {
+                          commitMobileMixVolume(
+                            sound,
+                            Number(e.currentTarget.value),
+                          );
+                        }}
+                        onTouchEnd={(e) => {
+                          commitMobileMixVolume(
+                            sound,
+                            Number(e.currentTarget.value),
+                          );
+                        }}
+                        onKeyUp={(e) => {
+                          commitMobileMixVolume(
+                            sound,
+                            Number(e.currentTarget.value),
+                          );
+                        }}
                         className="hibiki-slider w-full"
                       />
                     </div>
@@ -1588,6 +1855,7 @@ export default function Home() {
 
                   <div className="grid grid-cols-3 gap-2">
                     <button
+                      disabled={isMobile && !isMobileMixReady}
                       onClick={() => startSoundscapeTimer(30)}
                       className={`rounded-xl border py-4.5 text-sm transition ${selectedSoundscapeTimer === 30 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
@@ -1612,6 +1880,7 @@ export default function Home() {
                     </button>
 
                     <button
+                      disabled={isMobile && !isMobileMixReady}
                       onClick={() => startSoundscapeTimer(60)}
                       className={`rounded-xl border py-4.5 text-sm transition ${selectedSoundscapeTimer === 60 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
@@ -1636,6 +1905,7 @@ export default function Home() {
                     </button>
 
                     <button
+                      disabled={isMobile && !isMobileMixReady}
                       onClick={() => startSoundscapeTimer(120)}
                       className={`rounded-xl border py-4.5 text-sm transition ${selectedSoundscapeTimer === 120 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
@@ -1660,6 +1930,7 @@ export default function Home() {
                     </button>
 
                     <button
+                      disabled={isMobile && !isMobileMixReady}
                       onClick={() => startSoundscapeTimer(180)}
                       className={`rounded-xl border py-4.5 text-sm transition ${selectedSoundscapeTimer === 180 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
@@ -1684,6 +1955,7 @@ export default function Home() {
                     </button>
 
                     <button
+                      disabled={isMobile && !isMobileMixReady}
                       onClick={() => startSoundscapeTimer(360)}
                       className={`rounded-xl border py-4.5 text-sm transition ${selectedSoundscapeTimer === 360 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
@@ -1708,6 +1980,7 @@ export default function Home() {
                     </button>
 
                     <button
+                      disabled={isMobile && !isMobileMixReady}
                       onClick={() => startSoundscapeTimer(480)}
                       className={`rounded-xl border py-4.5 text-sm transition ${selectedSoundscapeTimer === 480 && soundscapeTimeLeft > 0 ? "timer-breath border-[#B8B8B8] bg-[#B8B8B8] text-[#111111]" : "border-white/10 bg-white/5 text-white/75"}`}
                     >
