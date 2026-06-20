@@ -205,9 +205,13 @@ export default function Home() {
     river: { a1: 0.1, b1: 0.1, c1: 0.1, a2: 0.1, a3: 0.05 },
   };
 
-  const isMobile =
+  const isAndroid =
+    typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
+  const isIOS =
     typeof navigator !== "undefined" &&
-    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    (/iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+  const isMobile = isAndroid || isIOS;
 
   const ACTIVE_VOLUME_MAP = isMobile ? VOLUME_MAP_MOBILE : VOLUME_MAP_DESKTOP;
 
@@ -923,6 +927,9 @@ export default function Home() {
   const mobileRenderedVolumesRef = useRef<Record<SoundName, number> | null>(
     null,
   );
+  const androidMixHowlsRef = useRef<
+    Partial<Record<SoundName, { sound: Howl; id: number | null }>>
+  >({});
   const [isMobileMixReady, setIsMobileMixReady] = useState(false);
 
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
@@ -940,6 +947,74 @@ export default function Home() {
       >
     >
   >({});
+
+  const clearAndroidSoundscape = () => {
+    Object.values(androidMixHowlsRef.current).forEach((entry) => {
+      if (!entry) return;
+      entry.sound.stop();
+      entry.sound.unload();
+    });
+    androidMixHowlsRef.current = {};
+  };
+
+  const prepareAndroidSoundscape = (
+    selectedSounds: SoundName[],
+    volumes: Record<SoundName, number>,
+  ) => {
+    if (!isAndroid || selectedSounds.length !== 2) return;
+
+    clearAndroidSoundscape();
+    setIsMobileMixReady(false);
+    let loadedCount = 0;
+
+    selectedSounds.forEach((sound) => {
+      const howl = new Howl({
+        src: [`/sound/mixes/${sound.toLowerCase()}.m4a`],
+        format: ["m4a"],
+        loop: true,
+        volume: volumes[sound],
+        html5: true,
+        preload: true,
+        onload: () => {
+          loadedCount++;
+          if (loadedCount === selectedSounds.length) {
+            setIsMobileMixReady(true);
+          }
+        },
+        onloaderror: (_, error) => {
+          console.log("[android mix load error]", sound, error);
+          setIsMobileMixReady(false);
+        },
+      });
+
+      androidMixHowlsRef.current[sound] = {
+        sound: howl,
+        id: null,
+      };
+    });
+  };
+
+  const applyAndroidMixVolume = (sound: SoundName, value: number) => {
+    const entry = androidMixHowlsRef.current[sound];
+    if (!entry) return;
+
+    if (value <= 0) {
+      if (entry.id === null) {
+        entry.sound.mute(true);
+      } else {
+        entry.sound.mute(true, entry.id);
+      }
+      return;
+    }
+
+    if (entry.id === null) {
+      entry.sound.mute(false);
+      entry.sound.volume(value);
+    } else {
+      entry.sound.mute(false, entry.id);
+      entry.sound.volume(value, entry.id);
+    }
+  };
 
   const loadMobilePresetBuffer = async (sound: SoundName) => {
     const cached = mobilePresetBuffersRef.current[sound];
@@ -982,7 +1057,7 @@ export default function Home() {
     selectedSounds: SoundName[],
     volumes: Record<SoundName, number>,
   ) => {
-    if (!isMobile || selectedSounds.length !== 2) return;
+    if (!isIOS || selectedSounds.length !== 2) return;
 
     const renderId = ++mobileMixRenderRef.current;
     setIsMobileMixReady(false);
@@ -1146,7 +1221,7 @@ export default function Home() {
     selectedSounds: SoundName[],
     volumes: Record<SoundName, number>,
   ) => {
-    if (!isMobile) return;
+    if (!isIOS) return;
 
     if (mobileMixDebounceRef.current) {
       clearTimeout(mobileMixDebounceRef.current);
@@ -1203,7 +1278,12 @@ export default function Home() {
 
     setMixVolumes(nextVolumes);
 
-    if (isMobile) {
+    if (isAndroid) {
+      applyAndroidMixVolume(sound, safeValue);
+      return;
+    }
+
+    if (isIOS) {
       return;
     }
 
@@ -1211,7 +1291,7 @@ export default function Home() {
   };
 
   const commitMobileMixVolume = (sound: SoundName, value: number) => {
-    if (!isMobile) return;
+    if (!isIOS) return;
 
     const safeValue = Math.min(Math.max(value, 0), 1);
     const nextVolumes = {
@@ -1294,7 +1374,21 @@ export default function Home() {
   const startSoundscape = async () => {
     stopCurrentSoundscapePlayback();
 
-    if (isMobile) {
+    if (isAndroid) {
+      if (!isMobileMixReady) return;
+
+      selectedMixSounds.forEach((sound) => {
+        const entry = androidMixHowlsRef.current[sound];
+        if (!entry) return;
+
+        entry.sound.mute(mixVolumes[sound] <= 0);
+        entry.sound.volume(mixVolumes[sound]);
+        entry.id = entry.sound.play();
+      });
+      return;
+    }
+
+    if (isIOS) {
       const mobileMix = mobileMixHowlRef.current;
       if (!mobileMix || !isMobileMixReady) return;
 
@@ -1354,6 +1448,16 @@ export default function Home() {
   };
 
   const stopCurrentSoundscapePlayback = () => {
+    Object.values(androidMixHowlsRef.current).forEach((entry) => {
+      if (!entry) return;
+      if (entry.id !== null) {
+        entry.sound.stop(entry.id);
+      } else {
+        entry.sound.stop();
+      }
+      entry.id = null;
+    });
+
     const mobileMix = mobileMixHowlRef.current;
     if (mobileMix) {
       if (mobileMix.id !== null) {
@@ -1376,6 +1480,7 @@ export default function Home() {
 
   const stopSoundscape = () => {
     stopSilentKeeper();
+    clearAndroidSoundscape();
 
     mobileMixRenderRef.current++;
     if (mobileMixDebounceRef.current) {
@@ -1497,6 +1602,12 @@ export default function Home() {
       isPlaying || isSoundscapePlaying ? "playing" : "paused";
 
     navigator.mediaSession.setActionHandler("pause", () => {
+      Object.values(androidMixHowlsRef.current).forEach((entry) => {
+        if (entry?.id !== null && entry?.id !== undefined) {
+          entry.sound.pause(entry.id);
+        }
+      });
+
       const mobileMix = mobileMixHowlRef.current;
       if (mobileMix?.id !== null && mobileMix?.id !== undefined) {
         mobileMix.sound.pause(mobileMix.id);
@@ -1520,6 +1631,18 @@ export default function Home() {
     });
 
     navigator.mediaSession.setActionHandler("play", () => {
+      const androidEntries = Object.values(
+        androidMixHowlsRef.current,
+      ).filter((entry) => entry !== undefined);
+      if (isAndroid && androidEntries.length > 0 && isMobileMixReady) {
+        androidEntries.forEach((entry) => {
+          entry.id = entry.sound.play();
+        });
+        setIsSoundscapePlaying(true);
+        navigator.mediaSession.playbackState = "playing";
+        return;
+      }
+
       const mobileMix = mobileMixHowlRef.current;
       if (mobileMix && isMobileMixReady) {
         const id = mobileMix.sound.play();
@@ -1537,7 +1660,13 @@ export default function Home() {
     navigator.mediaSession.setActionHandler("seekbackward", null);
     navigator.mediaSession.setActionHandler("seekforward", null);
     navigator.mediaSession.setActionHandler("seekto", null);
-  }, [selectedSound, isPlaying, isSoundscapePlaying, isMobileMixReady]);
+  }, [
+    selectedSound,
+    isPlaying,
+    isSoundscapePlaying,
+    isMobileMixReady,
+    isAndroid,
+  ]);
 
   if (screen === "select") {
     return (
@@ -1803,10 +1932,17 @@ export default function Home() {
                       };
 
                       setMixVolumes(nextVolumes);
-                      scheduleMobileSoundscapeRender(
-                        selectedMixSounds,
-                        nextVolumes,
-                      );
+                      if (isAndroid) {
+                        prepareAndroidSoundscape(
+                          selectedMixSounds,
+                          nextVolumes,
+                        );
+                      } else {
+                        scheduleMobileSoundscapeRender(
+                          selectedMixSounds,
+                          nextVolumes,
+                        );
+                      }
 
                       setScreen("soundscapeEdit");
                     }}
