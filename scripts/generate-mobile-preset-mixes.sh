@@ -44,12 +44,12 @@ generate_mix_variant() {
       -filter_complex "$filter" -map "[out]" -c:a aac -b:a 128k \
       -movflags +faststart "$OUTPUT_DIR/$sound.m4a"
   else
-    # Chrome on Android supports gapless Opus playback. Five-minute files
-    # also make browser-level loop restarts much less frequent.
+    # Static PCM avoids codec priming/padding at the HTML media loop boundary.
+    # The 30-second file is small enough to remain cached on mobile devices.
     # shellcheck disable=SC2086
     ffmpeg -hide_banner -loglevel error -y $inputs \
-      -filter_complex "$filter" -map "[out]" -c:a libopus -b:a 96k \
-      -vbr on -compression_level 10 "$ANDROID_OUTPUT_DIR/$sound.webm"
+      -filter_complex "$filter" -map "[out]" -c:a pcm_s16le \
+      "$ANDROID_OUTPUT_DIR/$sound.wav"
   fi
 }
 
@@ -60,11 +60,11 @@ generate_mix_variant forest "0.04,0.04,0.14,0.11,0.07" 30 ios a1 b1 c1 a2 a3
 generate_mix_variant bonfire "0.37,0.56,0.48" 30 ios a1 b1 c1
 generate_mix_variant cave "0.01,0.20,0.16" 30 ios a1 b1 c1
 
-generate_mix_variant rain "0.30,0.16,0.10,0.17,0.09" 300 android a1 b1 c1 a2 a3
-generate_mix_variant wave "0.14,0.00,0.14,0.46,0.46" 300 android a1 b1 c1 a2 a3
-generate_mix_variant river "0.10,0.10,0.10,0.10,0.05" 300 android a1 b1 c1 a2 a3
-generate_mix_variant forest "0.04,0.04,0.14,0.11,0.07" 300 android a1 b1 c1 a2 a3
-generate_mix_variant bonfire "0.37,0.56,0.48" 300 android a1 b1 c1
-generate_mix_variant cave "0.01,0.20,0.16" 300 android a1 b1 c1
+generate_mix_variant rain "0.30,0.16,0.10,0.17,0.09" 30 android a1 b1 c1 a2 a3
+generate_mix_variant wave "0.14,0.00,0.14,0.46,0.46" 30 android a1 b1 c1 a2 a3
+generate_mix_variant river "0.10,0.10,0.10,0.10,0.05" 30 android a1 b1 c1 a2 a3
+generate_mix_variant forest "0.04,0.04,0.14,0.11,0.07" 30 android a1 b1 c1 a2 a3
+generate_mix_variant bonfire "0.37,0.56,0.48" 30 android a1 b1 c1
+generate_mix_variant cave "0.01,0.20,0.16" 30 android a1 b1 c1
 
 printf 'Generated mobile preset mixes in %s\n' "$OUTPUT_DIR"

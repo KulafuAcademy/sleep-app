@@ -231,7 +231,7 @@ export default function Home() {
 
   const createAndroidMediaAudio = (sound: SoundName, volume: number) => {
     const audio = document.createElement("audio");
-    audio.src = `/sound/mixes/android/${sound.toLowerCase()}.webm`;
+    audio.src = `/sound/mixes/android/${sound.toLowerCase()}.wav`;
     audio.loop = true;
     audio.preload = "auto";
     audio.volume = volume;
