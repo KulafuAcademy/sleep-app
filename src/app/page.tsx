@@ -1110,11 +1110,23 @@ export default function Home() {
     setMixVolumes(nextVolumes);
 
     if (isMobile) {
-      scheduleMobileSoundscapeRender(selectedMixSounds, nextVolumes);
       return;
     }
 
     applySoundscapeVolume(sound, safeValue);
+  };
+
+  const commitMobileMixVolume = (sound: SoundName, value: number) => {
+    if (!isMobile) return;
+
+    const safeValue = Math.min(Math.max(value, 0), 1);
+    const nextVolumes = {
+      ...mixVolumes,
+      [sound]: safeValue,
+    };
+
+    setMixVolumes(nextVolumes);
+    scheduleMobileSoundscapeRender(selectedMixSounds, nextVolumes);
   };
 
   const prepareSoundscapeHowls = () => {
@@ -1810,6 +1822,24 @@ export default function Home() {
                         value={mixVolumes[sound]}
                         onChange={(e) => {
                           updateMixVolume(sound, Number(e.target.value));
+                        }}
+                        onPointerUp={(e) => {
+                          commitMobileMixVolume(
+                            sound,
+                            Number(e.currentTarget.value),
+                          );
+                        }}
+                        onTouchEnd={(e) => {
+                          commitMobileMixVolume(
+                            sound,
+                            Number(e.currentTarget.value),
+                          );
+                        }}
+                        onKeyUp={(e) => {
+                          commitMobileMixVolume(
+                            sound,
+                            Number(e.currentTarget.value),
+                          );
                         }}
                         className="hibiki-slider w-full"
                       />
