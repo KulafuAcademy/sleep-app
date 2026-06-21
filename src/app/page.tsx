@@ -2302,7 +2302,7 @@ export default function Home() {
                   {isMobile && !isMobileMixReady
                     ? "Preparing your mix..."
                     : isIOS
-                      ? "iPhone: Fixed 50% / 50% mix for continuous playback"
+                      ? "iPhone: Fixed 50/50 mix"
                       : "Mix your sound"}
                 </div>
                 {[...selectedMixSounds]
