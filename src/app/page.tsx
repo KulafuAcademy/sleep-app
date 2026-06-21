@@ -1221,6 +1221,30 @@ export default function Home() {
       });
     });
 
+  const updateMediaSessionMetadata = () => {
+    if (!("mediaSession" in navigator) || !("MediaMetadata" in window)) {
+      return;
+    }
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: "HIBIKI",
+      artist: "hibiki.rest",
+      album: "Soundscape",
+      artwork: [
+        {
+          src: new URL("/icon.png", window.location.origin).href,
+          sizes: "512x512",
+          type: "image/png",
+        },
+        {
+          src: new URL("/apple-icon.png", window.location.origin).href,
+          sizes: "1024x1024",
+          type: "image/png",
+        },
+      ],
+    });
+  };
+
   const attachIosMediaElement = (howl: Howl) => {
     if (!isIOS || typeof document === "undefined") return null;
 
@@ -1243,7 +1267,9 @@ export default function Home() {
     if (!node.isConnected) {
       document.body.appendChild(node);
     }
+    node.addEventListener("play", updateMediaSessionMetadata, { once: true });
     iosMediaElementRef.current = node;
+    updateMediaSessionMetadata();
     return node;
   };
 
@@ -1797,16 +1823,7 @@ export default function Home() {
   useEffect(() => {
     if (!("mediaSession" in navigator)) return;
 
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: "hibiki.rest",
-      artwork: [
-        {
-          src: "/apple-icon.png",
-          sizes: "180x180",
-          type: "image/png",
-        },
-      ],
-    });
+    updateMediaSessionMetadata();
 
     navigator.mediaSession.playbackState =
       isPlaying || isSoundscapePlaying ? "playing" : "paused";
