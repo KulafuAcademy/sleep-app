@@ -2505,7 +2505,7 @@ export default function Home() {
                 </h1>
 
                 <p className="mt-2 text-sm leading-6 text-white/60">
-                  Ver0.8.5.8.0
+                  Ver0.8.5.8.1
                 </p>
               </div>
             </div>
