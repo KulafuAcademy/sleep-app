@@ -1179,6 +1179,61 @@ export default function Home() {
     });
   };
 
+  const prepareIosLayeredSoundscape = (selectedSounds: SoundName[]) => {
+    if (!isIOS || selectedSounds.length !== 2) return;
+
+    Object.values(mixHowlsRef.current).forEach((entries) => {
+      entries?.forEach((entry) => {
+        entry.sound.stop();
+        entry.sound.unload();
+      });
+    });
+    mixHowlsRef.current = {};
+    setIsMobileMixReady(false);
+
+    let loadedCount = 0;
+    const totalLayerCount = selectedSounds.reduce((count, sound) => {
+      return count + (sound === "Bonfire" || sound === "Cave" ? 3 : 5);
+    }, 0);
+
+    selectedSounds.forEach((sound) => {
+      const folder = sound.toLowerCase();
+      const layerNames: SoundLayerName[] =
+        sound === "Bonfire" || sound === "Cave"
+          ? ["a1", "b1", "c1"]
+          : ["a1", "b1", "c1", "a2", "a3"];
+
+      mixHowlsRef.current[sound] = layerNames.map((name) => {
+        const howl = new Howl({
+          src: [`/sound/mixes/ios/layers/${folder}/${name}.m4a`],
+          format: ["m4a"],
+          loop: true,
+          volume: 1,
+          html5: true,
+          preload: true,
+          pool: 1,
+          onload: () => {
+            loadedCount++;
+            if (loadedCount === totalLayerCount) {
+              setIsMobileMixReady(true);
+            }
+          },
+          onloaderror: (_, error) => {
+            console.log(
+              "[ios soundscape layer load error]",
+              sound,
+              name,
+              error,
+            );
+            setIsMobileMixReady(false);
+          },
+        });
+
+        return { sound: howl, id: null, name };
+      });
+    });
+  };
+
   const loadMobilePresetBuffer = async (sound: SoundName) => {
     const cached = mobilePresetBuffersRef.current[sound];
     if (cached) return cached;
@@ -1555,11 +1610,13 @@ export default function Home() {
     }
 
     if (isIOS) {
-      const mobileMix = mobileMixHowlRef.current;
-      if (!mobileMix || !isMobileMixReady) return;
+      if (!isMobileMixReady) return;
 
-      const id = mobileMix.sound.play();
-      mobileMix.id = id;
+      selectedMixSounds.forEach((sound) => {
+        mixHowlsRef.current[sound]?.forEach((entry) => {
+          entry.id = entry.sound.play();
+        });
+      });
       return;
     }
 
@@ -2144,6 +2201,8 @@ export default function Home() {
                           selectedMixSounds,
                           nextVolumes,
                         );
+                      } else if (isIOS) {
+                        prepareIosLayeredSoundscape(selectedMixSounds);
                       } else {
                         scheduleMobileSoundscapeRender(
                           selectedMixSounds,
@@ -2242,7 +2301,9 @@ export default function Home() {
                 <div className="text-sm text-white/75 text-center">
                   {isMobile && !isMobileMixReady
                     ? "Preparing your mix..."
-                    : "Mix your sound"}
+                    : isIOS
+                      ? "Balanced mix for continuous playback"
+                      : "Mix your sound"}
                 </div>
                 {[...selectedMixSounds]
                   .sort(
@@ -2261,6 +2322,7 @@ export default function Home() {
 
                       <input
                         type="range"
+                        disabled={isIOS}
                         min="0"
                         max="1"
                         step="0.01"
@@ -2286,7 +2348,7 @@ export default function Home() {
                             Number(e.currentTarget.value),
                           );
                         }}
-                        className="hibiki-slider w-full"
+                        className={`hibiki-slider w-full ${isIOS ? "cursor-not-allowed opacity-50" : ""}`}
                       />
                     </div>
                   ))}
