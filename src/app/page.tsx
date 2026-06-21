@@ -25,6 +25,7 @@ type SoundName = "Rain" | "Wave" | "River" | "Bonfire" | "Forest" | "Cave";
 const MOBILE_MIX_DURATION_SECONDS = 30;
 const MOBILE_MIX_SAMPLE_RATE = 44100;
 const MOBILE_MIX_TRANSITION_SECONDS = 0.8;
+const IOS_LOOP_CROSSFADE_SECONDS = 1;
 const ANDROID_LOOP_CROSSFADE_SECONDS = 1.2;
 
 type SoundLayerName = "a1" | "b1" | "c1" | "a2" | "a3";
@@ -95,6 +96,38 @@ function audioBufferToWav(buffer: AudioBuffer) {
   }
 
   return wav;
+}
+
+function createCircularAudioLoop(buffer: AudioBuffer) {
+  const outputFrameCount =
+    MOBILE_MIX_DURATION_SECONDS * MOBILE_MIX_SAMPLE_RATE;
+  const crossfadeFrameCount =
+    IOS_LOOP_CROSSFADE_SECONDS * MOBILE_MIX_SAMPLE_RATE;
+  const channelCount = Math.min(buffer.numberOfChannels, 2);
+  const output = new AudioBuffer({
+    length: outputFrameCount,
+    numberOfChannels: channelCount,
+    sampleRate: MOBILE_MIX_SAMPLE_RATE,
+  });
+
+  for (let channel = 0; channel < channelCount; channel++) {
+    const inputData = buffer.getChannelData(channel);
+    const outputData = output.getChannelData(channel);
+
+    for (let frame = 0; frame < crossfadeFrameCount; frame++) {
+      const progress = frame / Math.max(crossfadeFrameCount - 1, 1);
+      outputData[frame] =
+        inputData[outputFrameCount + frame] * (1 - progress) +
+        inputData[frame] * progress;
+    }
+
+    outputData.set(
+      inputData.subarray(crossfadeFrameCount, outputFrameCount),
+      crossfadeFrameCount,
+    );
+  }
+
+  return output;
 }
 
 const sounds: {
@@ -1287,7 +1320,8 @@ export default function Home() {
 
       const offlineContext = new OfflineAudioContext(
         2,
-        MOBILE_MIX_DURATION_SECONDS * MOBILE_MIX_SAMPLE_RATE,
+        (MOBILE_MIX_DURATION_SECONDS + IOS_LOOP_CROSSFADE_SECONDS) *
+          MOBILE_MIX_SAMPLE_RATE,
         MOBILE_MIX_SAMPLE_RATE,
       );
 
@@ -1305,8 +1339,9 @@ export default function Home() {
 
       const renderedBuffer = await offlineContext.startRendering();
       if (renderId !== mobileMixRenderRef.current) return;
+      const loopBuffer = createCircularAudioLoop(renderedBuffer);
 
-      const blob = new Blob([audioBufferToWav(renderedBuffer)], {
+      const blob = new Blob([audioBufferToWav(loopBuffer)], {
         type: "audio/wav",
       });
       const url = URL.createObjectURL(blob);
