@@ -1267,9 +1267,7 @@ export default function Home() {
     if (!node.isConnected) {
       document.body.appendChild(node);
     }
-    node.addEventListener("play", updateMediaSessionMetadata, { once: true });
     iosMediaElementRef.current = node;
-    updateMediaSessionMetadata();
     return node;
   };
 
