@@ -26,6 +26,7 @@ const MOBILE_MIX_DURATION_SECONDS = 30;
 const MOBILE_MIX_SAMPLE_RATE = 44100;
 const MOBILE_MIX_TRANSITION_SECONDS = 0.8;
 const ANDROID_LOOP_CROSSFADE_SECONDS = 1.2;
+const ANDROID_SOUNDSCAPE_STAGGER_RATIO = 0.5;
 
 type AndroidMediaPair = {
   elements: [HTMLAudioElement, HTMLAudioElement];
@@ -293,8 +294,9 @@ export default function Home() {
         ),
         1,
       );
-      active.volume = pair.volume * (1 - progress);
-      standby.volume = pair.volume * progress;
+      const fadeAngle = progress * (Math.PI / 2);
+      active.volume = pair.volume * Math.cos(fadeAngle);
+      standby.volume = pair.volume * Math.sin(fadeAngle);
     };
 
     const handleEnded = (audio: HTMLAudioElement) => {
@@ -1493,12 +1495,20 @@ export default function Home() {
     if (isAndroid) {
       if (!isMobileMixReady) return;
 
-      [...selectedMixSounds].reverse().forEach((sound) => {
+      [...selectedMixSounds].reverse().forEach((sound, index) => {
         const pair = androidMediaPairsRef.current[sound];
         if (!pair) return;
         const active = pair.elements[pair.activeIndex];
 
         pair.volume = mixVolumes[sound];
+        if (
+          index > 0 &&
+          Number.isFinite(active.duration) &&
+          active.duration > 0
+        ) {
+          active.currentTime =
+            active.duration * ANDROID_SOUNDSCAPE_STAGGER_RATIO;
+        }
         active.muted = pair.volume <= 0;
         active.volume = pair.volume;
         active.play().catch((error) => {
