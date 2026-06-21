@@ -41,6 +41,10 @@ type AndroidSoundscapeLayer = {
   baseVolume: number;
 };
 
+type Html5Howl = Howl & {
+  _sounds?: { _node?: HTMLAudioElement }[];
+};
+
 function audioBufferToWav(buffer: AudioBuffer) {
   const channelCount = Math.min(buffer.numberOfChannels, 2);
   const frameCount = buffer.length;
@@ -1068,6 +1072,7 @@ export default function Home() {
   const mobileRenderedVolumesRef = useRef<Record<SoundName, number> | null>(
     null,
   );
+  const iosMediaElementRef = useRef<HTMLAudioElement | null>(null);
   const [isMobileMixReady, setIsMobileMixReady] = useState(false);
 
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
@@ -1216,6 +1221,32 @@ export default function Home() {
       });
     });
 
+  const attachIosMediaElement = (howl: Howl) => {
+    if (!isIOS || typeof document === "undefined") return null;
+
+    const node = (howl as Html5Howl)._sounds?.[0]?._node;
+    if (!(node instanceof HTMLAudioElement)) return null;
+
+    const previousNode = iosMediaElementRef.current;
+    if (previousNode && previousNode !== node) {
+      previousNode.remove();
+    }
+
+    node.setAttribute("playsinline", "true");
+    node.setAttribute("aria-hidden", "true");
+    node.style.position = "fixed";
+    node.style.width = "1px";
+    node.style.height = "1px";
+    node.style.opacity = "0";
+    node.style.pointerEvents = "none";
+
+    if (!node.isConnected) {
+      document.body.appendChild(node);
+    }
+    iosMediaElementRef.current = node;
+    return node;
+  };
+
   const renderMobileSoundscape = async (
     selectedSounds: SoundName[],
     volumes: Record<SoundName, number>,
@@ -1340,6 +1371,7 @@ export default function Home() {
         transitionHowl.once("end", () => {
           if (renderId !== mobileMixRenderRef.current) return;
 
+          attachIosMediaElement(nextHowl);
           const id = nextHowl.play();
           nextMix.id = id;
           nextHowl.seek(
@@ -1354,6 +1386,7 @@ export default function Home() {
           setIsMobileMixReady(true);
         });
 
+        attachIosMediaElement(transitionHowl);
         const transitionId = transitionHowl.play();
         transitionMix.id = transitionId;
         previousMix.sound.stop();
@@ -1558,6 +1591,7 @@ export default function Home() {
       const mobileMix = mobileMixHowlRef.current;
       if (!mobileMix || !isMobileMixReady) return;
 
+      attachIosMediaElement(mobileMix.sound);
       const id = mobileMix.sound.play();
       mobileMix.id = id;
       return;
@@ -1676,6 +1710,8 @@ export default function Home() {
       URL.revokeObjectURL(pendingMobileMix.url);
       mobilePendingMixHowlRef.current = null;
     }
+    iosMediaElementRef.current?.remove();
+    iosMediaElementRef.current = null;
     mobileRenderedVolumesRef.current = null;
     setIsMobileMixReady(false);
 
@@ -1851,6 +1887,7 @@ export default function Home() {
 
       const mobileMix = mobileMixHowlRef.current;
       if (mobileMix && isMobileMixReady) {
+        attachIosMediaElement(mobileMix.sound);
         const id = mobileMix.sound.play();
         mobileMix.id = id;
         setIsSoundscapePlaying(true);
