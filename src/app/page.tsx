@@ -26,13 +26,19 @@ const MOBILE_MIX_DURATION_SECONDS = 30;
 const MOBILE_MIX_SAMPLE_RATE = 44100;
 const MOBILE_MIX_TRANSITION_SECONDS = 0.8;
 const ANDROID_LOOP_CROSSFADE_SECONDS = 1.2;
-const ANDROID_SOUNDSCAPE_STAGGER_RATIO = 0.5;
+
+type SoundLayerName = "a1" | "b1" | "c1" | "a2" | "a3";
 
 type AndroidMediaPair = {
   elements: [HTMLAudioElement, HTMLAudioElement];
   activeIndex: 0 | 1;
   transitioning: boolean;
   volume: number;
+};
+
+type AndroidSoundscapeLayer = {
+  audio: HTMLAudioElement;
+  baseVolume: number;
 };
 
 function audioBufferToWav(buffer: AudioBuffer) {
@@ -170,6 +176,9 @@ export default function Home() {
   const androidMediaPairsRef = useRef<
     Partial<Record<SoundName, AndroidMediaPair>>
   >({});
+  const androidSoundscapeLayersRef = useRef<
+    Partial<Record<SoundName, AndroidSoundscapeLayer[]>>
+  >({});
 
   const fluctuationRef = useRef<number | null>(null);
   const [debugTimeSec, setDebugTimeSec] = useState(0);
@@ -294,9 +303,8 @@ export default function Home() {
         ),
         1,
       );
-      const fadeAngle = progress * (Math.PI / 2);
-      active.volume = pair.volume * Math.cos(fadeAngle);
-      standby.volume = pair.volume * Math.sin(fadeAngle);
+      active.volume = pair.volume * (1 - progress);
+      standby.volume = pair.volume * progress;
     };
 
     const handleEnded = (audio: HTMLAudioElement) => {
@@ -1080,6 +1088,15 @@ export default function Home() {
 
   const clearAndroidSoundscape = () => {
     clearAndroidMediaAudio();
+    Object.values(androidSoundscapeLayersRef.current).forEach((layers) => {
+      layers?.forEach(({ audio }) => {
+        audio.pause();
+        audio.removeAttribute("src");
+        audio.load();
+        audio.remove();
+      });
+    });
+    androidSoundscapeLayersRef.current = {};
   };
 
   const prepareAndroidSoundscape = (
@@ -1091,47 +1108,75 @@ export default function Home() {
     clearAndroidSoundscape();
     setIsMobileMixReady(false);
     let loadedCount = 0;
+    const totalLayerCount = selectedSounds.reduce((count, sound) => {
+      return count + (sound === "Bonfire" || sound === "Cave" ? 3 : 5);
+    }, 0);
 
     selectedSounds.forEach((sound) => {
-      const pair = createAndroidMediaPair(sound, volumes[sound]);
-      const active = pair.elements[pair.activeIndex];
-      active.addEventListener(
-        "canplay",
-        () => {
-          loadedCount++;
-          if (loadedCount === selectedSounds.length) {
-            setIsMobileMixReady(true);
-          }
+      const folder = sound.toLowerCase();
+      const layerNames: SoundLayerName[] =
+        sound === "Bonfire" || sound === "Cave"
+          ? ["a1", "b1", "c1"]
+          : ["a1", "b1", "c1", "a2", "a3"];
+
+      androidSoundscapeLayersRef.current[sound] = layerNames.map(
+        (layerName) => {
+          const audio = document.createElement("audio");
+          const baseVolume = getSoundscapeBaseVolume(sound, layerName);
+          const volume = baseVolume * volumes[sound];
+
+          audio.src = `/sound/mixes/android/layers/${folder}/${layerName}.webm`;
+          audio.loop = true;
+          audio.preload = "auto";
+          audio.volume = volume;
+          audio.muted = volume <= 0;
+          audio.setAttribute("playsinline", "true");
+          audio.setAttribute("aria-hidden", "true");
+          audio.style.position = "fixed";
+          audio.style.width = "1px";
+          audio.style.height = "1px";
+          audio.style.opacity = "0";
+          audio.style.pointerEvents = "none";
+          document.body.appendChild(audio);
+
+          audio.addEventListener(
+            "canplay",
+            () => {
+              loadedCount++;
+              if (loadedCount === totalLayerCount) {
+                setIsMobileMixReady(true);
+              }
+            },
+            { once: true },
+          );
+          audio.addEventListener(
+            "error",
+            () => {
+              console.log(
+                "[android soundscape layer load error]",
+                sound,
+                layerName,
+                audio.error,
+              );
+              setIsMobileMixReady(false);
+            },
+            { once: true },
+          );
+          audio.load();
+
+          return { audio, baseVolume };
         },
-        { once: true },
       );
-      active.addEventListener(
-        "error",
-        () => {
-          console.log("[android mix load error]", sound, active.error);
-          setIsMobileMixReady(false);
-        },
-        { once: true },
-      );
-      pair.elements.forEach((audio) => audio.load());
     });
   };
 
   const applyAndroidMixVolume = (sound: SoundName, value: number) => {
-    const pair = androidMediaPairsRef.current[sound];
-    if (!pair) return;
-
-    pair.volume = value;
-    const active = pair.elements[pair.activeIndex];
-    const standby = pair.elements[pair.activeIndex === 0 ? 1 : 0];
-    pair.elements.forEach((audio) => {
-      audio.muted = value <= 0;
+    const layers = androidSoundscapeLayersRef.current[sound];
+    layers?.forEach(({ audio, baseVolume }) => {
+      const volume = baseVolume * value;
+      audio.muted = volume <= 0;
+      audio.volume = volume;
     });
-
-    if (!pair.transitioning) {
-      active.volume = value;
-      standby.volume = 0;
-    }
   };
 
   const loadMobilePresetBuffer = async (sound: SoundName) => {
@@ -1495,24 +1540,15 @@ export default function Home() {
     if (isAndroid) {
       if (!isMobileMixReady) return;
 
-      [...selectedMixSounds].reverse().forEach((sound, index) => {
-        const pair = androidMediaPairsRef.current[sound];
-        if (!pair) return;
-        const active = pair.elements[pair.activeIndex];
-
-        pair.volume = mixVolumes[sound];
-        if (
-          index > 0 &&
-          Number.isFinite(active.duration) &&
-          active.duration > 0
-        ) {
-          active.currentTime =
-            active.duration * ANDROID_SOUNDSCAPE_STAGGER_RATIO;
-        }
-        active.muted = pair.volume <= 0;
-        active.volume = pair.volume;
-        active.play().catch((error) => {
-          console.log("[android soundscape play error]", sound, error);
+      selectedMixSounds.forEach((sound) => {
+        const layers = androidSoundscapeLayersRef.current[sound];
+        layers?.forEach(({ audio, baseVolume }) => {
+          const volume = baseVolume * mixVolumes[sound];
+          audio.muted = volume <= 0;
+          audio.volume = volume;
+          audio.play().catch((error) => {
+            console.log("[android soundscape layer play error]", sound, error);
+          });
         });
       });
       return;
@@ -1578,6 +1614,13 @@ export default function Home() {
   };
 
   const stopCurrentSoundscapePlayback = () => {
+    Object.values(androidSoundscapeLayersRef.current).forEach((layers) => {
+      layers?.forEach(({ audio }) => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+    });
+
     Object.values(androidMediaPairsRef.current).forEach((pair) => {
       if (!pair) return;
       pair.elements.forEach((audio, index) => {
@@ -1733,6 +1776,11 @@ export default function Home() {
       isPlaying || isSoundscapePlaying ? "playing" : "paused";
 
     navigator.mediaSession.setActionHandler("pause", () => {
+      const androidSoundscapeLayers = Object.values(
+        androidSoundscapeLayersRef.current,
+      ).flatMap((layers) => layers ?? []);
+      androidSoundscapeLayers.forEach(({ audio }) => audio.pause());
+
       const androidPairs = Object.values(androidMediaPairsRef.current);
       androidPairs.forEach((pair) => {
         if (!pair) return;
@@ -1745,7 +1793,7 @@ export default function Home() {
           pair.transitioning = false;
         }
       });
-      if (androidPairs.length > 0) {
+      if (androidSoundscapeLayers.length > 0) {
         setIsSoundscapePlaying(false);
       }
 
@@ -1772,6 +1820,20 @@ export default function Home() {
     });
 
     navigator.mediaSession.setActionHandler("play", () => {
+      const androidSoundscapeLayers = Object.values(
+        androidSoundscapeLayersRef.current,
+      ).flatMap((layers) => layers ?? []);
+      if (isAndroid && androidSoundscapeLayers.length > 0) {
+        androidSoundscapeLayers.forEach(({ audio }) => {
+          audio.play().catch((error) => {
+            console.log("[android media session layer play error]", error);
+          });
+        });
+        setIsSoundscapePlaying(true);
+        navigator.mediaSession.playbackState = "playing";
+        return;
+      }
+
       const androidPairs = Object.values(androidMediaPairsRef.current).filter(
         (pair) => pair !== undefined,
       );
@@ -1782,11 +1844,7 @@ export default function Home() {
             console.log("[android media session play error]", error);
           });
         });
-        if (selectedMixSounds.length === 2) {
-          setIsSoundscapePlaying(true);
-        } else {
-          setIsPlaying(true);
-        }
+        setIsPlaying(true);
         navigator.mediaSession.playbackState = "playing";
         return;
       }
