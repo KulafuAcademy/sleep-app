@@ -2437,7 +2437,7 @@ export default function Home() {
                 </h1>
 
                 <p className="mt-2 text-sm leading-6 text-white/60">
-                  Ver0.8.5.7.7
+                  Ver0.8.5.8.0
                 </p>
               </div>
             </div>
@@ -2847,12 +2847,14 @@ export default function Home() {
               <div className="space-y-6 text-sm leading-7 text-white/75">
                 <div>
                   <h2 className="mb-1 text-base text-white">
-                    Known Issue — iPhone Volume Sliders
+                    Resolved — iPhone Volume Sliders
                   </h2>
 
                   <p className="text-xs text-white/50">June 16, 2026</p>
 
-                  <p className="mt-2 text-xs text-amber-300">Status: Fixing</p>
+                  <p className="mt-2 text-xs text-emerald-300">
+                    Status: Fixed in Ver0.8.5.7.9
+                  </p>
 
                   <p className="mt-4">
                     We have confirmed that volume sliders in Create Soundscape
@@ -2861,14 +2863,15 @@ export default function Home() {
                   </p>
 
                   <p className="mt-3">
-                    The issue is related to iOS audio behavior and is currently
-                    under investigation.
+                    The issue was caused by iOS audio behavior, which prevented
+                    standard HTML audio volume controls from applying gradual
+                    volume changes.
                   </p>
 
                   <p className="mt-3">
-                    We are actively testing alternative audio control methods in
-                    an effort to restore slider functionality while preserving
-                    background playback support on iOS.
+                    A new mobile mixing method now restores individual volume
+                    control while preserving background playback support on
+                    iOS.
                   </p>
                 </div>
               </div>
