@@ -1066,6 +1066,7 @@ export default function Home() {
   const mobileRenderedVolumesRef = useRef<Record<SoundName, number> | null>(
     null,
   );
+  const mobilePreparedMixKeyRef = useRef<string | null>(null);
   const [isMobileMixReady, setIsMobileMixReady] = useState(false);
 
   const mixAudioRefs = useRef<Partial<Record<SoundName, HTMLAudioElement[]>>>(
@@ -1097,18 +1098,44 @@ export default function Home() {
     androidSoundscapeLayersRef.current = {};
   };
 
+  const getMobileSoundscapeKey = (
+    platform: "android" | "ios",
+    selectedSounds: SoundName[],
+    volumes?: Record<SoundName, number>,
+  ) => {
+    const soundKey = [...selectedSounds].sort().join("+");
+    if (platform === "ios") return `${platform}:${soundKey}`;
+
+    const volumeKey = [...selectedSounds]
+      .sort()
+      .map((sound) => `${sound}:${volumes?.[sound] ?? 0.5}`)
+      .join("|");
+
+    return `${platform}:${soundKey}:${volumeKey}`;
+  };
+
   const prepareAndroidSoundscape = (
     selectedSounds: SoundName[],
     volumes: Record<SoundName, number>,
   ) => {
     if (!isAndroid || selectedSounds.length !== 2) return;
 
+    const prepareKey = getMobileSoundscapeKey(
+      "android",
+      selectedSounds,
+      volumes,
+    );
+    if (mobilePreparedMixKeyRef.current === prepareKey) return;
+
+    mobilePreparedMixKeyRef.current = prepareKey;
     clearAndroidSoundscape();
     setIsMobileMixReady(false);
     let loadedCount = 0;
     const totalLayerCount = selectedSounds.reduce((count, sound) => {
       return count + (sound === "Bonfire" || sound === "Cave" ? 3 : 5);
     }, 0);
+    setSoundscapeLoadedCount(0);
+    setSoundscapeTotalCount(totalLayerCount);
 
     selectedSounds.forEach((sound) => {
       const folder = sound.toLowerCase();
@@ -1141,6 +1168,7 @@ export default function Home() {
             "canplay",
             () => {
               loadedCount++;
+              setSoundscapeLoadedCount(loadedCount);
               if (loadedCount === totalLayerCount) {
                 setIsMobileMixReady(true);
               }
@@ -1156,6 +1184,7 @@ export default function Home() {
                 layerName,
                 audio.error,
               );
+              mobilePreparedMixKeyRef.current = null;
               setIsMobileMixReady(false);
             },
             { once: true },
@@ -1180,6 +1209,10 @@ export default function Home() {
   const prepareIosLayeredSoundscape = (selectedSounds: SoundName[]) => {
     if (!isIOS || selectedSounds.length !== 2) return;
 
+    const prepareKey = getMobileSoundscapeKey("ios", selectedSounds);
+    if (mobilePreparedMixKeyRef.current === prepareKey) return;
+
+    mobilePreparedMixKeyRef.current = prepareKey;
     Object.values(mixHowlsRef.current).forEach((entries) => {
       entries?.forEach((entry) => {
         entry.sound.stop();
@@ -1193,6 +1226,8 @@ export default function Home() {
     const totalLayerCount = selectedSounds.reduce((count, sound) => {
       return count + (sound === "Bonfire" || sound === "Cave" ? 3 : 5);
     }, 0);
+    setSoundscapeLoadedCount(0);
+    setSoundscapeTotalCount(totalLayerCount);
 
     selectedSounds.forEach((sound) => {
       const folder = sound.toLowerCase();
@@ -1212,6 +1247,7 @@ export default function Home() {
           pool: 1,
           onload: () => {
             loadedCount++;
+            setSoundscapeLoadedCount(loadedCount);
             if (loadedCount === totalLayerCount) {
               setIsMobileMixReady(true);
             }
@@ -1223,6 +1259,7 @@ export default function Home() {
               name,
               error,
             );
+            mobilePreparedMixKeyRef.current = null;
             setIsMobileMixReady(false);
           },
         });
@@ -1587,6 +1624,35 @@ export default function Home() {
     });
   };
 
+  useEffect(() => {
+    if (screen !== "soundscape" || !isMobile) return;
+
+    if (selectedMixSounds.length !== 2) {
+      mobilePreparedMixKeyRef.current = null;
+      setIsMobileMixReady(false);
+      setSoundscapeLoadedCount(0);
+      setSoundscapeTotalCount(0);
+      return;
+    }
+
+    const nextVolumes = {
+      ...mixVolumes,
+      [selectedMixSounds[0]]: 0.5,
+      [selectedMixSounds[1]]: 0.5,
+    };
+
+    setMixVolumes(nextVolumes);
+
+    if (isAndroid) {
+      prepareAndroidSoundscape(selectedMixSounds, nextVolumes);
+      return;
+    }
+
+    if (isIOS) {
+      prepareIosLayeredSoundscape(selectedMixSounds);
+    }
+  }, [screen, selectedMixSounds, isMobile, isAndroid, isIOS]);
+
   const startSoundscape = async () => {
     stopCurrentSoundscapePlayback();
 
@@ -1709,6 +1775,7 @@ export default function Home() {
 
   const stopSoundscape = () => {
     stopSilentKeeper();
+    mobilePreparedMixKeyRef.current = null;
     clearAndroidSoundscape();
 
     mobileMixRenderRef.current++;
@@ -2183,9 +2250,9 @@ export default function Home() {
 
                 {selectedMixSounds.length === 2 && (
                   <button
-                    disabled={isMobile && !isSoundscapeReady}
+                    disabled={isMobile && !isMobileMixReady}
                     onClick={() => {
-                      if (isMobile && !isSoundscapeReady) return;
+                      if (isMobile && !isMobileMixReady) return;
 
                       const nextVolumes = {
                         ...mixVolumes,
@@ -2195,12 +2262,16 @@ export default function Home() {
 
                       setMixVolumes(nextVolumes);
                       if (isAndroid) {
-                        prepareAndroidSoundscape(
-                          selectedMixSounds,
-                          nextVolumes,
-                        );
+                        if (!isMobileMixReady) {
+                          prepareAndroidSoundscape(
+                            selectedMixSounds,
+                            nextVolumes,
+                          );
+                        }
                       } else if (isIOS) {
-                        prepareIosLayeredSoundscape(selectedMixSounds);
+                        if (!isMobileMixReady) {
+                          prepareIosLayeredSoundscape(selectedMixSounds);
+                        }
                       } else {
                         scheduleMobileSoundscapeRender(
                           selectedMixSounds,
@@ -2211,12 +2282,12 @@ export default function Home() {
                       setScreen("soundscapeEdit");
                     }}
                     className={`mt-6 w-full rounded-2xl border py-4 text-base font-medium shadow-lg shadow-black/20 transition ${
-                      !isMobile || isSoundscapeReady
+                      !isMobile || isMobileMixReady
                         ? "border-[#40444D] bg-[#2A2D33] text-[#D8D8D8] hover:bg-[#343842]"
                         : "timer-breath border-[#2A2D33] bg-[#1A1C20] text-[#7A7A7A]"
                     }`}
                   >
-                    {!isMobile || isSoundscapeReady
+                    {!isMobile || isMobileMixReady
                       ? "Continue"
                       : `Preparing... ${soundscapeLoadedCount}/${soundscapeTotalCount}`}
                   </button>
@@ -2565,7 +2636,7 @@ export default function Home() {
                 </h1>
 
                 <p className="mt-2 text-sm leading-6 text-white/60">
-                  Ver0.8.5.8.3
+                  Ver0.8.5.8.4
                 </p>
               </div>
             </div>
