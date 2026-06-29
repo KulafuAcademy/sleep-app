@@ -121,6 +121,13 @@ export default function Home() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   const [selectedTimer, setSelectedTimer] = useState<number | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
+  const [isSoundscapeTimerRunning, setIsSoundscapeTimerRunning] =
+    useState(false);
+  const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
+  const [isSafariBrowser, setIsSafariBrowser] = useState(false);
+  const [isStandaloneApp, setIsStandaloneApp] = useState(false);
 
   const [soundscapeTimeLeft, setSoundscapeTimeLeft] = useState<number>(0);
   const [screen, setScreen] = useState<
@@ -930,14 +937,6 @@ export default function Home() {
 
     return `${m}m`;
   };
-
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isSoundscapePlaying, setIsSoundscapePlaying] = useState(false);
-  const [isSoundscapeTimerRunning, setIsSoundscapeTimerRunning] =
-    useState(false);
-  const [selectedSound, setSelectedSound] = useState<SoundName | null>(null);
-  const [isSafariBrowser, setIsSafariBrowser] = useState(false);
-  const [isStandaloneApp, setIsStandaloneApp] = useState(false);
 
   const [cardScale, setCardScale] = useState(1);
 
@@ -2566,7 +2565,7 @@ export default function Home() {
                 </h1>
 
                 <p className="mt-2 text-sm leading-6 text-white/60">
-                  Ver0.8.5.8.1
+                  Ver0.8.5.8.3
                 </p>
               </div>
             </div>
